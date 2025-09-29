@@ -1,0 +1,164 @@
+"""FastAPI application for SaaS Configurator."""
+
+from fastapi import FastAPI, HTTPException, Query, Path
+from fastapi.middleware.cors import CORSMiddleware
+from typing import Optional, List
+import math
+
+from app.models import (
+    Configuration, 
+    ConfigurationCreate, 
+    ConfigurationUpdate, 
+    ConfigurationResponse,
+    ConfigurationListResponse,
+    ConfigurationStatus
+)
+from app.database import db
+
+# Create FastAPI application
+app = FastAPI(
+    title="SaaS Configurator",
+    description="A FastAPI application for managing cluster configurations",
+    version="1.0.0",
+    contact={
+        "name": "SaaS Configurator Team",
+        "email": "support@saas-configurator.com",
+    },
+    license_info={
+        "name": "MIT",
+        "url": "https://opensource.org/licenses/MIT",
+    },
+)
+
+# Configure CORS
+origins = [
+    "http://localhost:3000",  # React development server
+    "http://127.0.0.1:3000",
+    "http://localhost:5173",  # Vite development server
+    "http://127.0.0.1:5173",
+    "http://localhost",
+    "http://localhost:8080",
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+
+@app.get("/", summary="Root endpoint")
+async def root():
+    """Welcome message for the SaaS Configurator API."""
+    return {
+        "message": "Welcome to SaaS Configurator API",
+        "version": "1.0.0",
+        "docs": "/docs"
+    }
+
+
+@app.post(
+    "/configurations/",
+    response_model=ConfigurationResponse,
+    status_code=201,
+    summary="Create a new configuration",
+    description="Create a new cluster configuration with the provided data."
+)
+async def create_configuration(config: ConfigurationCreate):
+    """Create a new cluster configuration."""
+    try:
+        created_config = db.create_configuration(config)
+        return created_config
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"Error creating configuration: {str(e)}")
+
+
+@app.get(
+    "/configurations/",
+    response_model=ConfigurationListResponse,
+    summary="List configurations",
+    description="Retrieve a paginated list of configurations with optional filtering."
+)
+async def list_configurations(
+    skip: int = Query(0, ge=0, description="Number of configurations to skip"),
+    limit: int = Query(10, ge=1, le=100, description="Maximum number of configurations to return"),
+    status: Optional[ConfigurationStatus] = Query(None, description="Filter by configuration status"),
+    cluster_type: Optional[str] = Query(None, description="Filter by cluster type"),
+):
+    """List all cluster configurations with pagination and filtering."""
+    configurations = db.get_configurations(skip=skip, limit=limit, status=status, cluster_type=cluster_type)
+    total = db.count_configurations(status=status, cluster_type=cluster_type)
+    pages = math.ceil(total / limit) if total > 0 else 1
+    
+    return ConfigurationListResponse(
+        items=configurations,
+        total=total,
+        page=(skip // limit) + 1,
+        size=limit,
+        pages=pages
+    )
+
+
+@app.get(
+    "/configurations/{config_id}",
+    response_model=ConfigurationResponse,
+    summary="Get configuration by ID",
+    description="Retrieve a specific configuration by its ID."
+)
+async def get_configuration(
+    config_id: int = Path(..., gt=0, description="The ID of the configuration to retrieve")
+):
+    """Get a specific cluster configuration by ID."""
+    config = db.get_configuration(config_id)
+    if not config:
+        raise HTTPException(status_code=404, detail="Configuration not found")
+    return config
+
+
+@app.put(
+    "/configurations/{config_id}",
+    response_model=ConfigurationResponse,
+    summary="Update configuration",
+    description="Update an existing configuration with the provided data."
+)
+async def update_configuration(
+    config_update: ConfigurationUpdate,
+    config_id: int = Path(..., gt=0, description="The ID of the configuration to update")
+):
+    """Update an existing cluster configuration."""
+    updated_config = db.update_configuration(config_id, config_update)
+    if not updated_config:
+        raise HTTPException(status_code=404, detail="Configuration not found")
+    return updated_config
+
+
+@app.delete(
+    "/configurations/{config_id}",
+    status_code=204,
+    summary="Delete configuration",
+    description="Delete a configuration by its ID."
+)
+async def delete_configuration(
+    config_id: int = Path(..., gt=0, description="The ID of the configuration to delete")
+):
+    """Delete a cluster configuration."""
+    success = db.delete_configuration(config_id)
+    if not success:
+        raise HTTPException(status_code=404, detail="Configuration not found")
+
+
+@app.get(
+    "/health",
+    summary="Health check",
+    description="Check the health status of the API."
+)
+async def health_check():
+    """Health check endpoint."""
+    return {"status": "healthy", "service": "saas-configurator"}
+
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(app, host="0.0.0.0", port=8000)
