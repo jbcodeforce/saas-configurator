@@ -1,0 +1,34 @@
+---
+imports:
+  - luego.text.*
+  - demo.config.*
+
+output: Unit
+inputs:
+  - name: the customer request
+    type: demo.config.CustomerRequest
+    mutable: true
+  - name: the configuration
+    type: demo.config.Configuration
+    mutable: true
+
+definition: >
+  if the cluster of `the configuration` is absent
+  then
+  {
+    set `the configuration`.cloudProvider = the cloudProvider of `the customer request`;
+    set `the configuration`.cluster = inferKafkaClusterType(`the customer request`);
+    println('The cluster type has been chosen.')  
+  }
+  else depending on the cluster of `the configuration` {
+    case bc: BasicCluster => configureBasicCluster(`the customer request`, bc)
+    case dc: DedicatedCluster => configureDedicatedCluster(`the customer request`, dc)
+    case ec: EnterpriseCluster => configureEnterpriseCluster(`the customer request`, ec)
+    case fc: FreightCluster => configureFreightCluster(`the customer request`, fc)
+    case sc: StandardCluster => configureStandardCluster(`the customer request`, sc)
+  }
+
+###
+exposable: true
+description: Configure a Kafka cluster by determining the best type of cluster and configuring its details.
+usedDecisions: [ inferKafkaClusterType ]

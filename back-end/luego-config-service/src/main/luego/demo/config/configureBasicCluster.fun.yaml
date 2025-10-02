@@ -1,0 +1,24 @@
+---
+imports:
+  - luego.text.*
+  - demo.config.*
+
+output: Unit
+inputs:
+  - name: the customer request
+    type: demo.config.CustomerRequest
+    mutable: true
+  - name: the basic cluster
+    type: demo.config.BasicCluster
+    mutable: true
+
+definition: >
+  {
+    set the minNumberOfNodes of `the basic cluster` = 2;
+    println('configure basic cluster')
+  }
+
+###
+exposable: true
+description: configure a basic Kafka cluster
+usedDecisions: []

@@ -1,0 +1,42 @@
+---
+imports:
+  - luego.text.*
+  - demo.config.*
+
+output: Unit
+inputs:
+  - name: the customer request
+    type: demo.config.CustomerRequest
+    mutable: true
+  - name: the dedicated cluster
+    type: demo.config.DedicatedCluster
+    mutable: true
+
+definition: >
+  {
+    depending on `the customer request` includeOptionalComponent do {
+      case true => depending on the optionalComponent of `the customer request` do {
+        case optionA: OptionA => 
+          set the minNumberOfNodes of `the dedicated cluster` = 7;
+          set the capacity_of_a of `the dedicated cluster` = the capacity of optionA
+
+        case notification: EmailNotification =>
+          set the minNumberOfNodes of `the dedicated cluster` = 6; 
+          set the notificationEmail of `the dedicated cluster` = the email of notification
+
+        case optionB2: OptionB2 =>
+          set the minNumberOfNodes of `the dedicated cluster` = 5;
+          set the quantity_of_b2 of `the dedicated cluster` = the quantity of optionB2
+      }
+      case false => 
+        // the missing info element
+        NEED(`the dedicated cluster`.minNumberOfNodes)
+    };
+
+    println('configure dedicated cluster')
+  }  
+
+###
+exposable: true
+description: configure a dedicated Kafka cluster
+usedDecisions: []

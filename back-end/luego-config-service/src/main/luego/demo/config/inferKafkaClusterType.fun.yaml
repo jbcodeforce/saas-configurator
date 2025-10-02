@@ -1,0 +1,32 @@
+---
+imports:
+  - demo.config.*
+
+output: demo.config.Cluster
+inputs:
+  - name: the customer request
+    type: demo.config.CustomerRequest
+definition: >
+  if `the customer request` mustHaveDedicatedEnv 
+  then DedicatedCluster(scaling = `ScalingType.Manual`)
+  else 
+    if `the customer request` mustHavePrivateEndpoints 
+    then 
+      if `the customer request` mustHaveSubSecondLatency 
+      then 
+        if the ingress of `the customer request` > 600 
+        then DedicatedCluster(scaling = `ScalingType.Manual`)
+        else EnterpriseCluster(scaling = `ScalingType.Elastic`)
+      else FreightCluster(scaling = `ScalingType.Elastic`)
+    else 
+      if the ingress of `the customer request` > 250 
+      then EnterpriseCluster(scaling = `ScalingType.Elastic`)
+      else 
+        if `the customer request` isProductionUseCase
+        then StandardCluster(scaling = `ScalingType.Elastic`)
+        else BasicCluster(scaling = `ScalingType.Elastic`)
+
+###
+exposable: true
+description: determine cluster type
+usedDecisions: []

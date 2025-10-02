@@ -1,0 +1,24 @@
+---
+imports:
+  - luego.text.*
+  - demo.config.*
+
+output: Unit
+inputs:
+  - name: the customer request
+    type: demo.config.CustomerRequest
+    mutable: true
+  - name: the enterprise cluster
+    type: demo.config.EnterpriseCluster
+    mutable: true
+
+definition: >
+  {
+    set the minNumberOfNodes of `the enterprise cluster` = 7;
+    println('configure enterprise cluster')
+  }    
+
+###
+exposable: true
+description: configure an enterprise Kafka cluster
+usedDecisions: []

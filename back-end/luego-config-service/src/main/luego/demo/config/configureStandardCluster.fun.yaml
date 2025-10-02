@@ -1,0 +1,25 @@
+---
+imports:
+  - luego.text.*
+  - luego.math.*
+  - demo.config.*
+
+output: Unit
+inputs:
+  - name: the customer request
+    type: demo.config.CustomerRequest
+    mutable: true
+  - name: the standard cluster
+    type: demo.config.StandardCluster
+    mutable: true
+
+definition: >
+  {
+    set the minNumberOfNodes of `the standard cluster` = 3;
+    println('configure standard cluster')
+  }    
+
+###
+exposable: true
+description: configure a standard Kafka cluster
+usedDecisions: []

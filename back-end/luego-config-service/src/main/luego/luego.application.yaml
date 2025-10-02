@@ -1,0 +1,25 @@
+---
+domain: Configuration
+appId: cluster-config-demo
+groupId: io.provingly
+appVersion: 1.0.0
+
+provider:
+  name: Provingly
+  email: info@provingly.io
+
+lastUpdate: 2025-07-11
+luegoVersion: 0.36.0
+dependencies: []
+
+localizedInfo:
+  - label: Cluster Configuration Demo
+    description: A demo showing how to use Luego to configure Kafka clusters that meets customer needs
+    tags: [ 'demo', 'configuration' ]
+    lang: en
+    country:
+  - label: Cluster Configuration Demo
+    description: Une démonstration de comment utiliser Luego pour configurer des clusters Kafka sur la base des specs d'un client
+    tags: [ 'démo', 'configuration' ]
+    lang: fr
+    country:

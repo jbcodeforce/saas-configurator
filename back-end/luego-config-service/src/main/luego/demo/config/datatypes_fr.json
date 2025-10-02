@@ -1,0 +1,32 @@
+{
+    "CustomerRequest": {
+        "$txt": "demande du client",
+        "cloudProvider": {
+            "txt": "fournisseur de cloud",
+            "q": "quel est le fournisseur de cloud du client ?"
+        },
+        "mustHaveDedicatedEnv": {
+            "txt": "nécessite un environnement dédié",
+            "q": "le client nécessite-il un environnement dédié ?"
+        },
+        "mustHavePrivateEndpoints": {
+            "txt": "nécessite des endpoints privés",
+            "q": "le client nécessite-il des endpoints privés ?"
+        },
+        "mustHaveSubSecondLatency": {
+            "txt": "nécessite un temps de latence inférieur à la seconde",
+            "q": "le client nécessite-il un temps de latence inférieur à la seconde ?"
+        },
+        "isProductionUseCase": {
+            "txt": "cas d'utilisation en production",
+            "q": "s'agit-il d'un cas d'utilisation en production ?"
+        },
+        "ingress": { "txt": "ingress en MBps" },
+        "egress": { "txt": "egress en MBps" },
+        "throughput":  { "txt": "throughput en MBps" },
+        "numberOfConnections":  { "txt": "nombre de connections" }
+    },
+    "Cluster": {
+        "minNumberOfNodes": "nombre minimum de noeuds"
+    }
+}

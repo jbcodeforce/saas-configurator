@@ -1,0 +1,19 @@
+---
+imports:
+  - luego.text.*
+  - demo.config.*
+
+output: demo.config.FreightCluster
+inputs:
+  - name: the customer request
+    type: demo.config.CustomerRequest
+definition: >
+  {
+    let fc = FreightCluster(minNumberOfNodes = 2);
+    fc
+  } 
+
+###
+exposable: false
+description: configure a freight Kafka cluster
+usedDecisions: []

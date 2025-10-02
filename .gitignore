@@ -133,6 +133,18 @@ dmypy.json
 # Cython debug symbols
 cython_debug/
 
+# Java, Scala, SBT
+dist/*
+target/
+lib_managed/
+src_managed/
+project/boot/
+project/plugins/project/
+.history
+.cache
+.lib/
+.bsp/
+
 # IDE
 .vscode/
 .idea/

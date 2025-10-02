@@ -1,0 +1,24 @@
+---
+imports:
+  - luego.text.*
+  - demo.config.*
+
+output: Unit
+inputs:
+  - name: the customer request
+    type: demo.config.CustomerRequest
+    mutable: true
+  - name: the freight cluster
+    type: demo.config.FreightCluster
+    mutable: true
+
+definition: >
+  {
+    set the minNumberOfNodes of `the freight cluster` = 5;
+    println('configure freight cluster')
+  }    
+
+###
+exposable: true
+description: configure a freight Kafka cluster
+usedDecisions: []

@@ -1,0 +1,40 @@
+---
+imports:
+  - luego.text.*
+  - demo.config.*
+
+output: demo.config.Configuration
+inputs:
+  - name: the customer request
+    type: demo.config.CustomerRequest
+definition: >
+  {
+    let cloudProvider = the cloudProvider of `the customer request`;
+    let cluster = 
+      if `the customer request` mustHaveDedicatedEnv 
+      then ZZZinferDedicatedCluster(`the customer request`)
+      else 
+        if `the customer request` mustHavePrivateEndpoints 
+        then 
+          if `the customer request` mustHaveSubSecondLatency 
+          then 
+            if the ingress of `the customer request` > 600 
+            then ZZZinferDedicatedCluster(`the customer request`)
+            else ZZZinferEnterpriseCluster(`the customer request`)
+          else ZZZinferFreightCluster(`the customer request`)
+        else 
+          if the ingress of `the customer request` > 250 
+          then ZZZinferEnterpriseCluster(`the customer request`)
+          else 
+            if `the customer request` isProductionUseCase
+            then ZZZinferStandardCluster(`the customer request`)
+            else ZZZinferBasicCluster(`the customer request`);
+  
+    Configuration(cluster = cluster, 
+                 cloudProvider = cloudProvider)
+  } 
+
+###
+exposable: false
+description: determine cluster type
+usedDecisions: [ ZZZinferDedicatedCluster, ZZZinferEnterpriseCluster, ZZZinferStandardCluster, ZZZinferBasicCluster ]

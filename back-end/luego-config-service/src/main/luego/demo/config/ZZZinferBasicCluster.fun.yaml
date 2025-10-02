@@ -1,0 +1,16 @@
+---
+imports:
+  - luego.text.*
+  - demo.config.*
+
+output: demo.config.BasicCluster
+inputs:
+  - name: the customer request
+    type: demo.config.CustomerRequest
+definition: >
+    BasicCluster(minNumberOfNodes = 2)
+
+###
+exposable: false
+description: infer a basic Kafka cluster
+usedDecisions: []

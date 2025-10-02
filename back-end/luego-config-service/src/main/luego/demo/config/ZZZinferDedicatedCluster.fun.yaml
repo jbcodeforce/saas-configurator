@@ -1,0 +1,19 @@
+---
+imports:
+  - luego.text.*
+  - demo.config.*
+
+output: demo.config.DedicatedCluster
+inputs:
+  - name: the customer request
+    type: demo.config.CustomerRequest
+definition: >
+  {
+    set the ingress of `the customer request` = 200.0;   // this is a modifier of an input param
+    DedicatedCluster(minNumberOfNodes = 4)
+  }
+
+###
+exposable: false
+description: configure a dedicated Kafka cluster
+usedDecisions: []

@@ -1,0 +1,108 @@
+package demo.config
+
+//------------------
+// BASIC TYPES
+//------------------
+CloudProvider is an enumeration with domain:
+    'AWS', 'Azure', 'GCP', 'CP4', 'CP5'
+
+ZeroTo2400 is a Number in [0.0, 2400.0]
+Email is a Text
+    with length between 8 and 36,
+    that matches '^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$'
+
+//---------------------
+// OPTIONAL COMPONENT
+//---------------------
+OptionalComponent is a record
+OptionA is an OptionalComponent
+    - with one capacity: ZeroTo2400
+OptionB is an OptionalComponent
+EmailNotification is an OptionB
+    - with one email: Email
+OptionB2 is an OptionB
+    - with one quantity: Integer
+
+//---------------------
+// SUBCOMPONENTS
+//---------------------
+SubComponentCode is a Text that matches '[AB][123]'
+
+SubComponent is a record
+    - with one code: SubComponentCode
+    - with one capacity: ZeroTo2400
+
+//---------------------
+// REQUEST
+//---------------------
+CustomerRequest is a record
+    - with one cloudProvider: CloudProvider
+    - with one mustHaveDedicatedEnv: Boolean
+    - with one mustHavePrivateEndpoints: Boolean
+    - with one mustHaveSubSecondLatency: Boolean
+    - with one isProductionUseCase: Boolean
+    - with one ingress: Number      // in MBps
+
+    - with one egress: Number       // in MBps
+    - with one throughput: Number   // in MBps
+    - with one numberOfConnections: Integer
+
+    - with zero or more subComponents (subComponent): SubComponent
+
+    - with one includeOptionalComponent: Boolean
+    - with one optionalComponent: OptionalComponent
+
+//---------------------
+// RESPONSE
+//---------------------
+ScalingType is an enumeration with domain:
+    'Elastic', 'Manual'
+
+Cluster is a record
+    - with one scaling: ScalingType
+    - with one minNumberOfNodes: Integer
+
+BasicCluster is a Cluster
+
+StandardCluster is a Cluster
+
+EnterpriseCluster is a Cluster
+    - with one capacity_of_a: ZeroTo2400
+    - with one quantity_of_b2: Integer
+    - with one notificationEmail: Text
+
+DedicatedCluster is a Cluster
+    - with one capacity_of_a: ZeroTo2400
+    - with one quantity_of_b2: Integer
+    - with one notificationEmail: Text
+
+FreightCluster is a Cluster
+
+
+// We be used both as input and output
+Configuration is a record
+    - with one cloudProvider: CloudProvider
+    - with one cluster: Cluster
+
+/*
+{
+    "the customer request": {
+      "LGType_": "demo.config.CustomerRequest",
+      "cloudProvider": "AWS",
+      "mustHaveDedicatedEnv": true,
+      "includeOptionalComponent": true,
+      "optionalComponent": {
+        "LGType_": "demo.config.EmailNotification",
+        "email": "dfsvldjmail.com"
+      }
+    },
+    "the configuration": {
+      "LGType_": "demo.config.Configuration",
+      "cloudProvider": "AWS",
+      "cluster": {
+        "LGType_": "demo.config.DedicatedCluster",
+        "scaling": "Manual"
+      }
+    }
+  }
+*/
