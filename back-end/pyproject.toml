@@ -3,7 +3,7 @@ name = "saas-configurator"
 version = "0.1.0"
 description = "FastAPI application for managing cluster configurations"
 readme = "README.md"
-requires-python = ">=3.11"
+requires-python = ">=3.12"
 dependencies = [
     "fastapi>=0.115.0",
     "pydantic>=2.0.0",
