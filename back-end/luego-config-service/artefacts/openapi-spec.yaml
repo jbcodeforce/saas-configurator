@@ -1,0 +1,1180 @@
+openapi: 3.1.0
+info:
+  title: cluster-config-demo
+  version: 1.0.0
+paths:
+  /v1/domains/Configuration/apps/cluster-config-demo/1.0.0/models/demo.config.configureBasicCluster/configure:
+    post:
+      tags:
+      - demo.config - Configuration
+      summary: configure a basic Kafka cluster
+      description: configure a basic Kafka cluster
+      operationId: decision:demo.config.configureBasicCluster
+      parameters:
+      - name: lang
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - en
+          - fr
+      - name: richResults
+        in: query
+        required: false
+        schema:
+          type: boolean
+          enum:
+          - true
+          - false
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                the customer request:
+                  $ref: '#/components/schemas/demo.config.CustomerRequest'
+                the basic cluster:
+                  $ref: '#/components/schemas/demo.config.BasicCluster'
+              additionalProperties: false
+        required: true
+      responses:
+        '200':
+          description: Ok, response generated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  times:
+                    type: object
+                    properties:
+                      total:
+                        type: number
+                  missingData:
+                    type: object
+                  result:
+                    type: object
+                    properties:
+                      the customer request:
+                        $ref: '#/components/schemas/demo.config.CustomerRequest'
+                      the basic cluster:
+                        $ref: '#/components/schemas/demo.config.BasicCluster'
+                    additionalProperties: false
+                additionalProperties: false
+        '400':
+          description: Something went wrong
+  /v1/domains/Configuration/apps/cluster-config-demo/1.0.0/models/demo.config.configureDedicatedCluster/configure:
+    post:
+      tags:
+      - demo.config - Configuration
+      summary: configure a dedicated Kafka cluster
+      description: configure a dedicated Kafka cluster
+      operationId: decision:demo.config.configureDedicatedCluster
+      parameters:
+      - name: lang
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - en
+          - fr
+      - name: richResults
+        in: query
+        required: false
+        schema:
+          type: boolean
+          enum:
+          - true
+          - false
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                the customer request:
+                  $ref: '#/components/schemas/demo.config.CustomerRequest'
+                the dedicated cluster:
+                  $ref: '#/components/schemas/demo.config.DedicatedCluster'
+              additionalProperties: false
+        required: true
+      responses:
+        '200':
+          description: Ok, response generated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  times:
+                    type: object
+                    properties:
+                      total:
+                        type: number
+                  missingData:
+                    type: object
+                  result:
+                    type: object
+                    properties:
+                      the customer request:
+                        $ref: '#/components/schemas/demo.config.CustomerRequest'
+                      the dedicated cluster:
+                        $ref: '#/components/schemas/demo.config.DedicatedCluster'
+                    additionalProperties: false
+                additionalProperties: false
+        '400':
+          description: Something went wrong
+  /v1/domains/Configuration/apps/cluster-config-demo/1.0.0/models/demo.config.configureEnterpriseCluster/configure:
+    post:
+      tags:
+      - demo.config - Configuration
+      summary: configure an enterprise Kafka cluster
+      description: configure an enterprise Kafka cluster
+      operationId: decision:demo.config.configureEnterpriseCluster
+      parameters:
+      - name: lang
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - en
+          - fr
+      - name: richResults
+        in: query
+        required: false
+        schema:
+          type: boolean
+          enum:
+          - true
+          - false
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                the customer request:
+                  $ref: '#/components/schemas/demo.config.CustomerRequest'
+                the enterprise cluster:
+                  $ref: '#/components/schemas/demo.config.EnterpriseCluster'
+              additionalProperties: false
+        required: true
+      responses:
+        '200':
+          description: Ok, response generated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  times:
+                    type: object
+                    properties:
+                      total:
+                        type: number
+                  missingData:
+                    type: object
+                  result:
+                    type: object
+                    properties:
+                      the customer request:
+                        $ref: '#/components/schemas/demo.config.CustomerRequest'
+                      the enterprise cluster:
+                        $ref: '#/components/schemas/demo.config.EnterpriseCluster'
+                    additionalProperties: false
+                additionalProperties: false
+        '400':
+          description: Something went wrong
+  /v1/domains/Configuration/apps/cluster-config-demo/1.0.0/models/demo.config.configureFreightCluster/configure:
+    post:
+      tags:
+      - demo.config - Configuration
+      summary: configure a freight Kafka cluster
+      description: configure a freight Kafka cluster
+      operationId: decision:demo.config.configureFreightCluster
+      parameters:
+      - name: lang
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - en
+          - fr
+      - name: richResults
+        in: query
+        required: false
+        schema:
+          type: boolean
+          enum:
+          - true
+          - false
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                the customer request:
+                  $ref: '#/components/schemas/demo.config.CustomerRequest'
+                the freight cluster:
+                  $ref: '#/components/schemas/demo.config.FreightCluster'
+              additionalProperties: false
+        required: true
+      responses:
+        '200':
+          description: Ok, response generated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  times:
+                    type: object
+                    properties:
+                      total:
+                        type: number
+                  missingData:
+                    type: object
+                  result:
+                    type: object
+                    properties:
+                      the customer request:
+                        $ref: '#/components/schemas/demo.config.CustomerRequest'
+                      the freight cluster:
+                        $ref: '#/components/schemas/demo.config.FreightCluster'
+                    additionalProperties: false
+                additionalProperties: false
+        '400':
+          description: Something went wrong
+  /v1/domains/Configuration/apps/cluster-config-demo/1.0.0/models/demo.config.configureKafkaCluster/configure:
+    post:
+      tags:
+      - demo.config - Configuration
+      summary: Configure a Kafka cluster by determining the best type of cluster and
+        configuring its details.
+      description: Configure a Kafka cluster by determining the best type of cluster
+        and configuring its details.
+      operationId: decision:demo.config.configureKafkaCluster
+      parameters:
+      - name: lang
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - en
+          - fr
+      - name: richResults
+        in: query
+        required: false
+        schema:
+          type: boolean
+          enum:
+          - true
+          - false
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                the customer request:
+                  $ref: '#/components/schemas/demo.config.CustomerRequest'
+                the configuration:
+                  $ref: '#/components/schemas/demo.config.Configuration'
+              additionalProperties: false
+        required: true
+      responses:
+        '200':
+          description: Ok, response generated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  times:
+                    type: object
+                    properties:
+                      total:
+                        type: number
+                  missingData:
+                    type: object
+                  result:
+                    type: object
+                    properties:
+                      the customer request:
+                        $ref: '#/components/schemas/demo.config.CustomerRequest'
+                      the configuration:
+                        $ref: '#/components/schemas/demo.config.Configuration'
+                    additionalProperties: false
+                additionalProperties: false
+        '400':
+          description: Something went wrong
+  /v1/domains/Configuration/apps/cluster-config-demo/1.0.0/models/demo.config.configureStandardCluster/configure:
+    post:
+      tags:
+      - demo.config - Configuration
+      summary: configure a standard Kafka cluster
+      description: configure a standard Kafka cluster
+      operationId: decision:demo.config.configureStandardCluster
+      parameters:
+      - name: lang
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - en
+          - fr
+      - name: richResults
+        in: query
+        required: false
+        schema:
+          type: boolean
+          enum:
+          - true
+          - false
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                the customer request:
+                  $ref: '#/components/schemas/demo.config.CustomerRequest'
+                the standard cluster:
+                  $ref: '#/components/schemas/demo.config.StandardCluster'
+              additionalProperties: false
+        required: true
+      responses:
+        '200':
+          description: Ok, response generated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  times:
+                    type: object
+                    properties:
+                      total:
+                        type: number
+                  missingData:
+                    type: object
+                  result:
+                    type: object
+                    properties:
+                      the customer request:
+                        $ref: '#/components/schemas/demo.config.CustomerRequest'
+                      the standard cluster:
+                        $ref: '#/components/schemas/demo.config.StandardCluster'
+                    additionalProperties: false
+                additionalProperties: false
+        '400':
+          description: Something went wrong
+  /v1/domains/Configuration/apps/cluster-config-demo/1.0.0/models/demo.config.configureBasicCluster/infer:
+    post:
+      tags:
+      - demo.config - Inference (for test purposes)
+      summary: configure a basic Kafka cluster
+      description: configure a basic Kafka cluster
+      operationId: decision:demo.config.configureBasicCluster
+      parameters:
+      - name: lang
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - en
+          - fr
+      - name: richResults
+        in: query
+        required: false
+        schema:
+          type: boolean
+          enum:
+          - true
+          - false
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                the customer request:
+                  $ref: '#/components/schemas/demo.config.CustomerRequest'
+                the basic cluster:
+                  $ref: '#/components/schemas/demo.config.BasicCluster'
+              additionalProperties: false
+        required: true
+      responses:
+        '200':
+          description: Ok, response generated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/luego.results.UnitResponse'
+        '400':
+          description: Something went wrong
+  /v1/domains/Configuration/apps/cluster-config-demo/1.0.0/models/demo.config.configureDedicatedCluster/infer:
+    post:
+      tags:
+      - demo.config - Inference (for test purposes)
+      summary: configure a dedicated Kafka cluster
+      description: configure a dedicated Kafka cluster
+      operationId: decision:demo.config.configureDedicatedCluster
+      parameters:
+      - name: lang
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - en
+          - fr
+      - name: richResults
+        in: query
+        required: false
+        schema:
+          type: boolean
+          enum:
+          - true
+          - false
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                the customer request:
+                  $ref: '#/components/schemas/demo.config.CustomerRequest'
+                the dedicated cluster:
+                  $ref: '#/components/schemas/demo.config.DedicatedCluster'
+              additionalProperties: false
+        required: true
+      responses:
+        '200':
+          description: Ok, response generated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/luego.results.UnitResponse'
+        '400':
+          description: Something went wrong
+  /v1/domains/Configuration/apps/cluster-config-demo/1.0.0/models/demo.config.configureEnterpriseCluster/infer:
+    post:
+      tags:
+      - demo.config - Inference (for test purposes)
+      summary: configure an enterprise Kafka cluster
+      description: configure an enterprise Kafka cluster
+      operationId: decision:demo.config.configureEnterpriseCluster
+      parameters:
+      - name: lang
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - en
+          - fr
+      - name: richResults
+        in: query
+        required: false
+        schema:
+          type: boolean
+          enum:
+          - true
+          - false
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                the customer request:
+                  $ref: '#/components/schemas/demo.config.CustomerRequest'
+                the enterprise cluster:
+                  $ref: '#/components/schemas/demo.config.EnterpriseCluster'
+              additionalProperties: false
+        required: true
+      responses:
+        '200':
+          description: Ok, response generated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/luego.results.UnitResponse'
+        '400':
+          description: Something went wrong
+  /v1/domains/Configuration/apps/cluster-config-demo/1.0.0/models/demo.config.configureFreightCluster/infer:
+    post:
+      tags:
+      - demo.config - Inference (for test purposes)
+      summary: configure a freight Kafka cluster
+      description: configure a freight Kafka cluster
+      operationId: decision:demo.config.configureFreightCluster
+      parameters:
+      - name: lang
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - en
+          - fr
+      - name: richResults
+        in: query
+        required: false
+        schema:
+          type: boolean
+          enum:
+          - true
+          - false
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                the customer request:
+                  $ref: '#/components/schemas/demo.config.CustomerRequest'
+                the freight cluster:
+                  $ref: '#/components/schemas/demo.config.FreightCluster'
+              additionalProperties: false
+        required: true
+      responses:
+        '200':
+          description: Ok, response generated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/luego.results.UnitResponse'
+        '400':
+          description: Something went wrong
+  /v1/domains/Configuration/apps/cluster-config-demo/1.0.0/models/demo.config.configureKafkaCluster/infer:
+    post:
+      tags:
+      - demo.config - Inference (for test purposes)
+      summary: Configure a Kafka cluster by determining the best type of cluster and
+        configuring its details.
+      description: Configure a Kafka cluster by determining the best type of cluster
+        and configuring its details.
+      operationId: decision:demo.config.configureKafkaCluster
+      parameters:
+      - name: lang
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - en
+          - fr
+      - name: richResults
+        in: query
+        required: false
+        schema:
+          type: boolean
+          enum:
+          - true
+          - false
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                the customer request:
+                  $ref: '#/components/schemas/demo.config.CustomerRequest'
+                the configuration:
+                  $ref: '#/components/schemas/demo.config.Configuration'
+              additionalProperties: false
+        required: true
+      responses:
+        '200':
+          description: Ok, response generated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/luego.results.UnitResponse'
+        '400':
+          description: Something went wrong
+  /v1/domains/Configuration/apps/cluster-config-demo/1.0.0/models/demo.config.configureStandardCluster/infer:
+    post:
+      tags:
+      - demo.config - Inference (for test purposes)
+      summary: configure a standard Kafka cluster
+      description: configure a standard Kafka cluster
+      operationId: decision:demo.config.configureStandardCluster
+      parameters:
+      - name: lang
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - en
+          - fr
+      - name: richResults
+        in: query
+        required: false
+        schema:
+          type: boolean
+          enum:
+          - true
+          - false
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                the customer request:
+                  $ref: '#/components/schemas/demo.config.CustomerRequest'
+                the standard cluster:
+                  $ref: '#/components/schemas/demo.config.StandardCluster'
+              additionalProperties: false
+        required: true
+      responses:
+        '200':
+          description: Ok, response generated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/luego.results.UnitResponse'
+        '400':
+          description: Something went wrong
+  /v1/domains/Configuration/apps/cluster-config-demo/1.0.0/models/demo.config.inferKafkaClusterType/infer:
+    post:
+      tags:
+      - demo.config - Inference
+      summary: determine cluster type
+      description: determine cluster type
+      operationId: decision:demo.config.inferKafkaClusterType
+      parameters:
+      - name: lang
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - en
+          - fr
+      - name: richResults
+        in: query
+        required: false
+        schema:
+          type: boolean
+          enum:
+          - true
+          - false
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                the customer request:
+                  $ref: '#/components/schemas/demo.config.CustomerRequest'
+              additionalProperties: false
+        required: true
+      responses:
+        '200':
+          description: Ok, response generated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/demo.config.results.demo.config.ClusterResponse'
+        '400':
+          description: Something went wrong
+components:
+  schemas:
+    demo.config.CloudProvider:
+      type: string
+      enum:
+      - AWS
+      - Azure
+      - GCP
+      - CP4
+      - CP5
+    demo.config.ZeroTo2400:
+      type: number
+      minimum: 0.0
+      maximum: 2400.0
+    demo.config.Email:
+      type: string
+      maxLength: 36
+      minLength: 8
+      pattern: ^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$
+    demo.config.SubComponentCode:
+      type: string
+      pattern: '[AB][123]'
+    demo.config.ScalingType:
+      type: string
+      enum:
+      - Elastic
+      - Manual
+    demo.config.OptionalComponent:
+      type: object
+      oneOf:
+      - $ref: '#/components/schemas/demo.config.OptionA'
+      - $ref: '#/components/schemas/demo.config.OptionB'
+      required:
+      - LGType_
+      discriminator:
+        propertyName: LGType_
+      properties:
+        LGType_:
+          type: string
+          enum:
+          - demo.config.OptionA
+          - demo.config.EmailNotification
+          - demo.config.OptionB2
+      additionalProperties: false
+    demo.config.OptionA:
+      type: object
+      required:
+      - LGType_
+      discriminator:
+        propertyName: LGType_
+      properties:
+        LGType_:
+          type: string
+          enum:
+          - demo.config.OptionA
+        capacity:
+          $ref: '#/components/schemas/demo.config.ZeroTo2400'
+      additionalProperties: false
+    demo.config.OptionB:
+      type: object
+      oneOf:
+      - $ref: '#/components/schemas/demo.config.EmailNotification'
+      - $ref: '#/components/schemas/demo.config.OptionB2'
+      required:
+      - LGType_
+      discriminator:
+        propertyName: LGType_
+      properties:
+        LGType_:
+          type: string
+          enum:
+          - demo.config.EmailNotification
+          - demo.config.OptionB2
+      additionalProperties: false
+    demo.config.EmailNotification:
+      type: object
+      required:
+      - LGType_
+      discriminator:
+        propertyName: LGType_
+      properties:
+        LGType_:
+          type: string
+          enum:
+          - demo.config.EmailNotification
+        email:
+          $ref: '#/components/schemas/demo.config.Email'
+      additionalProperties: false
+    demo.config.OptionB2:
+      type: object
+      required:
+      - LGType_
+      discriminator:
+        propertyName: LGType_
+      properties:
+        LGType_:
+          type: string
+          enum:
+          - demo.config.OptionB2
+        quantity:
+          type: integer
+          format: int32
+      additionalProperties: false
+    demo.config.SubComponent:
+      type: object
+      required:
+      - LGType_
+      properties:
+        LGType_:
+          type: string
+          enum:
+          - demo.config.SubComponent
+        code:
+          $ref: '#/components/schemas/demo.config.SubComponentCode'
+        capacity:
+          $ref: '#/components/schemas/demo.config.ZeroTo2400'
+      additionalProperties: false
+    demo.config.CustomerRequest:
+      type: object
+      required:
+      - LGType_
+      properties:
+        LGType_:
+          type: string
+          enum:
+          - demo.config.CustomerRequest
+        cloudProvider:
+          $ref: '#/components/schemas/demo.config.CloudProvider'
+        mustHaveDedicatedEnv:
+          type: boolean
+        mustHavePrivateEndpoints:
+          type: boolean
+        mustHaveSubSecondLatency:
+          type: boolean
+        isProductionUseCase:
+          type: boolean
+        ingress:
+          type: number
+          format: double
+        egress:
+          type: number
+          format: double
+        throughput:
+          type: number
+          format: double
+        numberOfConnections:
+          type: integer
+          format: int32
+        subComponents:
+          type: array
+          items:
+            type: object
+            required:
+            - LGType_
+            properties:
+              LGType_:
+                type: string
+                enum:
+                - demo.config.SubComponent
+              code:
+                $ref: '#/components/schemas/demo.config.SubComponentCode'
+              capacity:
+                $ref: '#/components/schemas/demo.config.ZeroTo2400'
+            additionalProperties: false
+        includeOptionalComponent:
+          type: boolean
+        optionalComponent:
+          $ref: '#/components/schemas/demo.config.OptionalComponent'
+      additionalProperties: false
+    demo.config.Cluster:
+      type: object
+      oneOf:
+      - $ref: '#/components/schemas/demo.config.BasicCluster'
+      - $ref: '#/components/schemas/demo.config.StandardCluster'
+      - $ref: '#/components/schemas/demo.config.EnterpriseCluster'
+      - $ref: '#/components/schemas/demo.config.DedicatedCluster'
+      - $ref: '#/components/schemas/demo.config.FreightCluster'
+      required:
+      - LGType_
+      discriminator:
+        propertyName: LGType_
+      properties:
+        LGType_:
+          type: string
+          enum:
+          - demo.config.BasicCluster
+          - demo.config.StandardCluster
+          - demo.config.EnterpriseCluster
+          - demo.config.DedicatedCluster
+          - demo.config.FreightCluster
+        scaling:
+          $ref: '#/components/schemas/demo.config.ScalingType'
+        minNumberOfNodes:
+          type: integer
+          format: int32
+      additionalProperties: false
+    demo.config.BasicCluster:
+      type: object
+      required:
+      - LGType_
+      discriminator:
+        propertyName: LGType_
+      properties:
+        LGType_:
+          type: string
+          enum:
+          - demo.config.BasicCluster
+      additionalProperties: false
+    demo.config.StandardCluster:
+      type: object
+      required:
+      - LGType_
+      discriminator:
+        propertyName: LGType_
+      properties:
+        LGType_:
+          type: string
+          enum:
+          - demo.config.StandardCluster
+      additionalProperties: false
+    demo.config.EnterpriseCluster:
+      type: object
+      required:
+      - LGType_
+      discriminator:
+        propertyName: LGType_
+      properties:
+        LGType_:
+          type: string
+          enum:
+          - demo.config.EnterpriseCluster
+        capacity_of_a:
+          $ref: '#/components/schemas/demo.config.ZeroTo2400'
+        quantity_of_b2:
+          type: integer
+          format: int32
+        notificationEmail:
+          type: string
+      additionalProperties: false
+    demo.config.DedicatedCluster:
+      type: object
+      required:
+      - LGType_
+      discriminator:
+        propertyName: LGType_
+      properties:
+        LGType_:
+          type: string
+          enum:
+          - demo.config.DedicatedCluster
+        capacity_of_a:
+          $ref: '#/components/schemas/demo.config.ZeroTo2400'
+        quantity_of_b2:
+          type: integer
+          format: int32
+        notificationEmail:
+          type: string
+      additionalProperties: false
+    demo.config.FreightCluster:
+      type: object
+      required:
+      - LGType_
+      discriminator:
+        propertyName: LGType_
+      properties:
+        LGType_:
+          type: string
+          enum:
+          - demo.config.FreightCluster
+      additionalProperties: false
+    demo.config.Configuration:
+      type: object
+      required:
+      - LGType_
+      properties:
+        LGType_:
+          type: string
+          enum:
+          - demo.config.Configuration
+        cloudProvider:
+          $ref: '#/components/schemas/demo.config.CloudProvider'
+        cluster:
+          $ref: '#/components/schemas/demo.config.Cluster'
+      additionalProperties: false
+    demo.config.results.demo.config.ClusterResponse:
+      type: object
+      properties:
+        times:
+          type: object
+          properties:
+            total:
+              type: number
+        result:
+          $ref: '#/components/schemas/demo.config.Cluster'
+    demo.config.results.demo.config.StandardClusterResponse:
+      type: object
+      properties:
+        times:
+          type: object
+          properties:
+            total:
+              type: number
+        result:
+          $ref: '#/components/schemas/demo.config.StandardCluster'
+    luego.results.UnitResponse:
+      type: object
+      properties:
+        times:
+          type: object
+          properties:
+            total:
+              type: number
+        result:
+          type: object
+    demo.config.results.demo.config.BasicClusterResponse:
+      type: object
+      properties:
+        times:
+          type: object
+          properties:
+            total:
+              type: number
+        result:
+          $ref: '#/components/schemas/demo.config.BasicCluster'
+    demo.config.results.demo.config.FreightClusterResponse:
+      type: object
+      properties:
+        times:
+          type: object
+          properties:
+            total:
+              type: number
+        result:
+          $ref: '#/components/schemas/demo.config.FreightCluster'
+    luego.results.BooleanResponse:
+      type: object
+      properties:
+        times:
+          type: object
+          properties:
+            total:
+              type: number
+        result:
+          type: boolean
+    demo.config.results.demo.config.EnterpriseClusterResponse:
+      type: object
+      properties:
+        times:
+          type: object
+          properties:
+            total:
+              type: number
+        result:
+          $ref: '#/components/schemas/demo.config.EnterpriseCluster'
+    demo.config.results.demo.config.DedicatedClusterResponse:
+      type: object
+      properties:
+        times:
+          type: object
+          properties:
+            total:
+              type: number
+        result:
+          $ref: '#/components/schemas/demo.config.DedicatedCluster'
+    demo.config.results.demo.config.ConfigurationResponse:
+      type: object
+      properties:
+        times:
+          type: object
+          properties:
+            total:
+              type: number
+        result:
+          $ref: '#/components/schemas/demo.config.Configuration'
+    luego.results.EvalException:
+      type: object
+      properties:
+        disc_:
+          type: string
+          enum:
+          - EvalException
+        type:
+          type: string
+          enum:
+          - EvalCustomException
+          - EvalBERuntimeException
+          - EvalBoundedIterationException
+        message:
+          type: string
+        cause:
+          type: array
+          maxItems: 1
+          minItems: 0
+          items:
+            type: string
+      additionalProperties: false
+    luego.results.MissingElement:
+      type: object
+      properties:
+        disc_:
+          type: string
+          enum:
+          - MissingElement
+        target:
+          type: string
+        element:
+          type: object
+          properties:
+            elt:
+              type: string
+            type:
+              type: string
+            kind:
+              type: string
+              enum:
+              - has
+              - uses
+            questionLabels:
+              type: array
+              minItems: 1
+              items:
+                type: object
+                properties:
+                  locale:
+                    type: string
+                  text:
+                    type: string
+            dataType:
+              type: string
+            restrictions:
+              type: object
+              properties:
+                range:
+                  type: object
+                  properties:
+                    min:
+                      type: string
+                    max:
+                      type: string
+                    step:
+                      type: string
+                text:
+                  type: object
+                  properties:
+                    minLength:
+                      type: integer
+                    maxLength:
+                      type: integer
+                    regex:
+                      type: string
+                enumeration:
+                  type: object
+                  properties:
+                    possibleValues:
+                      type: array
+                      minItems: 1
+                      items:
+                        type: object
+                        properties:
+                          value:
+                            type: string
+                          labels:
+                            type: array
+                            minItems: 1
+                            items:
+                              type: object
+                              properties:
+                                locale:
+                                  type: string
+                                text:
+                                  type: string
+      additionalProperties: false
+    luego.results.Issue:
+      type: object
+      oneOf:
+      - $ref: '#/components/schemas/luego.results.MissingElement'
+      - $ref: '#/components/schemas/luego.results.EvalException'
+      discriminator:
+        propertyName: disc_
+      properties:
+        disc_:
+          type: string
+          enum:
+          - MissingElement
+          - EvalException
+      additionalProperties: false
