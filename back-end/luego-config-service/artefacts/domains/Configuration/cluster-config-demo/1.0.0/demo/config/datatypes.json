@@ -1,0 +1,517 @@
+{
+  "name": "demo.config",
+  "imports": [],
+  "definedTypes": [
+    {
+      "name": "CloudProvider",
+      "kind": "Enum",
+      "ordered": false,
+      "possibleValues": [
+        "AWS",
+        "Azure",
+        "GCP",
+        "CP4",
+        "CP5"
+      ]
+    },
+    {
+      "name": "ZeroTo2400",
+      "kind": "ConstrainedNum",
+      "underlying": "Number",
+      "min": {
+        "v": "0.0",
+        "exclusive": false
+      },
+      "max": {
+        "v": "2400.0",
+        "exclusive": false
+      },
+      "step": null
+    },
+    {
+      "name": "Email",
+      "kind": "ConstrainedText",
+      "minLength": 8,
+      "maxLength": 36,
+      "regex": "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$"
+    },
+    {
+      "name": "SubComponentCode",
+      "kind": "ConstrainedText",
+      "minLength": null,
+      "maxLength": null,
+      "regex": "[AB][123]"
+    },
+    {
+      "name": "ScalingType",
+      "kind": "Enum",
+      "ordered": false,
+      "possibleValues": [
+        "Elastic",
+        "Manual"
+      ]
+    },
+    {
+      "name": "OptionalComponent",
+      "parent": null,
+      "kind": "Entity",
+      "members": []
+    },
+    {
+      "name": "OptionA",
+      "parent": "demo.config.OptionalComponent",
+      "kind": "Entity",
+      "members": [
+        {
+          "kind": "Attribute",
+          "name": "capacity",
+          "type": "demo.config.ZeroTo2400",
+          "multiplicity": "1",
+          "singular": null,
+          "required": false,
+          "isAbstract": false,
+          "gender": null
+        }
+      ]
+    },
+    {
+      "name": "OptionB",
+      "parent": "demo.config.OptionalComponent",
+      "kind": "Entity",
+      "members": []
+    },
+    {
+      "name": "EmailNotification",
+      "parent": "demo.config.OptionB",
+      "kind": "Entity",
+      "members": [
+        {
+          "kind": "Attribute",
+          "name": "email",
+          "type": "demo.config.Email",
+          "multiplicity": "1",
+          "singular": null,
+          "required": false,
+          "isAbstract": false,
+          "gender": null
+        }
+      ]
+    },
+    {
+      "name": "OptionB2",
+      "parent": "demo.config.OptionB",
+      "kind": "Entity",
+      "members": [
+        {
+          "kind": "Attribute",
+          "name": "quantity",
+          "type": "Integer",
+          "multiplicity": "1",
+          "singular": null,
+          "required": false,
+          "isAbstract": false,
+          "gender": null
+        }
+      ]
+    },
+    {
+      "name": "SubComponent",
+      "kind": "Struct",
+      "members": [
+        {
+          "kind": "Attribute",
+          "name": "code",
+          "type": "demo.config.SubComponentCode",
+          "multiplicity": "1",
+          "singular": null,
+          "required": false,
+          "isAbstract": false,
+          "gender": null
+        },
+        {
+          "kind": "Attribute",
+          "name": "capacity",
+          "type": "demo.config.ZeroTo2400",
+          "multiplicity": "1",
+          "singular": null,
+          "required": false,
+          "isAbstract": false,
+          "gender": null
+        }
+      ]
+    },
+    {
+      "name": "CustomerRequest",
+      "parent": null,
+      "kind": "Entity",
+      "members": [
+        {
+          "kind": "Attribute",
+          "name": "cloudProvider",
+          "type": "demo.config.CloudProvider",
+          "multiplicity": "1",
+          "singular": null,
+          "required": false,
+          "isAbstract": false,
+          "gender": null
+        },
+        {
+          "kind": "Attribute",
+          "name": "mustHaveDedicatedEnv",
+          "type": "Boolean",
+          "multiplicity": "1",
+          "singular": null,
+          "required": false,
+          "isAbstract": false,
+          "gender": null
+        },
+        {
+          "kind": "Attribute",
+          "name": "mustHavePrivateEndpoints",
+          "type": "Boolean",
+          "multiplicity": "1",
+          "singular": null,
+          "required": false,
+          "isAbstract": false,
+          "gender": null
+        },
+        {
+          "kind": "Attribute",
+          "name": "mustHaveSubSecondLatency",
+          "type": "Boolean",
+          "multiplicity": "1",
+          "singular": null,
+          "required": false,
+          "isAbstract": false,
+          "gender": null
+        },
+        {
+          "kind": "Attribute",
+          "name": "isProductionUseCase",
+          "type": "Boolean",
+          "multiplicity": "1",
+          "singular": null,
+          "required": false,
+          "isAbstract": false,
+          "gender": null
+        },
+        {
+          "kind": "Attribute",
+          "name": "ingress",
+          "type": "Number",
+          "multiplicity": "1",
+          "singular": null,
+          "required": false,
+          "isAbstract": false,
+          "gender": null
+        },
+        {
+          "kind": "Attribute",
+          "name": "egress",
+          "type": "Number",
+          "multiplicity": "1",
+          "singular": null,
+          "required": false,
+          "isAbstract": false,
+          "gender": null
+        },
+        {
+          "kind": "Attribute",
+          "name": "throughput",
+          "type": "Number",
+          "multiplicity": "1",
+          "singular": null,
+          "required": false,
+          "isAbstract": false,
+          "gender": null
+        },
+        {
+          "kind": "Attribute",
+          "name": "numberOfConnections",
+          "type": "Integer",
+          "multiplicity": "1",
+          "singular": null,
+          "required": false,
+          "isAbstract": false,
+          "gender": null
+        },
+        {
+          "kind": "Has",
+          "name": "subComponents",
+          "multiplicity": "0+",
+          "singular": "subComponent",
+          "type": "demo.config.SubComponent",
+          "required": false,
+          "gender": null
+        },
+        {
+          "kind": "Attribute",
+          "name": "includeOptionalComponent",
+          "type": "Boolean",
+          "multiplicity": "1",
+          "singular": null,
+          "required": false,
+          "isAbstract": false,
+          "gender": null
+        },
+        {
+          "kind": "Has",
+          "name": "optionalComponent",
+          "multiplicity": "1",
+          "singular": null,
+          "type": "demo.config.OptionalComponent",
+          "required": false,
+          "gender": null
+        }
+      ]
+    },
+    {
+      "name": "Cluster",
+      "parent": null,
+      "kind": "Entity",
+      "members": [
+        {
+          "kind": "Attribute",
+          "name": "scaling",
+          "type": "demo.config.ScalingType",
+          "multiplicity": "1",
+          "singular": null,
+          "required": false,
+          "isAbstract": false,
+          "gender": null
+        },
+        {
+          "kind": "Attribute",
+          "name": "minNumberOfNodes",
+          "type": "Integer",
+          "multiplicity": "1",
+          "singular": null,
+          "required": false,
+          "isAbstract": false,
+          "gender": null
+        }
+      ]
+    },
+    {
+      "name": "BasicCluster",
+      "parent": "demo.config.Cluster",
+      "kind": "Entity",
+      "members": [
+        {
+          "kind": "Attribute",
+          "name": "scaling",
+          "type": "demo.config.ScalingType",
+          "multiplicity": "1",
+          "singular": null,
+          "required": false,
+          "isAbstract": false,
+          "gender": null
+        },
+        {
+          "kind": "Attribute",
+          "name": "minNumberOfNodes",
+          "type": "Integer",
+          "multiplicity": "1",
+          "singular": null,
+          "required": false,
+          "isAbstract": false,
+          "gender": null
+        }
+      ]
+    },
+    {
+      "name": "StandardCluster",
+      "parent": "demo.config.Cluster",
+      "kind": "Entity",
+      "members": [
+        {
+          "kind": "Attribute",
+          "name": "scaling",
+          "type": "demo.config.ScalingType",
+          "multiplicity": "1",
+          "singular": null,
+          "required": false,
+          "isAbstract": false,
+          "gender": null
+        },
+        {
+          "kind": "Attribute",
+          "name": "minNumberOfNodes",
+          "type": "Integer",
+          "multiplicity": "1",
+          "singular": null,
+          "required": false,
+          "isAbstract": false,
+          "gender": null
+        }
+      ]
+    },
+    {
+      "name": "EnterpriseCluster",
+      "parent": "demo.config.Cluster",
+      "kind": "Entity",
+      "members": [
+        {
+          "kind": "Attribute",
+          "name": "capacity_of_a",
+          "type": "demo.config.ZeroTo2400",
+          "multiplicity": "1",
+          "singular": null,
+          "required": false,
+          "isAbstract": false,
+          "gender": null
+        },
+        {
+          "kind": "Attribute",
+          "name": "quantity_of_b2",
+          "type": "Integer",
+          "multiplicity": "1",
+          "singular": null,
+          "required": false,
+          "isAbstract": false,
+          "gender": null
+        },
+        {
+          "kind": "Attribute",
+          "name": "notificationEmail",
+          "type": "Text",
+          "multiplicity": "1",
+          "singular": null,
+          "required": false,
+          "isAbstract": false,
+          "gender": null
+        },
+        {
+          "kind": "Attribute",
+          "name": "scaling",
+          "type": "demo.config.ScalingType",
+          "multiplicity": "1",
+          "singular": null,
+          "required": false,
+          "isAbstract": false,
+          "gender": null
+        },
+        {
+          "kind": "Attribute",
+          "name": "minNumberOfNodes",
+          "type": "Integer",
+          "multiplicity": "1",
+          "singular": null,
+          "required": false,
+          "isAbstract": false,
+          "gender": null
+        }
+      ]
+    },
+    {
+      "name": "DedicatedCluster",
+      "parent": "demo.config.Cluster",
+      "kind": "Entity",
+      "members": [
+        {
+          "kind": "Attribute",
+          "name": "capacity_of_a",
+          "type": "demo.config.ZeroTo2400",
+          "multiplicity": "1",
+          "singular": null,
+          "required": false,
+          "isAbstract": false,
+          "gender": null
+        },
+        {
+          "kind": "Attribute",
+          "name": "quantity_of_b2",
+          "type": "Integer",
+          "multiplicity": "1",
+          "singular": null,
+          "required": false,
+          "isAbstract": false,
+          "gender": null
+        },
+        {
+          "kind": "Attribute",
+          "name": "notificationEmail",
+          "type": "Text",
+          "multiplicity": "1",
+          "singular": null,
+          "required": false,
+          "isAbstract": false,
+          "gender": null
+        },
+        {
+          "kind": "Attribute",
+          "name": "scaling",
+          "type": "demo.config.ScalingType",
+          "multiplicity": "1",
+          "singular": null,
+          "required": false,
+          "isAbstract": false,
+          "gender": null
+        },
+        {
+          "kind": "Attribute",
+          "name": "minNumberOfNodes",
+          "type": "Integer",
+          "multiplicity": "1",
+          "singular": null,
+          "required": false,
+          "isAbstract": false,
+          "gender": null
+        }
+      ]
+    },
+    {
+      "name": "FreightCluster",
+      "parent": "demo.config.Cluster",
+      "kind": "Entity",
+      "members": [
+        {
+          "kind": "Attribute",
+          "name": "scaling",
+          "type": "demo.config.ScalingType",
+          "multiplicity": "1",
+          "singular": null,
+          "required": false,
+          "isAbstract": false,
+          "gender": null
+        },
+        {
+          "kind": "Attribute",
+          "name": "minNumberOfNodes",
+          "type": "Integer",
+          "multiplicity": "1",
+          "singular": null,
+          "required": false,
+          "isAbstract": false,
+          "gender": null
+        }
+      ]
+    },
+    {
+      "name": "Configuration",
+      "parent": null,
+      "kind": "Entity",
+      "members": [
+        {
+          "kind": "Attribute",
+          "name": "cloudProvider",
+          "type": "demo.config.CloudProvider",
+          "multiplicity": "1",
+          "singular": null,
+          "required": false,
+          "isAbstract": false,
+          "gender": null
+        },
+        {
+          "kind": "Has",
+          "name": "cluster",
+          "multiplicity": "1",
+          "singular": null,
+          "type": "demo.config.Cluster",
+          "required": false,
+          "gender": null
+        }
+      ]
+    }
+  ]
+}

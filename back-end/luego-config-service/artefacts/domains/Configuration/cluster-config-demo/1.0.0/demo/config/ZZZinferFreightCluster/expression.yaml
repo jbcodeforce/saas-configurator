@@ -1,0 +1,15 @@
+$type: Block
+stmts:
+- $type: Let
+  name: fc
+  e:
+    $type: Obj
+    ot: demo.config.FreightCluster
+    mappings:
+    - - minNumberOfNodes
+      - $type: ILit
+        v: 2
+    id: []
+e:
+  $type: Ref
+  id: fc

@@ -1,0 +1,12 @@
+e: '{"$type":"Block","stmts":[{"$type":"PModif","left":{"$type":"Nav","obj":{"$type":"Ref","id":"the
+  basic cluster"},"elems":[["minNumberOfNodes","Integer"]]},"right":{"$type":"ILit","v":2}}],"e":{"$type":"NativeFunApp","funDef":"luego.text.println","args":[{"$type":"SLit","s":"configure
+  basic cluster"}]}}'
+inputs:
+- name: the customer request
+  type: demo.config.CustomerRequest
+- name: the basic cluster
+  type: demo.config.BasicCluster
+output: Unit
+imports:
+- luego.text
+- demo.config

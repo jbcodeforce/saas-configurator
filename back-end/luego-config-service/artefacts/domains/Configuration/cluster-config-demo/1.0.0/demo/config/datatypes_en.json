@@ -1,0 +1,37 @@
+{
+    "CustomerRequest": {
+        "$txt": "customer request",
+
+        "cloudProvider": {
+            "txt": "cloud provider",
+            "q": "what is the chosen cloud provider?"
+        },
+        "mustHaveDedicatedEnv": {
+            "txt": "must have a dedicated environment",
+            "q": "does the customer require a dedicated environment?"
+        },
+        "mustHavePrivateEndpoints": {
+            "txt": "must have private endpoints",
+            "q": "does the customer require private endpoints?"
+        },
+        "mustHaveSubSecondLatency": {
+            "txt": "must have subsecond latency",
+            "q": "does the customer require subsecond latency?"
+        },
+        "isProductionUseCase": {
+            "txt": "is a production use case",
+            "q": "is this a production use case?"
+        },
+        "includeOptionalComponent": {
+            "txt": "include optional component",
+            "q": "include optional component?"
+        },
+        "ingress": { "txt": "ingress in MBps" },
+        "egress": { "txt": "egress in MBps" },
+        "throughput":  { "txt": "throughput in MBps" },
+        "numberOfConnections":  { "txt": "number of connections" }
+    },
+    "Cluster": {
+        "minNumberOfNodes": { "txt": "minimum number of nodes" }
+    }
+}
