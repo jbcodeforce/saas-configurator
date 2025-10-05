@@ -14,7 +14,7 @@ class bcolors:
     UNDERLINE = '\033[4m'
 
 
-def injectValue(dictionary: dict, missing_elt, input_value) -> dict:
+def injectValue(dictionary: dict, missing_elt, input_value: str) -> dict:
     print(f"missing_elt={missing_elt}")
     target = missing_elt['target']
     legs = target.split(".")
