@@ -54,84 +54,141 @@
   min-width: 120px;
 }
 
-/* Configuration Grid */
-.configurations-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-  gap: 1.5rem;
+/* Table Styles */
+.table-container {
+  overflow-x: auto;
   margin-bottom: 2rem;
-}
-
-.configuration-card {
   background: white;
-  border: 1px solid #e5e5e5;
   border-radius: 12px;
-  padding: 1.5rem;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  cursor: pointer;
-  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
-.configuration-card:hover {
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
-  transform: translateY(-2px);
+.configurations-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
 }
 
-.card-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 0.75rem;
+.configurations-table thead {
+  background: #f8f9fa;
+  border-bottom: 2px solid #dee2e6;
 }
 
-.card-header h3 {
-  margin: 0;
-  color: #333;
-  font-size: 1.25rem;
+.configurations-table th {
+  padding: 1rem;
+  text-align: left;
   font-weight: 600;
-  line-height: 1.3;
+  color: #495057;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
 }
 
-.card-actions {
+.configurations-table tbody tr {
+  border-bottom: 1px solid #e9ecef;
+  transition: background-color 0.2s ease;
+}
+
+.configurations-table tbody tr:hover {
+  background-color: #f8f9fa;
+}
+
+.configurations-table tbody tr:last-child {
+  border-bottom: none;
+}
+
+.configurations-table td {
+  padding: 1rem;
+  vertical-align: middle;
+}
+
+.name-cell {
+  min-width: 150px;
+}
+
+.name-cell strong {
+  color: #212529;
+  font-size: 0.9375rem;
+}
+
+.description-cell {
+  max-width: 300px;
+  color: #6c757d;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tags-cell {
+  min-width: 120px;
+}
+
+.date-cell {
+  color: #6c757d;
+  white-space: nowrap;
+  font-size: 0.8125rem;
+}
+
+.actions-cell {
+  white-space: nowrap;
+  text-align: right;
+}
+
+.action-buttons {
   display: flex;
   gap: 0.5rem;
+  justify-content: flex-end;
 }
 
-.delete-btn {
-  background: none;
+.btn-view,
+.btn-edit,
+.btn-delete {
+  padding: 0.375rem 0.75rem;
   border: none;
-  color: #dc3545;
-  font-size: 1.5rem;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 500;
   cursor: pointer;
-  padding: 0;
-  width: 24px;
-  height: 24px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
   transition: all 0.2s ease;
+  white-space: nowrap;
 }
 
-.delete-btn:hover {
+.btn-view {
+  background: #007bff;
+  color: white;
+}
+
+.btn-view:hover {
+  background: #0056b3;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 6px rgba(0, 123, 255, 0.3);
+}
+
+.btn-edit {
+  background: #28a745;
+  color: white;
+}
+
+.btn-edit:hover {
+  background: #218838;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 6px rgba(40, 167, 69, 0.3);
+}
+
+.btn-delete {
   background: #dc3545;
   color: white;
 }
 
-.description {
-  color: #666;
-  font-size: 0.875rem;
-  line-height: 1.4;
-  margin-bottom: 1rem;
-  min-height: 2.8rem;
+.btn-delete:hover {
+  background: #c82333;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 6px rgba(220, 53, 69, 0.3);
 }
 
-.card-meta {
-  display: flex;
-  gap: 0.75rem;
-  align-items: center;
-  margin-bottom: 1rem;
-  flex-wrap: wrap;
+.no-tags {
+  color: #adb5bd;
 }
 
 /* Status Badges */
@@ -187,7 +244,6 @@
   display: flex;
   gap: 0.5rem;
   flex-wrap: wrap;
-  margin-bottom: 1rem;
 }
 
 .tag {
@@ -202,17 +258,7 @@
 .tag.more {
   background: #e8f0fe;
   color: #1a73e8;
-}
-
-.card-footer {
-  border-top: 1px solid #f0f0f0;
-  padding-top: 0.75rem;
-  margin-top: 1rem;
-}
-
-.card-footer small {
-  color: #888;
-  font-size: 0.75rem;
+  cursor: help;
 }
 
 /* States */
@@ -310,11 +356,6 @@
     padding: 1rem;
   }
   
-  .configurations-grid {
-    grid-template-columns: 1fr;
-    gap: 1rem;
-  }
-  
   .list-header {
     flex-direction: column;
     gap: 1rem;
@@ -326,9 +367,38 @@
     gap: 1rem;
   }
   
-  .card-meta {
+  .table-container {
+    border-radius: 8px;
+  }
+  
+  .configurations-table {
+    font-size: 0.8125rem;
+  }
+  
+  .configurations-table th,
+  .configurations-table td {
+    padding: 0.75rem 0.5rem;
+  }
+  
+  .description-cell {
+    max-width: 150px;
+  }
+  
+  .action-buttons {
     flex-direction: column;
-    gap: 0.5rem;
-    align-items: flex-start;
+    gap: 0.375rem;
+  }
+  
+  .btn-view,
+  .btn-edit,
+  .btn-delete {
+    font-size: 0.6875rem;
+    padding: 0.25rem 0.5rem;
+  }
+}
+
+@media (max-width: 1024px) {
+  .description-cell {
+    max-width: 200px;
   }
 }

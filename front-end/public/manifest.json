@@ -1,6 +1,6 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "Saas Configuration App",
+  "name": "Manage your cluster configurations",
   "icons": [
     {
       "src": "favicon.ico",

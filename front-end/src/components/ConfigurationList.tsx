@@ -5,6 +5,7 @@ import './ConfigurationList.css';
 
 interface ConfigurationListProps {
   onSelectConfiguration: (config: Configuration) => void;
+  onEditConfiguration: (config: Configuration) => void;
   onCreateNew: () => void;
   refresh: boolean;
   onRefreshComplete: () => void;
@@ -12,6 +13,7 @@ interface ConfigurationListProps {
 
 const ConfigurationList: React.FC<ConfigurationListProps> = ({
   onSelectConfiguration,
+  onEditConfiguration,
   onCreateNew,
   refresh,
   onRefreshComplete
@@ -61,9 +63,7 @@ const ConfigurationList: React.FC<ConfigurationListProps> = ({
     }
   }, [refresh, onRefreshComplete]);
 
-  const handleDelete = async (id: number, event: React.MouseEvent) => {
-    event.stopPropagation();
-    
+  const handleDelete = async (id: number) => {
     if (window.confirm('Are you sure you want to delete this configuration?')) {
       try {
         await ConfigurationApi.deleteConfiguration(id);
@@ -158,56 +158,63 @@ const ConfigurationList: React.FC<ConfigurationListProps> = ({
         </div>
       ) : (
         <>
-          <div className="configurations-grid">
-            {configurations.map((config) => (
-              <div
-                key={config.id}
-                className="configuration-card"
-                onClick={() => onSelectConfiguration(config)}
-              >
-                <div className="card-header">
-                  <h3>{config.name}</h3>
-                  <div className="card-actions">
-                    <button
-                      className="delete-btn"
-                      onClick={(e) => handleDelete(config.id, e)}
-                      title="Delete configuration"
-                    >
-                      ×
-                    </button>
-                  </div>
-                </div>
-                
-                <p className="description">
-                  {config.description || 'No description provided'}
-                </p>
-                
-                <div className="card-meta">
-                  <span className={getStatusBadgeClass(config.status)}>
-                    {config.status}
-                  </span>
-                  <span className="cluster-type">{config.cluster_type}</span>
-                  <span className="version">v{config.version}</span>
-                </div>
-                
-                {config.tags.length > 0 && (
-                  <div className="tags">
-                    {config.tags.slice(0, 3).map((tag, index) => (
-                      <span key={index} className="tag">{tag}</span>
-                    ))}
-                    {config.tags.length > 3 && (
-                      <span className="tag more">+{config.tags.length - 3}</span>
-                    )}
-                  </div>
-                )}
-                
-                <div className="card-footer">
-                  <small>
-                    Updated: {new Date(config.updated_at).toLocaleDateString()}
-                  </small>
-                </div>
-              </div>
-            ))}
+          <div className="table-container">
+            <table className="configurations-table">
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Description</th>
+                  <th>Status</th>
+                  <th>Updated</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {configurations.map((config) => (
+                  <tr key={config.id}>
+                    <td className="name-cell">
+                      <strong>{config.name}</strong>
+                    </td>
+                    <td className="description-cell">
+                      {config.description || 'No description'}
+                    </td>
+                    <td>
+                      <span className={getStatusBadgeClass(config.status)}>
+                        {config.status}
+                      </span>
+                    </td>
+                    <td className="date-cell">
+                      {new Date(config.updated_at).toLocaleDateString()}
+                    </td>
+                    <td className="actions-cell">
+                      <div className="action-buttons">
+                        <button
+                          className="btn-view"
+                          onClick={() => onSelectConfiguration(config)}
+                          title="View details"
+                        >
+                          👁️ View
+                        </button>
+                        <button
+                          className="btn-edit"
+                          onClick={() => onEditConfiguration(config)}
+                          title="Edit configuration"
+                        >
+                          ✏️ Edit
+                        </button>
+                        <button
+                          className="btn-delete"
+                          onClick={() => handleDelete(config.id)}
+                          title="Delete configuration"
+                        >
+                          🗑️ Delete
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
 
           {/* Pagination */}

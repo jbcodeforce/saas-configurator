@@ -1,6 +1,61 @@
-# Getting Started with Create React App
+# SaaS Configuration
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This front end helps to demonstrate how to drive a product configuration with rule based system.
+
+## What This Application Does
+
+The **SaaS Configurator** is a React-based web application that provides a web interface for managing cluster configurations. It serves as the frontend for a configuration management system that allows users to:
+
+- **View** a list of all cluster configurations with filtering capabilities
+- **Create** new cluster configurations with custom settings
+- **Edit** existing configurations
+- **Delete** configurations that are no longer needed
+- **Inspect** detailed configuration information including cluster type, version, status, tags, and configuration data
+
+The application communicates with a FastAPI backend running on `http://localhost:8000` to perform CRUD (Create, Read, Update, Delete) operations on configuration data.
+
+## Code Organization
+
+The codebase follows a typical React TypeScript project structure with clear separation of concerns:
+
+### Core Application Files
+
+- **`src/App.tsx`** - Main application component that handles routing between different views (list, details, create, edit), manages application state, and checks API connectivity
+- **`src/index.tsx`** - Application entry point that renders the React app into the DOM
+- **`src/types.ts`** - TypeScript type definitions including `Configuration`, `ConfigurationStatus`, and API response types
+
+### Components (`src/components/`)
+
+The application uses three main UI components:
+
+- **`ConfigurationList.tsx`** - Displays a paginated list of all configurations with filtering options by status and cluster type
+- **`ConfigurationDetails.tsx`** - Shows detailed information about a selected configuration including all metadata and configuration data
+- **`ConfigurationForm.tsx`** - Provides a form interface for creating new configurations or editing existing ones
+
+Each component has its own accompanying CSS file for styling.
+
+### Services (`src/services/`)
+
+- **`api.ts`** - API client layer that encapsulates all HTTP communication with the backend using Axios. Includes methods for:
+  - Fetching configurations (with pagination and filtering)
+  - Creating, updating, and deleting configurations
+  - Health check endpoint for connectivity monitoring
+
+### Styling
+
+- **`App.css`** - Global application styles
+- **`index.css`** - Base styles and CSS reset
+- Component-specific CSS files (e.g., `ConfigurationList.css`)
+
+### State Management
+
+The application uses React's built-in `useState` and `useEffect` hooks for state management, without any external state management libraries. Key state includes:
+- Current view (list, details, create, edit)
+- Selected configuration
+- API connection status
+- Refresh triggers
+
+This architecture provides a clean, maintainable codebase that separates presentation (components), data fetching (services), and type safety (types).
 
 ## Available Scripts
 

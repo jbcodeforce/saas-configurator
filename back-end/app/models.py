@@ -18,11 +18,11 @@ class ConfigurationBase(BaseModel):
     """Base model for Configuration with common fields."""
     name: str = Field(..., min_length=1, max_length=100, description="Configuration name")
     description: Optional[str] = Field(None, max_length=500, description="Configuration description")
-    cluster_type: str = Field(..., min_length=1, max_length=50, description="Type of cluster (e.g., kubernetes, docker-swarm)")
-    version: str = Field(..., pattern=r'^\d+\.\d+\.\d+$', description="Version in semantic versioning format")
-    status: ConfigurationStatus = Field(default=ConfigurationStatus.DRAFT, description="Configuration status")
-    configuration_data: Dict[str, Any] = Field(default_factory=dict, description="Cluster configuration data")
-    tags: list[str] = Field(default_factory=list, description="Tags for organizing configurations")
+    cluster_type: Optional[str] = Field(None, min_length=1, max_length=50, description="Type of cluster (e.g., kubernetes, docker-swarm)")
+    version: Optional[str] = Field(None, pattern=r'^\d+\.\d+\.\d+$', description="Version in semantic versioning format")
+    status: Optional[ConfigurationStatus] = Field(default=ConfigurationStatus.DRAFT, description="Configuration status")
+    configuration_data: Optional[Dict[str, Any]] = Field(default_factory=dict, description="Cluster configuration data")
+    tags: Optional[list[str]] = Field(default_factory=list, description="Tags for organizing configurations")
 
 
 class ConfigurationCreate(ConfigurationBase):

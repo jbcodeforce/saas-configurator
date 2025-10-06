@@ -13,7 +13,8 @@ from app.models import (
     ConfigurationListResponse,
     ConfigurationStatus
 )
-from app.database import db
+from app.database import db, seed_test_data
+from app.re_client import RuleEngineClient
 
 # Create FastAPI application
 app = FastAPI(
@@ -49,6 +50,27 @@ app.add_middleware(
 )
 
 
+@app.on_event("startup")
+async def startup_event():
+    """Initialize the database and rule engine client on startup."""
+    print("\nStarting SaaS Configurator API...")
+    
+    # Initialize database
+    seed_test_data(db)
+    print("Database initialized and ready!")
+    
+    # Initialize Rule Engine Client
+    try:
+        RuleEngineClient.initialize()
+        re_client = RuleEngineClient.get_instance()
+        if re_client.check_server_status():
+            print("Rule Engine connected and ready!")
+        else:
+            print("Warning: Rule Engine server is not responding!")
+    except Exception as e:
+        print(f"Warning: Failed to initialize Rule Engine client: {e}")
+
+
 @app.get("/", summary="Root endpoint")
 async def root():
     """Welcome message for the SaaS Configurator API."""
@@ -69,8 +91,40 @@ async def root():
 async def create_configuration(config: ConfigurationCreate):
     """Create a new cluster configuration."""
     try:
+
+        # Get rule engine instance
+        re_client = RuleEngineClient.get_instance()
+        input_dict = {
+            "the customer request": {
+                "LGType_": "demo.config.CustomerRequest"
+            },
+            "the configuration": {
+                "LGType_": "demo.config.Configuration"
+            }
+        }
+            
+        try:
+            # Configure through rule engine
+            rule_response = re_client.configure(
+                input_dict=input_dict,
+                lang="en",
+            )
+            
+            # Update config with rule engine results
+            config.configuration_data = rule_response
+            
+        except Exception as re_error:
+            raise HTTPException(
+                status_code=400, 
+                detail=f"Rule Engine configuration failed: {str(re_error)}"
+            )
+        
+        # Create configuration in database
         created_config = db.create_configuration(config)
         return created_config
+        
+    except HTTPException:
+        raise
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"Error creating configuration: {str(e)}")
 
@@ -128,10 +182,45 @@ async def update_configuration(
     config_id: int = Path(..., gt=0, description="The ID of the configuration to update")
 ):
     """Update an existing cluster configuration."""
-    updated_config = db.update_configuration(config_id, config_update)
-    if not updated_config:
-        raise HTTPException(status_code=404, detail="Configuration not found")
-    return updated_config
+    try:
+        # Check if configuration exists
+        existing_config = db.get_configuration(config_id)
+        if not existing_config:
+            raise HTTPException(status_code=404, detail="Configuration not found")
+            
+        # Get rule engine instance
+        re_client = RuleEngineClient.get_instance()
+        
+        # Validate configuration through rule engine
+        if not re_client.check_server_status():
+            raise HTTPException(status_code=503, detail="Rule Engine service is unavailable")
+            
+        try:
+            # Configure through rule engine
+            rule_config = re_client.configure(
+                input_dict={},  # TODO
+                lang="en",
+                )
+            
+            # Update config with rule engine results
+            config_update.configuration_data = rule_config
+            
+        except Exception as re_error:
+            raise HTTPException(
+                status_code=400,
+                detail=f"Rule Engine configuration failed: {str(re_error)}"
+            )
+        
+        # Update configuration in database
+        updated_config = db.update_configuration(config_id, config_update)
+        if not updated_config:
+            raise HTTPException(status_code=404, detail="Configuration not found")
+        return updated_config
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"Error updating configuration: {str(e)}")
 
 
 @app.delete(

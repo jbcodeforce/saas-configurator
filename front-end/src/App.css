@@ -37,39 +37,63 @@ code {
 }
 
 .header-content {
-  max-width: 1200px;
+  max-width: 1400px;
   margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+  padding: 1rem 2rem;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 1rem;
+}
+
+.header-nav {
   display: flex;
-  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.nav-link {
+  background: none;
+  border: none;
+  color: #333;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
   gap: 0.5rem;
+}
+
+.nav-link:hover {
+  background: rgba(0, 123, 255, 0.1);
+  color: #007bff;
+}
+
+.home-link {
+  font-size: 0.9375rem;
 }
 
 .App-header h1 {
   color: #333;
-  font-size: 2.5rem;
+  font-size: 1.5rem;
   font-weight: 700;
   margin: 0;
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.App-header p {
-  color: #666;
-  font-size: 1.125rem;
-  margin: 0;
-  font-weight: 400;
+  text-align: center;
+  justify-self: center;
 }
 
 .connection-status {
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-end;
   gap: 0.5rem;
   font-size: 0.875rem;
   color: #28a745;
   font-weight: 500;
-  margin-top: 0.5rem;
 }
 
 .status-indicator {
@@ -106,12 +130,21 @@ code {
 .App-footer {
   background: rgba(255, 255, 255, 0.9);
   backdrop-filter: blur(10px);
-  text-align: center;
-  padding: 1.5rem;
-  color: #666;
-  font-size: 0.875rem;
   border-top: 1px solid rgba(255, 255, 255, 0.2);
   box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.05);
+}
+
+.footer-content {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 1rem 2rem;
+  text-align: center;
+  color: #666;
+  font-size: 0.875rem;
+}
+
+.footer-content p {
+  margin: 0;
 }
 
 /* Connection Error */
@@ -200,15 +233,22 @@ code {
 /* Responsive Design */
 @media (max-width: 768px) {
   .App-header h1 {
-    font-size: 2rem;
-  }
-  
-  .App-header p {
-    font-size: 1rem;
+    font-size: 1.125rem;
   }
   
   .header-content {
-    padding: 1.5rem 1rem;
+    padding: 1rem;
+    grid-template-columns: auto 1fr auto;
+    gap: 0.75rem;
+  }
+  
+  .nav-link {
+    padding: 0.375rem 0.75rem;
+    font-size: 0.875rem;
+  }
+  
+  .connection-status {
+    font-size: 0.75rem;
   }
   
   .App-main {
@@ -222,6 +262,34 @@ code {
   
   .error-container h1 {
     font-size: 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .App-header h1 {
+    font-size: 1rem;
+  }
+  
+  .header-content {
+    padding: 0.75rem;
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto auto;
+    text-align: center;
+  }
+  
+  .header-nav {
+    justify-content: center;
+    order: 2;
+  }
+  
+  .App-header h1 {
+    order: 1;
+  }
+  
+  .connection-status {
+    justify-content: center;
+    order: 3;
+    font-size: 0.7rem;
   }
 }
 

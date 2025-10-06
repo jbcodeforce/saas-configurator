@@ -4,9 +4,11 @@ import ConfigurationList from './components/ConfigurationList';
 import ConfigurationForm from './components/ConfigurationForm';
 import ConfigurationDetails from './components/ConfigurationDetails';
 import ConfigurationApi from './services/api';
+import Home from './components/Home';
 import './App.css';
 
 enum AppView {
+  HOME = 'home',
   LIST = 'list',
   DETAILS = 'details',
   CREATE = 'create',
@@ -14,7 +16,7 @@ enum AppView {
 }
 
 function App() {
-  const [currentView, setCurrentView] = useState<AppView>(AppView.LIST);
+  const [currentView, setCurrentView] = useState<AppView>(AppView.HOME);
   const [selectedConfiguration, setSelectedConfiguration] = useState<Configuration | null>(null);
   const [refreshList, setRefreshList] = useState(false);
   const [isConnected, setIsConnected] = useState(false);
@@ -53,6 +55,11 @@ function App() {
     setCurrentView(AppView.EDIT);
   };
 
+  const handleEditConfigurationFromList = (config: Configuration) => {
+    setSelectedConfiguration(config);
+    setCurrentView(AppView.EDIT);
+  };
+
   const handleSaveComplete = () => {
     setCurrentView(AppView.LIST);
     setSelectedConfiguration(null);
@@ -63,8 +70,8 @@ function App() {
     setCurrentView(selectedConfiguration ? AppView.DETAILS : AppView.LIST);
   };
 
-  const handleBackToList = () => {
-    setCurrentView(AppView.LIST);
+  const handleBackToHome = () => {
+    setCurrentView(AppView.HOME);
     setSelectedConfiguration(null);
   };
 
@@ -118,8 +125,16 @@ function App() {
     <div className="App">
       <header className="App-header">
         <div className="header-content">
-          <h1>🚀 SaaS Configurator</h1>
-          <p>Manage your cluster configurations with ease</p>
+          <nav className="header-nav">
+            <button 
+              className="nav-link home-link" 
+              onClick={handleBackToHome}
+              title="Go to home page"
+            >
+              🏠 Home
+            </button>
+          </nav>
+          <h1>SaaS Configurator</h1>
           <div className="connection-status">
             <span className="status-indicator connected"></span>
             API Connected
@@ -128,9 +143,16 @@ function App() {
       </header>
 
       <main className="App-main">
+        {currentView === AppView.HOME && (
+          <Home
+            onStartNewConfiguration={handleCreateNew}
+            onViewSavedConfigurations={() => setCurrentView(AppView.LIST)}
+          />
+        )}
         {currentView === AppView.LIST && (
           <ConfigurationList
             onSelectConfiguration={handleSelectConfiguration}
+            onEditConfiguration={handleEditConfigurationFromList}
             onCreateNew={handleCreateNew}
             refresh={refreshList}
             onRefreshComplete={handleRefreshComplete}
@@ -141,7 +163,7 @@ function App() {
           <ConfigurationDetails
             configuration={selectedConfiguration}
             onEdit={handleEditConfiguration}
-            onBack={handleBackToList}
+            onBack={handleBackToHome}
             onDelete={handleDeleteConfiguration}
           />
         )}
@@ -156,7 +178,9 @@ function App() {
       </main>
 
       <footer className="App-footer">
-        <p>&copy; 2024 SaaS Configurator. Built with React & FastAPI.</p>
+        <div className="footer-content">
+          <p>&copy; 2025 SaaS Configurator. All rights reserved.</p>
+        </div>
       </footer>
     </div>
   );

@@ -69,13 +69,23 @@ export class ConfigurationApi {
     return response.data;
   }
 
-  // Create a new configuration
-  static async createConfiguration(configuration: ConfigurationCreate): Promise<Configuration> {
-    const response: AxiosResponse<Configuration> = await apiClient.post(
-      '/configurations/',
-      configuration
-    );
-    return response.data;
+  // Create a new configuration with interactive setup
+  static async createConfiguration(configuration: ConfigurationCreate): Promise<{
+    configuration: Configuration;
+    missingData?: Array<{
+      details: { question: string };
+      target: string;
+      member: string;
+      memberType: string;
+    }>;
+    output?: any;
+  }> {
+    const response = await apiClient.post('/configurations/', configuration);
+    return {
+      configuration: response.data,
+      missingData: response.data.missingData,
+      output: response.data.output
+    };
   }
 
   // Update an existing configuration

@@ -1,7 +1,7 @@
 /* Configuration Form Styles */
 
 .configuration-form {
-  max-width: 800px;
+  max-width: 1400px;
   margin: 0 auto;
   padding: 2rem;
   background: white;
@@ -31,9 +31,23 @@
   font-size: 0.875rem;
 }
 
+/* Top Section */
+.top-section {
+  margin-bottom: 2rem;
+  padding-bottom: 2rem;
+  border-bottom: 2px solid #e9ecef;
+}
+
 .form-row {
   display: grid;
   grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.form-row-triple {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
   gap: 1.5rem;
   margin-bottom: 1.5rem;
 }
@@ -101,6 +115,184 @@
   color: #666;
   font-size: 0.75rem;
   margin-top: 0.25rem;
+}
+
+.info-field {
+  padding: 0.75rem;
+  background: #f8f9fa;
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+  color: #495057;
+  font-size: 0.875rem;
+}
+
+/* Bottom Section - Two Columns */
+.bottom-section {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  margin-bottom: 2rem;
+  min-height: 500px;
+}
+
+/* Chat Column */
+.chat-column {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #dee2e6;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #f8f9fa;
+}
+
+.chat-header {
+  background: #007bff;
+  color: white;
+  padding: 1rem;
+  border-bottom: 2px solid #0056b3;
+}
+
+.chat-header h3 {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.chat-messages {
+  flex: 1;
+  padding: 1rem;
+  overflow-y: auto;
+  background: white;
+  min-height: 400px;
+  max-height: 500px;
+}
+
+.chat-message {
+  margin-bottom: 1rem;
+  display: flex;
+}
+
+.chat-message.user {
+  justify-content: flex-end;
+}
+
+.chat-message.bot {
+  justify-content: flex-start;
+}
+
+.message-content {
+  max-width: 75%;
+  padding: 0.75rem 1rem;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.chat-message.user .message-content {
+  background: #007bff;
+  color: white;
+  border-bottom-right-radius: 4px;
+}
+
+.chat-message.bot .message-content {
+  background: #e9ecef;
+  color: #212529;
+  border-bottom-left-radius: 4px;
+}
+
+.message-text {
+  font-size: 0.875rem;
+  line-height: 1.4;
+}
+
+.message-time {
+  font-size: 0.7rem;
+  opacity: 0.7;
+  align-self: flex-end;
+}
+
+.chat-input-form {
+  display: flex;
+  padding: 1rem;
+  background: white;
+  border-top: 1px solid #dee2e6;
+  gap: 0.5rem;
+}
+
+.chat-input {
+  flex: 1;
+  padding: 0.75rem;
+  border: 1px solid #ced4da;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  font-family: inherit;
+}
+
+.chat-input:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.1);
+}
+
+.btn-send {
+  padding: 0.75rem 1.5rem;
+  background: #007bff;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-send:hover {
+  background: #0056b3;
+}
+
+/* Config Column */
+.config-column {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #dee2e6;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #f8f9fa;
+}
+
+.config-header {
+  background: #28a745;
+  color: white;
+  padding: 1rem;
+  border-bottom: 2px solid #1e7e34;
+}
+
+.config-header h3 {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.config-column textarea {
+  flex: 1;
+  border: none;
+  border-radius: 0;
+  min-height: 450px;
+  padding: 1rem;
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+  font-size: 0.8rem;
+  line-height: 1.5;
+  background: white;
+  resize: none;
+}
+
+.json-hint {
+  padding: 0.75rem;
+  background: #f8f9fa;
+  color: #6c757d;
+  font-size: 0.75rem;
+  border-top: 1px solid #dee2e6;
 }
 
 .form-actions {
@@ -179,15 +371,42 @@
 }
 
 /* Responsive */
+@media (max-width: 1024px) {
+  .bottom-section {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .form-row-triple {
+    grid-template-columns: 1fr;
+  }
+}
+
 @media (max-width: 768px) {
   .configuration-form {
     margin: 1rem;
     padding: 1.5rem;
   }
 
-  .form-row {
+  .form-row,
+  .form-row-triple {
     grid-template-columns: 1fr;
     gap: 1rem;
+  }
+
+  .bottom-section {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    min-height: auto;
+  }
+
+  .chat-messages {
+    min-height: 300px;
+    max-height: 350px;
+  }
+
+  .config-column textarea {
+    min-height: 300px;
   }
 
   .form-actions {
