@@ -25,6 +25,7 @@ def injectValue(dictionary: dict, missing_elt, input_value: str) -> dict:
 
     dictionary_target = dictionary
     for leg in legs:
+        # TODO: test if a leg contains an indexed element, e.g. container.elements[1]
         dictionary_target = dictionary_target[leg]
 
     if memberType == "Boolean":
@@ -33,6 +34,7 @@ def injectValue(dictionary: dict, missing_elt, input_value: str) -> dict:
     elif memberType == "Integer":
         print("injecting integer")
         dictionary_target[member] = int(input_value)
+    # TODO: cover more data types    
     else:
         print("injecting string")
         dictionary_target[member] = input_value
@@ -111,6 +113,7 @@ if __name__ == "__main__":
     else:
         print("Provingly server is up and running")
         language = "en"
+        #language = "fr"
         interactive_test("Configuration/apps/cluster-config-demo/1.0.0", 
                          "demo.config.configureKafkaCluster", 
                          language)

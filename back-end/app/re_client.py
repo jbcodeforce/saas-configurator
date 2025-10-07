@@ -8,16 +8,62 @@ from typing import Dict, Any, List, Optional
 import json
 from functools import lru_cache
 
+from pydantic import BaseModel
+from enum import Enum
+
 # Rule Engine Configuration
 BASE_RULE_ENGINE_URL = "http://localhost:9000"  # This should come from environment variables in production
 SERVER_STATUS_URL = BASE_RULE_ENGINE_URL + "/v1/serverStatus"
 SERVER_API_URL = BASE_RULE_ENGINE_URL + "/v1/domains"
 APP_PATH= "/Configuration/apps/cluster-config-demo/1.0.0"
 OPERATION = "demo.config.configureKafkaCluster"
-LANG = "en"
-RICH_RESULTS = "true"
 
-OPERATIONS_API_URL = SERVER_API_URL + APP_PATH + "/models/" + OPERATION + "/configure?lang=" + LANG + "&richResults=" + RICH_RESULTS
+OPERATIONS_API_URL = SERVER_API_URL + APP_PATH + "/models/" + OPERATION + "/configure?richResults=true&lang="
+
+
+class QuestionType(str, Enum):
+    boolean_type = 'Boolean'
+    enum_type = "Enum"
+    text_type = 'Text'
+    integer_type = 'Integer'
+    double_type = 'Number'          # a double float
+    date_type = 'Date'              # The most common ISO Date Format yyyy-MM-dd — for example, "2000-10-31".
+    datetime_type = 'DateTime'      # The most common ISO Date Time Format yyyy-MM-dd'T'HH:mm:ss.SSSXXX — for example, "2000-10-31T01:30:00.000-05:00".
+
+class LabelValuePair(BaseModel):
+    value: str
+    label: str  
+
+class EnumRestrictions(BaseModel):
+    possible_values: Optional[List[LabelValuePair]] = None
+
+class TextRestrictions(BaseModel):
+    regex: Optional[str] = None       # only applicable if data_type is text
+    minLength: Optional[int] = None   # minimum string length
+    maxLength: Optional[int] = None   # maximum string length
+
+class RangeRestrictions(BaseModel):
+    min: Optional[str] = None         # min string will be converted to integer, floating point number, date or datetime depending on the data_type
+    max: Optional[str] = None         # max string will be converted to integer, floating point number, date or datetime depending on the data_type
+    step: Optional[str] = None
+
+class DataRestrictions(BaseModel):    # this object will populate one of the three following members
+    range: Optional[RangeRestrictions] = None
+    text: Optional[TextRestrictions] = None
+    enumeration: Optional[EnumRestrictions] = None
+
+class QuestionInfo(BaseModel):
+    path: str
+    text: str
+    default_value: Optional[str] = None
+    info: Optional[str] = None # used in a tooltip
+    type: QuestionType
+    restrictions: Optional[DataRestrictions] = None
+
+
+class ConfigResponse(BaseModel):
+    payload: Dict[str, Any]         # contains 'the customer request' and 'the configuration'
+    questions: List[QuestionInfo]   # we provide a list even if the frontend might present only one question before calling again the server
 
 class RuleEngineClient:
     _instance = None
@@ -55,6 +101,7 @@ class RuleEngineClient:
         return cls(BASE_RULE_ENGINE_URL)
 
 
+    # TODO: this logic needs to move to the frontend
     def _inject_value(self, dictionary: dict, missing_elt: dict, input_value: str) -> dict:
         """Injects a value into the configuration dictionary based on missing element details."""
         target = missing_elt['target']
@@ -74,10 +121,20 @@ class RuleEngineClient:
             dictionary_target[member] = input_value
         return dictionary
 
+    # TODO: replace hard-coded question by mapping logic
+    def _map_question(self, missing_elt) -> QuestionInfo:
+        return QuestionInfo(path = "the customer request.cloudProvider",
+                            text = "What is the cloud provider?",
+                            info = "Please indicate the cloud provider of the provider",
+                            default = "AWS",
+                            type = QuestionType.enum_type,
+                            restrictions=EnumRestrictions(possible_values=[LabelValuePair("AWS", "Amazon Web Services"), 
+                                                                           LabelValuePair("GCP", "Google Cloud")]))
+
     def configure(self, 
                  input_dict: str,
                  lang: str = "en", 
-                 input_handler: Optional[callable] = None) -> Dict[str, Any]:
+                 input_handler: Optional[callable] = None) -> ConfigResponse:
         """
         Performs an interactive configuration session with the rule engine.
         
@@ -89,13 +146,11 @@ class RuleEngineClient:
                          If None, uses input() function
         
         Returns:
-            Dict containing the final configuration
+            ConfigResponse containing the payload and the questions
         """
-        api_url = OPERATIONS_API_URL
-        
-        # Initial configuration state
- 
-        # Make request to rule engine
+        api_url = OPERATIONS_API_URL + lang
+         
+        # Make request to inference engine
         response = requests.post(api_url, 
                                 data=json.dumps(input_dict), 
                                 headers=self.headers)
@@ -106,25 +161,14 @@ class RuleEngineClient:
         resp_json = response.json()
         
         # Update configuration state
-        input_dict = resp_json.get('output', input_dict)
+        inferred_payload = resp_json.get('output')
         
-        # Check for missing data
-        missing_data = resp_json.get('missingData', [])
-        if not missing_data:
-            print("Stop processing so pass a response to the caller")
-            return input_dict
-            
-        # Handle missing data through input prompts
-        for missing_elt in missing_data:
-            question = missing_elt['details']['question']
-            if input_handler:
-                input_val = input_handler(question)
-            else:
-                input_val = input(question + " ")
-                
-            input_dict = self._inject_value(input_dict, missing_elt, input_val)
+        # Transform missing element into QuestionInfo
+        questions = [self._map_question(missing_elt) for missing_elt in resp_json.get('missingData', [])]
         
-        return input_dict
+        return ConfigResponse(payload = inferred_payload, 
+                              questions=questions)
+    
 
     def get_rule_engine_config(self) -> Dict[str, Any]:
         """Gets the rule engine configuration."""
