@@ -167,7 +167,7 @@ class RuleEngineClient:
             
         resp_json = response.json()
         
-        # Update configuration state
+        # get inferred payload
         inferred_payload = resp_json.get('output')
         
         # Transform missing element into QuestionInfo
