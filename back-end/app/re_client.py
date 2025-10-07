@@ -4,7 +4,7 @@ through the Provingly rule engine API.
 """
 
 import requests
-from typing import Dict, Any, List, Optional
+from typing import Dict, Any, List, Optional, Literal, Union
 import json
 from functools import lru_cache
 
@@ -21,44 +21,51 @@ OPERATION = "demo.config.configureKafkaCluster"
 OPERATIONS_API_URL = SERVER_API_URL + APP_PATH + "/models/" + OPERATION + "/configure?richResults=true&lang="
 
 
-class QuestionType(str, Enum):
-    boolean_type = 'Boolean'
-    enum_type = "Enum"
-    text_type = 'Text'
-    integer_type = 'Integer'
-    double_type = 'Number'          # a double float
-    date_type = 'Date'              # The most common ISO Date Format yyyy-MM-dd — for example, "2000-10-31".
-    datetime_type = 'DateTime'      # The most common ISO Date Time Format yyyy-MM-dd'T'HH:mm:ss.SSSXXX — for example, "2000-10-31T01:30:00.000-05:00".
-
 class LabelValuePair(BaseModel):
-    value: str
-    label: str  
+    v: str
+    l: str  
 
-class EnumRestrictions(BaseModel):
-    possible_values: Optional[List[LabelValuePair]] = None
+class Range(BaseModel):
+    min: Optional[str] = None         # min string will be converted to integer, floating point number, date or datetime depending on the data_type
+    max: Optional[str] = None         # max string will be converted to integer, floating point number, date or datetime depending on the data_type
+    step: Optional[str] = None        # 1 for integers, 0.01 typical value for numbers  
 
-class TextRestrictions(BaseModel):
+class TypeInfo(BaseModel):   
+    pass
+
+class NumberType(TypeInfo): 
+    type: Literal['Number'] = 'Number'
+    range: Optional[Range] = None
+
+class DateType(TypeInfo):
+    type: Literal['Date'] = 'Date'
+    date: Optional[Range] = None
+    range: Optional[Range] = None
+
+class DateTimeType(TypeInfo):
+    type: Literal['DateTime'] = 'DateTime'
+    datetime: Optional[Range] = None
+    range: Optional[Range] = None
+
+class TextType(TypeInfo):
+    type: Literal['Text'] = 'Text'
     regex: Optional[str] = None       # only applicable if data_type is text
     minLength: Optional[int] = None   # minimum string length
     maxLength: Optional[int] = None   # maximum string length
 
-class RangeRestrictions(BaseModel):
-    min: Optional[str] = None         # min string will be converted to integer, floating point number, date or datetime depending on the data_type
-    max: Optional[str] = None         # max string will be converted to integer, floating point number, date or datetime depending on the data_type
-    step: Optional[str] = None
+class EnumType(TypeInfo):
+    type: Literal['Enum'] = 'Enum'
+    possible_values: List[LabelValuePair] = list()
 
-class DataRestrictions(BaseModel):    # this object will populate one of the three following members
-    range: Optional[RangeRestrictions] = None
-    text: Optional[TextRestrictions] = None
-    enumeration: Optional[EnumRestrictions] = None
+class BooleanType(TypeInfo):
+    type: Literal['Boolean'] = 'Boolean'
 
 class QuestionInfo(BaseModel):
-    path: str
-    text: str
-    default_value: Optional[str] = None
-    info: Optional[str] = None # used in a tooltip
-    type: QuestionType
-    restrictions: Optional[DataRestrictions] = None
+    path: str                               # path indicating where to inject back the answer into the payload
+    text: str                               # text to be presented to the user
+    type_info: Union[NumberType, BooleanType, EnumType, TextType, DateType, DateTimeType]   # field used to create the right type of widget in the UI
+    default_value: Optional[str] = None     # default value that can be used to populate the UI widget
+    info: Optional[str] = None              # information to be used in a tooltip
 
 
 class ConfigResponse(BaseModel):
@@ -122,14 +129,14 @@ class RuleEngineClient:
         return dictionary
 
     # TODO: replace hard-coded question by mapping logic
-    def _map_question(self, missing_elt) -> QuestionInfo:
+    def map_question(self, missing_elt) -> QuestionInfo:
         return QuestionInfo(path = "the customer request.cloudProvider",
                             text = "What is the cloud provider?",
                             info = "Please indicate the cloud provider of the provider",
-                            default = "AWS",
-                            type = QuestionType.enum_type,
-                            restrictions=EnumRestrictions(possible_values=[LabelValuePair("AWS", "Amazon Web Services"), 
-                                                                           LabelValuePair("GCP", "Google Cloud")]))
+                            default_value = "AWS",
+                            type_info = EnumType(possible_values=(LabelValuePair(v="AWS", l="Amazon Web Services"), 
+                                                                  LabelValuePair(v="GCP", l="Google Cloud")))
+                            )
 
     def configure(self, 
                  input_dict: str,
