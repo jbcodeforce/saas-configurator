@@ -156,7 +156,7 @@ class RuleEngineClient:
                                 headers=self.headers)
         
         if not response.ok:
-            raise Exception(f"Rule engine request failed: {response.status_code}")
+            raise Exception(f"Inference engine request failed: {response.status_code}")
             
         resp_json = response.json()
         
@@ -164,7 +164,7 @@ class RuleEngineClient:
         inferred_payload = resp_json.get('output')
         
         # Transform missing element into QuestionInfo
-        questions = [self._map_question(missing_elt) for missing_elt in resp_json.get('missingData', [])]
+        questions = [self._map_question(missing_elt) for missing_elt in resp_json.get('missingData')]
         
         return ConfigResponse(payload = inferred_payload, 
                               questions=questions)
