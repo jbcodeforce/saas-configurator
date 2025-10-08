@@ -171,7 +171,7 @@ class RuleEngineClient:
         inferred_payload = resp_json.get('output')
         
         # Transform missing element into QuestionInfo
-        questions = [self._map_question(missing_elt) for missing_elt in resp_json.get('missingData')]
+        questions = [self.map_question(missing_elt) for missing_elt in resp_json.get('missingData')]
         
         return ConfigResponse(payload = inferred_payload, 
                               questions=questions)
