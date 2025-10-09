@@ -132,7 +132,7 @@ class RuleEngineClient:
     def map_question(self, missing_elt) -> QuestionInfo:
         return QuestionInfo(path = "the customer request.cloudProvider",
                             text = "What is the cloud provider?",
-                            info = "Please indicate the cloud provider of the provider",
+                            info = "Please indicate the cloud provider chosen by the customer",
                             default_value = "AWS",
                             type_info = EnumType(possible_values=(LabelValuePair(v="AWS", l="Amazon Web Services"), 
                                                                   LabelValuePair(v="GCP", l="Google Cloud")))
@@ -169,9 +169,13 @@ class RuleEngineClient:
         
         # get inferred payload
         inferred_payload = resp_json.get('output')
+
+        missing_elements = resp_json.get('missingData')
+
+        # TODO: this is the place where we could check if some missing data can be fetched by using some data API
         
-        # Transform missing element into QuestionInfo
-        questions = [self.map_question(missing_elt) for missing_elt in resp_json.get('missingData')]
+        # Transform each missing element into a QuestionInfo
+        questions = [self.map_question(missing_elt) for missing_elt in missing_elements]
         
         return ConfigResponse(payload = inferred_payload, 
                               questions=questions)
