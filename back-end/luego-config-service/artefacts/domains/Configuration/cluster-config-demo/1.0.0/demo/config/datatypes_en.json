@@ -4,7 +4,8 @@
 
         "cloudProvider": {
             "txt": "cloud provider",
-            "q": "what is the chosen cloud provider?"
+            "q": "what is the chosen cloud provider?",
+            "info": "Please indicate the cloud provider chosen by the customer. If the customer has not made any choice yet, good default choices are AWS or GCP."
         },
         "mustHaveDedicatedEnv": {
             "txt": "must have a dedicated environment",

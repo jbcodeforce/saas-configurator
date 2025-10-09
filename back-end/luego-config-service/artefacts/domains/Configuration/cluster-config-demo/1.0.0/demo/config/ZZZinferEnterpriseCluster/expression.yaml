@@ -18,7 +18,10 @@ thenVal:
     - - optionalComponent
       - demo.config.OptionalComponent
   cases:
-  - value:
+  - varName: optionA
+    type: demo.config.OptionA
+    whereOpt: []
+    value:
       $type: Obj
       ot: demo.config.EnterpriseCluster
       mappings:
@@ -35,10 +38,8 @@ thenVal:
             - demo.config.ZeroTo2400
       id: []
     $type: CaseType
-    whereOpt: []
-    type: demo.config.OptionA
-    varName: optionA
-  - value:
+  - $type: CaseType
+    value:
       $type: Obj
       ot: demo.config.EnterpriseCluster
       mappings:
@@ -54,11 +55,13 @@ thenVal:
           - - email
             - demo.config.Email
       id: []
-    type: demo.config.EmailNotification
-    $type: CaseType
-    whereOpt: []
     varName: notification
-  - varName: optionB2
+    whereOpt: []
+    type: demo.config.EmailNotification
+  - whereOpt: []
+    $type: CaseType
+    varName: optionB2
+    type: demo.config.OptionB2
     value:
       $type: Obj
       ot: demo.config.EnterpriseCluster
@@ -75,9 +78,6 @@ thenVal:
           - - quantity
             - Integer
       id: []
-    type: demo.config.OptionB2
-    whereOpt: []
-    $type: CaseType
 elseVal:
   $type: Obj
   ot: demo.config.EnterpriseCluster

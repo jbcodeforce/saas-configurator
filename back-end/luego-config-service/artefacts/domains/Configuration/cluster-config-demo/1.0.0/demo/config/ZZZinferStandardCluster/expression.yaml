@@ -4,15 +4,6 @@ stmts:
   name: subCapacities
   e:
     $type: Map
-    functor:
-      $type: Nav
-      obj:
-        $type: Ref
-        id: sc
-      elems:
-      - - capacity
-        - demo.config.ZeroTo2400
-    param: sc
     coll:
       coll:
         $type: Nav
@@ -22,6 +13,7 @@ stmts:
         elems:
         - - subComponents
           - List[demo.config.SubComponent]
+      param: sc
       filter:
         $type: NativeFunApp
         funDef: luego.text.startsWith
@@ -35,11 +27,19 @@ stmts:
             - demo.config.SubComponentCode
         - $type: SLit
           s: A
-      param: sc
       actualTypeOpt:
       - demo.config.SubComponent
       $type: Filter
+    param: sc
     collBType: List[demo.config.ZeroTo2400]
+    functor:
+      $type: Nav
+      obj:
+        $type: Ref
+        id: sc
+      elems:
+      - - capacity
+        - demo.config.ZeroTo2400
 - $type: Let
   name: numNodes
   e:

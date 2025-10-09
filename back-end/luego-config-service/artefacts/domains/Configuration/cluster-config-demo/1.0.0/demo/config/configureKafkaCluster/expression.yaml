@@ -205,7 +205,10 @@ elseVal:
     - - cluster
       - demo.config.Cluster
   cases:
-  - value:
+  - $type: CaseType
+    whereOpt: []
+    type: demo.config.BasicCluster
+    value:
       $type: DecisionApp
       funDef: demo.config.configureBasicCluster
       args:
@@ -236,11 +239,8 @@ elseVal:
           args:
           - $type: SLit
             s: configure basic cluster
-    $type: CaseType
     varName: bc
-    type: demo.config.BasicCluster
-    whereOpt: []
-  - type: demo.config.DedicatedCluster
+  - $type: CaseType
     value:
       $type: DecisionApp
       funDef: demo.config.configureDedicatedCluster
@@ -279,11 +279,7 @@ elseVal:
                 - - optionalComponent
                   - demo.config.OptionalComponent
               cases:
-              - name: optionA
-                $type: CaseTypeDo
-                where: []
-                type: demo.config.OptionA
-                stmts:
+              - stmts:
                 - $type: PModif
                   left:
                     $type: Nav
@@ -313,8 +309,11 @@ elseVal:
                     elems:
                     - - capacity
                       - demo.config.ZeroTo2400
-              - name: notification
                 where: []
+                name: optionA
+                type: demo.config.OptionA
+                $type: CaseTypeDo
+              - $type: CaseTypeDo
                 stmts:
                 - $type: PModif
                   left:
@@ -345,7 +344,8 @@ elseVal:
                     elems:
                     - - email
                       - demo.config.Email
-                $type: CaseTypeDo
+                name: notification
+                where: []
                 type: demo.config.EmailNotification
               - stmts:
                 - $type: PModif
@@ -378,9 +378,9 @@ elseVal:
                     - - quantity
                       - Integer
                 type: demo.config.OptionB2
-                name: optionB2
-                $type: CaseTypeDo
                 where: []
+                $type: CaseTypeDo
+                name: optionB2
           - $type: LitCaseDo
             lit:
               $type: BLit
@@ -402,12 +402,10 @@ elseVal:
           - $type: SLit
             s: configure dedicated cluster
     whereOpt: []
-    $type: CaseType
+    type: demo.config.DedicatedCluster
     varName: dc
-  - whereOpt: []
+  - $type: CaseType
     varName: ec
-    $type: CaseType
-    type: demo.config.EnterpriseCluster
     value:
       $type: DecisionApp
       funDef: demo.config.configureEnterpriseCluster
@@ -439,9 +437,11 @@ elseVal:
           args:
           - $type: SLit
             s: configure enterprise cluster
-  - $type: CaseType
-    varName: fc
     whereOpt: []
+    type: demo.config.EnterpriseCluster
+  - varName: fc
+    whereOpt: []
+    type: demo.config.FreightCluster
     value:
       $type: DecisionApp
       funDef: demo.config.configureFreightCluster
@@ -473,8 +473,11 @@ elseVal:
           args:
           - $type: SLit
             s: configure freight cluster
-    type: demo.config.FreightCluster
-  - varName: sc
+    $type: CaseType
+  - $type: CaseType
+    type: demo.config.StandardCluster
+    whereOpt: []
+    varName: sc
     value:
       $type: DecisionApp
       funDef: demo.config.configureStandardCluster
@@ -506,6 +509,3 @@ elseVal:
           args:
           - $type: SLit
             s: configure standard cluster
-    type: demo.config.StandardCluster
-    whereOpt: []
-    $type: CaseType

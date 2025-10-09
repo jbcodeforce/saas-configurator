@@ -25,10 +25,10 @@ stmts:
         - - optionalComponent
           - demo.config.OptionalComponent
       cases:
-      - where: []
-        $type: CaseTypeDo
-        type: demo.config.OptionA
+      - type: demo.config.OptionA
         name: optionA
+        where: []
+        $type: CaseTypeDo
         stmts:
         - $type: PModif
           left:
@@ -59,9 +59,9 @@ stmts:
             elems:
             - - capacity
               - demo.config.ZeroTo2400
-      - type: demo.config.EmailNotification
-        name: notification
+      - where: []
         $type: CaseTypeDo
+        name: notification
         stmts:
         - $type: PModif
           left:
@@ -92,9 +92,10 @@ stmts:
             elems:
             - - email
               - demo.config.Email
-        where: []
+        type: demo.config.EmailNotification
       - name: optionB2
         type: demo.config.OptionB2
+        $type: CaseTypeDo
         stmts:
         - $type: PModif
           left:
@@ -126,7 +127,6 @@ stmts:
             - - quantity
               - Integer
         where: []
-        $type: CaseTypeDo
   - $type: LitCaseDo
     lit:
       $type: BLit

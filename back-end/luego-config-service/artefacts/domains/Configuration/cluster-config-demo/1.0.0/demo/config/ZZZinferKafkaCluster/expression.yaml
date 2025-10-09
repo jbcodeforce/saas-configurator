@@ -146,9 +146,8 @@ stmts:
                   - - optionalComponent
                     - demo.config.OptionalComponent
                 cases:
-                - varName: optionA
-                  $type: CaseType
-                  type: demo.config.OptionA
+                - type: demo.config.OptionA
+                  whereOpt: []
                   value:
                     $type: Obj
                     ot: demo.config.EnterpriseCluster
@@ -165,11 +164,9 @@ stmts:
                         - - capacity
                           - demo.config.ZeroTo2400
                     id: []
-                  whereOpt: []
-                - whereOpt: []
                   $type: CaseType
-                  varName: notification
-                  value:
+                  varName: optionA
+                - value:
                     $type: Obj
                     ot: demo.config.EnterpriseCluster
                     mappings:
@@ -185,11 +182,13 @@ stmts:
                         - - email
                           - demo.config.Email
                     id: []
-                  type: demo.config.EmailNotification
-                - $type: CaseType
                   whereOpt: []
-                  type: demo.config.OptionB2
+                  $type: CaseType
+                  type: demo.config.EmailNotification
+                  varName: notification
+                - $type: CaseType
                   varName: optionB2
+                  type: demo.config.OptionB2
                   value:
                     $type: Obj
                     ot: demo.config.EnterpriseCluster
@@ -206,6 +205,7 @@ stmts:
                         - - quantity
                           - Integer
                     id: []
+                  whereOpt: []
               elseVal:
                 $type: Obj
                 ot: demo.config.EnterpriseCluster
@@ -281,7 +281,10 @@ stmts:
                 - - optionalComponent
                   - demo.config.OptionalComponent
               cases:
-              - type: demo.config.OptionA
+              - varName: optionA
+                $type: CaseType
+                whereOpt: []
+                type: demo.config.OptionA
                 value:
                   $type: Obj
                   ot: demo.config.EnterpriseCluster
@@ -298,10 +301,7 @@ stmts:
                       - - capacity
                         - demo.config.ZeroTo2400
                   id: []
-                whereOpt: []
-                varName: optionA
-                $type: CaseType
-              - $type: CaseType
+              - varName: notification
                 value:
                   $type: Obj
                   ot: demo.config.EnterpriseCluster
@@ -319,9 +319,11 @@ stmts:
                         - demo.config.Email
                   id: []
                 whereOpt: []
+                $type: CaseType
                 type: demo.config.EmailNotification
-                varName: notification
-              - $type: CaseType
+              - whereOpt: []
+                varName: optionB2
+                $type: CaseType
                 value:
                   $type: Obj
                   ot: demo.config.EnterpriseCluster
@@ -338,8 +340,6 @@ stmts:
                       - - quantity
                         - Integer
                   id: []
-                whereOpt: []
-                varName: optionB2
                 type: demo.config.OptionB2
             elseVal:
               $type: Obj
@@ -372,20 +372,21 @@ stmts:
               - $type: Let
                 name: subCapacities
                 e:
-                  $type: Map
-                  collBType: List[demo.config.ZeroTo2400]
                   param: sc
-                  functor:
-                    $type: Nav
-                    obj:
-                      $type: Ref
-                      id: sc
-                    elems:
-                    - - capacity
-                      - demo.config.ZeroTo2400
+                  collBType: List[demo.config.ZeroTo2400]
                   coll:
+                    param: sc
                     actualTypeOpt:
                     - demo.config.SubComponent
+                    $type: Filter
+                    coll:
+                      $type: Nav
+                      obj:
+                        $type: Ref
+                        id: the customer request
+                      elems:
+                      - - subComponents
+                        - List[demo.config.SubComponent]
                     filter:
                       $type: NativeFunApp
                       funDef: luego.text.startsWith
@@ -399,16 +400,15 @@ stmts:
                           - demo.config.SubComponentCode
                       - $type: SLit
                         s: A
-                    coll:
-                      $type: Nav
-                      obj:
-                        $type: Ref
-                        id: the customer request
-                      elems:
-                      - - subComponents
-                        - List[demo.config.SubComponent]
-                    $type: Filter
-                    param: sc
+                  functor:
+                    $type: Nav
+                    obj:
+                      $type: Ref
+                      id: sc
+                    elems:
+                    - - capacity
+                      - demo.config.ZeroTo2400
+                  $type: Map
               - $type: Let
                 name: numNodes
                 e:
