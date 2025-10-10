@@ -511,7 +511,13 @@ const ConfigurationForm: React.FC<ConfigurationFormProps> = ({
             </form>
           </div>
 
-          {/* Right Column - JSON Config View */}
+          {/* Right Column - JSON Config View - we only show a subset of the full JSON 
+              value={formData.configuration_data}
+              or 
+              value={JSON.stringify(JSON.parse(formData.configuration_data).payload, null, 2)}
+              or 
+              value={JSON.stringify(JSON.parse(formData.configuration_data).payload['the configuration'], null, 2)}          
+          */}
           <div className="config-column">
             <div className="config-header">
               <h3>Configuration Data (JSON)</h3>
@@ -519,7 +525,7 @@ const ConfigurationForm: React.FC<ConfigurationFormProps> = ({
             <textarea
               id="configuration_data"
               name="configuration_data"
-              value={formData.configuration_data}
+              value={JSON.stringify(JSON.parse(formData.configuration_data).payload['the configuration'], null, 2)}          
               readOnly
               className="json-textarea readonly"
               placeholder="Configuration data will be shown after starting the configuration"
