@@ -375,6 +375,7 @@ const ConfigurationForm: React.FC<ConfigurationFormProps> = ({
             </div>
           )}
         </div>
+      </form>
 
         {/* Bottom Section - Two Columns */}
         <div className="bottom-section">
@@ -564,7 +565,6 @@ const ConfigurationForm: React.FC<ConfigurationFormProps> = ({
             </button>
           </div>
         )}
-      </form>
     </div>
   );
 };

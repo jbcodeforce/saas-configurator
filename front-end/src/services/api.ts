@@ -20,7 +20,7 @@ const apiClient = axios.create({
 
 // Add request interceptor for debugging
 apiClient.interceptors.request.use((request) => {
-  console.log('API Request:', request.method?.toUpperCase(), request.url, request.data);
+  console.log('=== API Request:', request.method?.toUpperCase(), request.url, request.data);
   return request;
 });
 
