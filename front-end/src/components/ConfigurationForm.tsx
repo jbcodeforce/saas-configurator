@@ -205,6 +205,8 @@ const ConfigurationForm: React.FC<ConfigurationFormProps> = ({
 
 
   const handleSendMessage = async (e: React.FormEvent) => {
+    console.log("handleSendMessage...")
+
     e.preventDefault();
     if (!userInput.trim()) return;
 
@@ -230,6 +232,8 @@ const ConfigurationForm: React.FC<ConfigurationFormProps> = ({
         tags: formData.tags.split(',').map(tag => tag.trim()).filter(tag => tag.length > 0)
       };
 
+      console.log("------- updateData -------")
+      console.log(JSON.stringify(updateData, null, 2))
       // Send update to backend
       const response = await ConfigurationApi.createConfiguration(updateData);
 
@@ -402,10 +406,10 @@ const ConfigurationForm: React.FC<ConfigurationFormProps> = ({
                                   };
                                   setChatMessages(prev => [...prev, userMessage]);
                                   
-                                  // Update configuration with the selected value
+                                  // Update configuration payload with the selected value
                                   const configData = JSON.parse(formData.configuration_data);
                                   const path = msg.questionPath.split('.');
-                                  let current = configData;
+                                  let current = configData['payload'];
                                   for (let i = 0; i < path.length - 1; i++) {
                                     if (!current[path[i]]) {
                                       current[path[i]] = {};
@@ -413,6 +417,9 @@ const ConfigurationForm: React.FC<ConfigurationFormProps> = ({
                                     current = current[path[i]];
                                   }
                                   current[path[path.length - 1]] = option.v;
+
+                                  //console.log('%c ================ current', 'color: #8102f0ff');                                  
+                                  //console.log('%c ' + JSON.stringify(configData, null, 2), 'color: #8102f0ff'); 
                                   
                                   // Send update to backend
                                   const updateData: ConfigurationCreate = {
@@ -420,6 +427,9 @@ const ConfigurationForm: React.FC<ConfigurationFormProps> = ({
                                     configuration_data: configData,
                                     tags: formData.tags.split(',').map(tag => tag.trim()).filter(tag => tag.length > 0)
                                   };
+
+                                  console.log('%c ================ Updated data', 'color: #f0c002');                                  
+                                  console.log('%c ' + JSON.stringify(updateData, null, 2), 'color: #f0c002')
                                   ConfigurationApi.createConfiguration(updateData)
                                     .then(response => {
                                       // Update form data
@@ -492,6 +502,7 @@ const ConfigurationForm: React.FC<ConfigurationFormProps> = ({
                 </div>
               ))}
             </div>
+            {/* TODO: I comment this portion for now to understand whether is the input handler when answering a question
             <form className="chat-input-form" onSubmit={handleSendMessage}>
               <input
                 type="text"
@@ -508,7 +519,7 @@ const ConfigurationForm: React.FC<ConfigurationFormProps> = ({
               >
                 Send
               </button>
-            </form>
+            </form> */}
           </div>
 
           {/* Right Column - JSON Config View - we only show a subset of the full JSON 
