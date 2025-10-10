@@ -94,6 +94,71 @@ Instead, it will copy all the configuration files and the transitive dependencie
 
 You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
 
+## Deployment
+
+### Building for Production
+
+To build the frontend for production:
+
+```bash
+# Install dependencies
+npm ci
+
+# Build the production bundle
+npm run build
+```
+
+This will create a `build` directory with the production-ready assets.
+
+### Docker Deployment
+
+The frontend can be deployed using Docker:
+
+```bash
+# Build the Docker image
+docker build -t saas-configurator-frontend .
+
+# Run the container
+docker run -p 80:80 saas-configurator-frontend
+```
+
+### Using Docker Compose
+
+To run the entire application (frontend + backend):
+
+```bash
+# From the project root
+docker-compose up --build
+```
+
+This will:
+1. Build the frontend and backend images
+2. Start Nginx serving the frontend on port 80
+3. Start the backend API on port 8000
+4. Set up networking between services
+
+### Manual Deployment with Nginx
+
+1. Build the frontend:
+   ```bash
+   npm run build
+   ```
+
+2. Copy the build files to your Nginx server:
+   ```bash
+   cp -r build/* /usr/share/nginx/html/
+   ```
+
+3. Copy the Nginx configuration:
+   ```bash
+   sudo cp nginx.conf /etc/nginx/conf.d/default.conf
+   ```
+
+4. Restart Nginx:
+   ```bash
+   sudo systemctl restart nginx
+   ```
+
 ## Learn More
 
 You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).

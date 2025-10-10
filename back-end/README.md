@@ -47,7 +47,7 @@ saas-configurator/
 
 ## Installation
 
-This project uses [uv](https://docs.astral.sh/uv/) as the package manager. If you don't have uv installed:
+This backend component uses [uv](https://docs.astral.sh/uv/) as the package manager. If you don't have uv installed:
 
 ```bash
 # Install uv

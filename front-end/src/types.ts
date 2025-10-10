@@ -11,7 +11,7 @@ export interface Configuration {
   id: number;
   name: string;
   description?: string;
-  cluster_type: string;
+  cluster_type?: string;
   version: string;
   status: ConfigurationStatus;
   configuration_data: Record<string, any>;
@@ -23,7 +23,7 @@ export interface Configuration {
 export interface ConfigurationCreate {
   name: string;
   description?: string;
-  cluster_type: string;
+  cluster_type?: string;
   version: string;
   status?: ConfigurationStatus;
   configuration_data?: Record<string, any>;
@@ -33,7 +33,7 @@ export interface ConfigurationCreate {
 export interface ConfigurationUpdate {
   name?: string;
   description?: string;
-  cluster_type?: string;
+  cluster_type?: string | undefined;
   version?: string;
   status?: ConfigurationStatus;
   configuration_data?: Record<string, any>;

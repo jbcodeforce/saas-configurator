@@ -4,6 +4,7 @@ from fastapi import FastAPI, HTTPException, Query, Path
 from fastapi.middleware.cors import CORSMiddleware
 from typing import Optional, List
 import math
+from contextlib import asynccontextmanager
 
 from app.models import (
     Configuration, 
@@ -15,6 +16,28 @@ from app.models import (
 )
 from app.database import db, seed_test_data
 from app.re_client import RuleEngineClient
+
+
+@asynccontextmanager
+async def lifespan(app):
+    """Initialize the database and rule engine client on startup, using the FastAPI lifespan context."""
+    print("\nStarting SaaS Configurator API...")
+
+    # Initialize database
+    seed_test_data(db)
+    print("Database initialized and ready!")
+
+    # Initialize Rule Engine Client
+    try:
+        RuleEngineClient.initialize()
+        re_client = RuleEngineClient.get_instance()
+        if re_client.check_server_status():
+            print("Rule Engine connected and ready!")
+        else:
+            print("Warning: Rule Engine server is not responding!")
+    except Exception as e:
+        print(f"Warning: Failed to initialize Rule Engine client: {e}")
+    yield
 
 # Create FastAPI application
 app = FastAPI(
@@ -29,6 +52,7 @@ app = FastAPI(
         "name": "MIT",
         "url": "https://opensource.org/licenses/MIT",
     },
+    lifespan=lifespan,
 )
 
 # Configure CORS
@@ -50,27 +74,6 @@ app.add_middleware(
 )
 
 
-@app.on_event("startup")
-async def startup_event():
-    """Initialize the database and rule engine client on startup."""
-    print("\nStarting SaaS Configurator API...")
-    
-    # Initialize database
-    seed_test_data(db)
-    print("Database initialized and ready!")
-    
-    # Initialize Rule Engine Client
-    try:
-        RuleEngineClient.initialize()
-        re_client = RuleEngineClient.get_instance()
-        if re_client.check_server_status():
-            print("Rule Engine connected and ready!")
-        else:
-            print("Warning: Rule Engine server is not responding!")
-    except Exception as e:
-        print(f"Warning: Failed to initialize Rule Engine client: {e}")
-
-
 @app.get("/", summary="Root endpoint")
 async def root():
     """Welcome message for the SaaS Configurator API."""
@@ -88,8 +91,8 @@ async def root():
     summary="Create a new configuration",
     description="Create a new cluster configuration with the provided data."
 )
-async def create_configuration(config: ConfigurationCreate):
-    """Create a new cluster configuration."""
+async def create_configuration(config: ConfigurationCreate) -> ConfigurationResponse:
+    """Create a new cluster configuration. this is to trigger the rule engine configuration process."""
     try:
 
         # Get rule engine instance
@@ -198,9 +201,16 @@ async def update_configuration(
         try:
             # Configure through rule engine
             rule_config = re_client.configure(
-                input_dict={},  # TODO
+                input_dict={
+                    "the customer request": {
+                        "LGType_": "demo.config.CustomerRequest"
+                    },
+                    "the configuration": {
+                        "LGType_": "demo.config.Configuration"
+                    }
+                },
                 lang="en",
-                )
+            )
             
             # Update config with rule engine results
             config_update.configuration_data = rule_config

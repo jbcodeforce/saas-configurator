@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+
 """
 Simple test script to verify the SaaS Configurator API endpoints.
 """
@@ -35,16 +35,12 @@ def test_create_configuration():
     config_data = {
         "name": "Test Configuration",
         "description": "A test configuration",
-        "cluster_type": "test-cluster", 
-        "version": "1.0.0",
-        "status": "draft",
-        "configuration_data": {"test": "data"},
-        "tags": ["test"]
+        "status": "draft"
     }
     
     response = client.post("/configurations/", json=config_data)
     assert response.status_code == 201
-    
+    print(response.json())
     created_config = response.json()
     assert created_config["name"] == config_data["name"]
     assert created_config["cluster_type"] == config_data["cluster_type"]

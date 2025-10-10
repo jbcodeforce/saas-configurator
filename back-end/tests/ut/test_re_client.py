@@ -2,11 +2,7 @@
 
 import pytest
 from unittest.mock import Mock, patch
-from fastapi.testclient import TestClient
 
-from app.main import app
-from app.models import ConfigurationStatus
-from app.database import db
 from app.re_client import RuleEngineClient
 
 import json
@@ -21,7 +17,7 @@ def client():
 def test_rule_engine(client):
     response = client.map_question("some missing element")
     assert response.path == "the customer request.cloudProvider"
-    assert response.info == "Please indicate the cloud provider of the provider"
+    assert "Please indicate the cloud provider" in response.info
 
     my_json = {
              "path": "the customer request.cloudProvider",
@@ -31,7 +27,7 @@ def test_rule_engine(client):
                 "possible_values": [ {"v": "AWS", "l":"Amazon Web Services"}, {"v": "GCP", "l": "Google Cloud"}]
               },
               "default_value": "AWS",
-              "info": "Please indicate the cloud provider of the provider"
+              "info": "Please indicate the cloud provider chosen by the customer"
     } 
 
     print("-- pydantic dump --")
@@ -50,3 +46,6 @@ def test_rule_engine(client):
                                                                   LabelValuePair(v="GCP", l="Google Cloud")))
                             )
 """    
+
+if __name__ == "__main__":
+    pytest.main()

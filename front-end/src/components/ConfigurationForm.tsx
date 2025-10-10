@@ -9,11 +9,18 @@ interface ConfigurationFormProps {
   onCancel: () => void;
 }
 
+interface EnumOption {
+  v: string;
+  l: string;
+}
+
 interface ChatMessage {
   id: number;
   sender: 'user' | 'bot';
   message: string;
   timestamp: Date;
+  enumOptions?: EnumOption[];
+  questionPath?: string;
 }
 
 const ConfigurationForm: React.FC<ConfigurationFormProps> = ({
@@ -22,9 +29,8 @@ const ConfigurationForm: React.FC<ConfigurationFormProps> = ({
   onCancel
 }) => {
   const [formData, setFormData] = useState({
-    name: '',
+    name: 'cfg1',
     description: '',
-    cluster_type: '',
     version: '1.0.0',
     status: ConfigurationStatus.DRAFT,
     configuration_data: '{}',
@@ -39,11 +45,10 @@ const ConfigurationForm: React.FC<ConfigurationFormProps> = ({
   const isEditing = !!configuration;
 
   useEffect(() => {
-    if (configuration) {
+      if (configuration) {
       setFormData({
         name: configuration.name,
         description: configuration.description || '',
-        cluster_type: configuration.cluster_type,
         version: configuration.version,
         status: configuration.status,
         configuration_data: JSON.stringify(configuration.configuration_data, null, 2),
@@ -55,7 +60,7 @@ const ConfigurationForm: React.FC<ConfigurationFormProps> = ({
     setChatMessages([{
       id: 1,
       sender: 'bot',
-      message: 'Hello! I can help you configure your cluster.',
+      message: 'Hello! Enter the name of the configuration and Start Configuration to I can help you configure your cluster.',
       timestamp: new Date()
     }]);
   }, [configuration]);
@@ -100,7 +105,7 @@ const ConfigurationForm: React.FC<ConfigurationFormProps> = ({
         const updateData: ConfigurationUpdate = {
           name: formData.name,
           description: formData.description || undefined,
-          cluster_type: formData.cluster_type,
+          cluster_type: undefined,
           version: formData.version,
           status: formData.status,
           configuration_data: configurationData,
@@ -110,11 +115,11 @@ const ConfigurationForm: React.FC<ConfigurationFormProps> = ({
         await ConfigurationApi.updateConfiguration(configuration.id, updateData);
         onSave();
       } else {
-        // Create new configuration
+        // Create new configuration -- aligned with the backend model
         const createData: ConfigurationCreate = {
           name: formData.name,
           description: formData.description || undefined,
-          cluster_type: formData.cluster_type,
+          cluster_type: undefined,
           version: formData.version,
           status: formData.status,
           configuration_data: configurationData,
@@ -128,29 +133,57 @@ const ConfigurationForm: React.FC<ConfigurationFormProps> = ({
         const startMessage: ChatMessage = {
           id: chatMessages.length + 1,
           sender: 'bot',
-          message: 'Starting configuration process for ' + formData.cluster_type + ' cluster...',
+          message: 'Starting configuration process...',
           timestamp: new Date()
         };
         setChatMessages(prev => [...prev, startMessage]);
 
-        // Handle missing data if any
-        if (response.missingData && response.missingData.length > 0) {
-          // Add bot message with the first question
+        // Handle configuration response
+        const configData = response.configuration.configuration_data;
+        if (configData?.questions?.length > 0) {
+          // Get the first question
+          const question = configData.questions[0];
+          
+          // Format question message based on type
+          let questionText = question.text;
+          let enumOptions: EnumOption[] | undefined;
+          
+          if (question.type_info?.type === 'Enum' && question.type_info.possible_values) {
+            enumOptions = question.type_info.possible_values;
+          }
+          
+          if (question.default_value) {
+            questionText += `\nDefault: ${question.default_value}`;
+          }
+          if (question.info) {
+            questionText += `\n(${question.info})`;
+          }
+
+          // Add bot message with the formatted question
           const questionMessage: ChatMessage = {
             id: chatMessages.length + 2,
             sender: 'bot',
-            message: response.missingData[0].details.question,
-            timestamp: new Date()
+            message: questionText,
+            timestamp: new Date(),
+            enumOptions,
+            questionPath: question.path
           };
           setChatMessages(prev => [...prev, questionMessage]);
 
-          // Store missing data for later use in chat
+          // Store configuration data
           setFormData(prev => ({
             ...prev,
-            configuration_data: JSON.stringify(response.output || response.configuration.configuration_data, null, 2)
+            configuration_data: JSON.stringify(configData, null, 2)
           }));
         } else {
-          // Configuration complete
+          // No questions - configuration complete
+          const completeMessage: ChatMessage = {
+            id: chatMessages.length + 2,
+            sender: 'bot',
+            message: 'Configuration complete! No additional information needed.',
+            timestamp: new Date()
+          };
+          setChatMessages(prev => [...prev, completeMessage]);
           onSave();
         }
       }
@@ -170,22 +203,6 @@ const ConfigurationForm: React.FC<ConfigurationFormProps> = ({
     }
   };
 
-  // Update configuration data when cluster type changes
-  useEffect(() => {
-    if (formData.cluster_type) {
-      // This would be replaced with actual API call to get configuration template
-      const templateConfig = {
-        cluster_type: formData.cluster_type,
-        timestamp: new Date().toISOString(),
-        status: "pending",
-        // Add other default fields based on cluster type
-      };
-      setFormData(prev => ({
-        ...prev,
-        configuration_data: JSON.stringify(templateConfig, null, 2)
-      }));
-    }
-  }, [formData.cluster_type]);
 
   const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -224,13 +241,32 @@ const ConfigurationForm: React.FC<ConfigurationFormProps> = ({
         }));
       }
 
-      // Handle missing data if any
-      if (response.missingData && response.missingData.length > 0) {
-        // Add bot message with the next question
+      // Handle configuration response
+      const configData = response.configuration.configuration_data;
+      if (configData?.questions?.length > 0) {
+        // Get the first question
+        const question = configData.questions[0];
+        
+        // Format question message based on type
+        let questionText = question.text;
+        if (question.type_info?.type === 'Enum' && question.type_info.possible_values) {
+          questionText += '\nOptions:';
+          question.type_info.possible_values.forEach((value: { v: string; l: string }) => {
+            questionText += `\n- ${value.l} (${value.v})`;
+          });
+        }
+        if (question.default_value) {
+          questionText += `\nDefault: ${question.default_value}`;
+        }
+        if (question.info) {
+          questionText += `\n(${question.info})`;
+        }
+
+        // Add bot message with the formatted question
         const questionMessage: ChatMessage = {
           id: chatMessages.length + 2,
           sender: 'bot',
-          message: response.missingData[0].details.question,
+          message: questionText,
           timestamp: new Date()
         };
         setChatMessages(prev => [...prev, questionMessage]);
@@ -239,7 +275,7 @@ const ConfigurationForm: React.FC<ConfigurationFormProps> = ({
         const completeMessage: ChatMessage = {
           id: chatMessages.length + 2,
           sender: 'bot',
-          message: 'Configuration complete! You can now save the configuration.',
+          message: 'Configuration complete! All questions have been answered.',
           timestamp: new Date()
         };
         setChatMessages(prev => [...prev, completeMessage]);
@@ -284,24 +320,6 @@ const ConfigurationForm: React.FC<ConfigurationFormProps> = ({
             </div>
 
             <div className="form-group">
-              <label htmlFor="cluster_type">Cluster Type</label>
-              <select
-                id="cluster_type"
-                name="cluster_type"
-                value={formData.cluster_type}
-                onChange={handleInputChange}
-              >
-                <option value="">Select a cluster type</option>
-                <option value="basic">Basic Cluster</option>
-                <option value="dedicated">Dedicated Cluster</option>
-                <option value="enterprise">Enterprise Cluster</option>
-                <option value="freight">Freight Cluster</option>
-                <option value="kafka">Kafka Cluster</option>
-                <option value="standard">Standard Cluster</option>
-              </select>
-            </div>
-
-            <div className="form-group">
               <label htmlFor="status">Status</label>
               <select
                 id="status"
@@ -340,6 +358,18 @@ const ConfigurationForm: React.FC<ConfigurationFormProps> = ({
               </div>
             )}
           </div>
+
+          {!isEditing && (
+            <div className="form-actions initial-actions">
+              <button 
+                type="submit" 
+                className="btn-primary"
+                disabled={saving || !formData.name}
+              >
+                {saving ? 'Starting Configuration...' : 'Start Configuration'}
+              </button>
+            </div>
+          )}
         </div>
 
         {/* Bottom Section - Two Columns */}
@@ -353,7 +383,108 @@ const ConfigurationForm: React.FC<ConfigurationFormProps> = ({
               {chatMessages.map((msg) => (
                 <div key={msg.id} className={`chat-message ${msg.sender}`}>
                   <div className="message-content">
-                    <span className="message-text">{msg.message}</span>
+                    <div className="message-text">
+                      {msg.message}
+                      {msg.enumOptions && (
+                        <div className="enum-options">
+                          {msg.enumOptions.map((option) => (
+                            <button
+                              key={option.v}
+                              className="enum-option"
+                              onClick={() => {
+                                if (msg.questionPath) {
+                                  // Submit the selected option
+                                  const userMessage: ChatMessage = {
+                                    id: chatMessages.length + 1,
+                                    sender: 'user',
+                                    message: `Selected: ${option.l}`,
+                                    timestamp: new Date()
+                                  };
+                                  setChatMessages(prev => [...prev, userMessage]);
+                                  
+                                  // Update configuration with the selected value
+                                  const configData = JSON.parse(formData.configuration_data);
+                                  const path = msg.questionPath.split('.');
+                                  let current = configData;
+                                  for (let i = 0; i < path.length - 1; i++) {
+                                    if (!current[path[i]]) {
+                                      current[path[i]] = {};
+                                    }
+                                    current = current[path[i]];
+                                  }
+                                  current[path[path.length - 1]] = option.v;
+                                  
+                                  // Send update to backend
+                                  const updateData: ConfigurationCreate = {
+                                    ...formData,
+                                    configuration_data: configData,
+                                    tags: formData.tags.split(',').map(tag => tag.trim()).filter(tag => tag.length > 0)
+                                  };
+                                  ConfigurationApi.createConfiguration(updateData)
+                                    .then(response => {
+                                      // Update form data
+                                      setFormData(prev => ({
+                                        ...prev,
+                                        configuration_data: JSON.stringify(response.configuration.configuration_data, null, 2)
+                                      }));
+                                      
+                                      // Handle next question if any
+                                      const nextQuestion = response.configuration.configuration_data?.questions?.[0];
+                                      if (nextQuestion) {
+                                        let questionText = nextQuestion.text;
+                                        let enumOptions: EnumOption[] | undefined;
+                                        
+                                        if (nextQuestion.type_info?.type === 'Enum' && nextQuestion.type_info.possible_values) {
+                                          enumOptions = nextQuestion.type_info.possible_values;
+                                        }
+                                        
+                                        if (nextQuestion.default_value) {
+                                          questionText += `\nDefault: ${nextQuestion.default_value}`;
+                                        }
+                                        if (nextQuestion.info) {
+                                          questionText += `\n(${nextQuestion.info})`;
+                                        }
+                                        
+                                        const nextQuestionMessage: ChatMessage = {
+                                          id: chatMessages.length + 2,
+                                          sender: 'bot',
+                                          message: questionText,
+                                          timestamp: new Date(),
+                                          enumOptions,
+                                          questionPath: nextQuestion.path
+                                        };
+                                        setChatMessages(prev => [...prev, nextQuestionMessage]);
+                                      } else {
+                                        // Configuration complete
+                                        const completeMessage: ChatMessage = {
+                                          id: chatMessages.length + 2,
+                                          sender: 'bot',
+                                          message: 'Configuration complete! All questions have been answered.',
+                                          timestamp: new Date()
+                                        };
+                                        setChatMessages(prev => [...prev, completeMessage]);
+                                      }
+                                    })
+                                    .catch(err => {
+                                      const errorMessage: ChatMessage = {
+                                        id: chatMessages.length + 2,
+                                        sender: 'bot',
+                                        message: 'Error: ' + (err.response?.data?.detail || err.message || 'Failed to process configuration'),
+                                        timestamp: new Date()
+                                      };
+                                      setChatMessages(prev => [...prev, errorMessage]);
+                                      setError(err.response?.data?.detail || err.message || 'Failed to process configuration');
+                                    });
+                                }
+                              }}
+                            >
+                              <span className="enum-option-label">{option.l}</span>
+                              <span className="enum-option-value">({option.v})</span>
+                            </button>
+                          ))}
+                        </div>
+                      )}
+                    </div>
                     <span className="message-time">
                       {msg.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                     </span>
@@ -368,8 +499,13 @@ const ConfigurationForm: React.FC<ConfigurationFormProps> = ({
                 onChange={(e) => setUserInput(e.target.value)}
                 placeholder="Type your response here..."
                 className="chat-input"
+                disabled={!formData.configuration_data || formData.configuration_data === '{}'}
               />
-              <button type="submit" className="btn-send">
+              <button 
+                type="submit" 
+                className="btn-send"
+                disabled={!formData.configuration_data || formData.configuration_data === '{}'}
+              >
                 Send
               </button>
             </form>
@@ -386,29 +522,31 @@ const ConfigurationForm: React.FC<ConfigurationFormProps> = ({
               value={formData.configuration_data}
               readOnly
               className="json-textarea readonly"
-              placeholder="Configuration data will be generated based on cluster type"
+              placeholder="Configuration data will be shown after starting the configuration"
             />
             <small className="json-hint">Generated configuration data (read-only)</small>
           </div>
         </div>
 
-        <div className="form-actions">
-          <button 
-            type="button" 
-            onClick={onCancel} 
-            className="btn-secondary"
-            disabled={saving}
-          >
-            Cancel
-          </button>
-          <button 
-            type="submit" 
-            className="btn-primary"
-            disabled={saving}
-          >
-            {saving ? 'Saving...' : (isEditing ? 'Update Configuration' : 'Create Configuration')}
-          </button>
-        </div>
+        {isEditing && (
+          <div className="form-actions">
+            <button 
+              type="button" 
+              onClick={onCancel} 
+              className="btn-secondary"
+              disabled={saving}
+            >
+              Cancel
+            </button>
+            <button 
+              type="submit" 
+              className="btn-primary"
+              disabled={saving}
+            >
+              {saving ? 'Saving...' : 'Update Configuration'}
+            </button>
+          </div>
+        )}
       </form>
     </div>
   );

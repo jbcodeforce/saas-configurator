@@ -1,0 +1,46 @@
+services:
+  frontend:
+    build:
+      context: ./front-end
+      dockerfile: Dockerfile
+    container_name: frontend
+    image: saascfg_frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    networks:
+      - saas-network
+
+  backend:
+    build:
+      context: ./back-end
+      dockerfile: Dockerfile
+    container_name: backend
+    hostname: backend
+    image: saascfg_backend
+    ports:
+      - "8000:8000"
+    environment:
+      - RULE_ENGINE_URL=http://rule-engine:9000
+    depends_on:
+      - rule-engine
+    networks:
+      - saas-network
+
+  rule-engine:
+    image: provingly/luego-server-apis:1.1.5
+    container_name: rule-engine
+    hostname: rule-engine
+    ports:
+      - "9000:9000"
+    environment:
+      - PROVINGLY_SERVER_ENV=stage
+    volumes:
+      - ./back-end/luego-config-service/artefacts/domains:/var/lib/Luego/domains
+    networks:
+      - saas-network
+
+networks:
+  saas-network:
+    driver: bridge

@@ -72,7 +72,7 @@ def interactive_test(app_path: str, operation: str, lang: str):
     response = requests.post(api_url, data=input_json_string, headers=headers)
 
     print(f"status code = {response.status_code}")
-    #print(response.json())
+    print(response.json())
 
     resp_json = response.json()
     num_calls = 0

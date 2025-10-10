@@ -27,7 +27,11 @@ def test_create_configuration(client):
 
     # Get response data
     created_config = response.json()
-    print(created_config)
+    print(f"created_config = {created_config}")
+    assert created_config["name"] == config_data["name"]
+    assert created_config["description"] == config_data["description"]
+    assert created_config["status"] == "draft"
+    print(f"question = {created_config['configuration_data']['missingData']}")
 
 if __name__ == "__main__":
     pytest.main()
