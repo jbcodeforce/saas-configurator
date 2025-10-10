@@ -128,15 +128,20 @@ class RuleEngineClient:
             dictionary_target[member] = input_value
         return dictionary
 
+
     # TODO: replace hard-coded question by mapping logic
-    def map_question(self, missing_elt) -> QuestionInfo:
-        return QuestionInfo(path = "the customer request.cloudProvider",
-                            text = "What is the cloud provider?",
-                            info = "Please indicate the cloud provider chosen by the customer",
-                            default_value = "AWS",
-                            type_info = EnumType(possible_values=(LabelValuePair(v="AWS", l="Amazon Web Services"), 
+    def map_question(self, missing_elt: dict) -> QuestionInfo:
+        print("mapping questions...")
+        print(json.dumps(missing_elt, indent=4))
+
+        type_info = EnumType(possible_values=(LabelValuePair(v="AWS", l="Amazxon Web Services"), 
                                                                   LabelValuePair(v="GCP", l="Google Cloud")))
-                            )
+
+        return QuestionInfo(path = missing_elt['target'] + '.' + missing_elt['member'],
+                            text = missing_elt['details']['question'],
+                            info = missing_elt['details']['info'],
+                            default_value = None,
+                            type_info = type_info)
 
     def configure(self, 
                  input_dict: str,

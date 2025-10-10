@@ -525,7 +525,7 @@ const ConfigurationForm: React.FC<ConfigurationFormProps> = ({
             <textarea
               id="configuration_data"
               name="configuration_data"
-              value={JSON.stringify(JSON.parse(formData.configuration_data).payload['the configuration'], null, 2)}          
+              value={JSON.stringify(JSON.parse(formData.configuration_data).payload, null, 2)}
               readOnly
               className="json-textarea readonly"
               placeholder="Configuration data will be shown after starting the configuration"
