@@ -134,8 +134,10 @@ class RuleEngineClient:
         print("mapping questions...")
         print(json.dumps(missing_elt, indent=4))
 
-        type_info = EnumType(possible_values=(LabelValuePair(v="AWS", l="Amazxon Web Services"), 
-                                                                  LabelValuePair(v="GCP", l="Google Cloud")))
+        type_info = BooleanType
+        if missing_elt['details']['restriction']:
+            type_info = EnumType(possible_values=(LabelValuePair(v="AWS", l="Amazon Web Services"), 
+                                                                    LabelValuePair(v="GCP", l="Google Cloud")))
 
         return QuestionInfo(path = missing_elt['target'] + '.' + missing_elt['member'],
                             text = missing_elt['details']['question'],
