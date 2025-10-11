@@ -92,12 +92,22 @@ export class ConfigurationApi {
   static async updateConfiguration(
     id: number, 
     configuration: ConfigurationUpdate
-  ): Promise<Configuration> {
-    const response: AxiosResponse<Configuration> = await apiClient.put(
-      `/configurations/${id}`,
-      configuration
-    );
-    return response.data;
+  ): Promise<{
+    configuration: Configuration;
+    missingData?: Array<{
+      details: { question: string };
+      target: string;
+      member: string;
+      memberType: string;
+    }>;
+    output?: any;
+  }> {
+    const response  = await apiClient.put(`/configurations/${id}`, configuration);
+    return {
+      configuration: response.data,
+      missingData: response.data.missingData,
+      output: response.data.output
+    };
   }
 
   // Delete a configuration

@@ -83,6 +83,48 @@ async def root():
         "docs": "/docs"
     }
 
+@app.get(
+    "/configurations/",
+    response_model=ConfigurationListResponse,
+    summary="List configurations",
+    description="Retrieve a paginated list of configurations with optional filtering."
+)
+async def list_configurations(
+    skip: int = Query(0, ge=0, description="Number of configurations to skip"),
+    limit: int = Query(10, ge=1, le=100, description="Maximum number of configurations to return"),
+    status: Optional[ConfigurationStatus] = Query(None, description="Filter by configuration status"),
+    cluster_type: Optional[str] = Query(None, description="Filter by cluster type"),
+):
+    """List all cluster configurations with pagination and filtering."""
+    configurations = db.get_configurations(skip=skip, limit=limit, status=status, cluster_type=cluster_type)
+    total = db.count_configurations(status=status, cluster_type=cluster_type)
+    pages = math.ceil(total / limit) if total > 0 else 1
+    
+    return ConfigurationListResponse(
+        items=configurations,
+        total=total,
+        page=(skip // limit) + 1,
+        size=limit,
+        pages=pages
+    )
+
+
+@app.get(
+    "/configurations/{config_id}",
+    response_model=ConfigurationResponse,
+    summary="Get configuration by ID",
+    description="Retrieve a specific configuration by its ID."
+)
+async def get_configuration(
+    config_id: int = Path(..., gt=0, description="The ID of the configuration to retrieve")
+):
+    """Get a specific cluster configuration by ID."""
+    config = db.get_configuration(config_id)
+    if not config:
+        raise HTTPException(status_code=404, detail="Configuration not found")
+    return config
+
+
 
 @app.post(
     "/configurations/",
@@ -132,48 +174,6 @@ async def create_configuration(config: ConfigurationCreate) -> ConfigurationResp
         raise HTTPException(status_code=400, detail=f"Error creating configuration: {str(e)}")
 
 
-@app.get(
-    "/configurations/",
-    response_model=ConfigurationListResponse,
-    summary="List configurations",
-    description="Retrieve a paginated list of configurations with optional filtering."
-)
-async def list_configurations(
-    skip: int = Query(0, ge=0, description="Number of configurations to skip"),
-    limit: int = Query(10, ge=1, le=100, description="Maximum number of configurations to return"),
-    status: Optional[ConfigurationStatus] = Query(None, description="Filter by configuration status"),
-    cluster_type: Optional[str] = Query(None, description="Filter by cluster type"),
-):
-    """List all cluster configurations with pagination and filtering."""
-    configurations = db.get_configurations(skip=skip, limit=limit, status=status, cluster_type=cluster_type)
-    total = db.count_configurations(status=status, cluster_type=cluster_type)
-    pages = math.ceil(total / limit) if total > 0 else 1
-    
-    return ConfigurationListResponse(
-        items=configurations,
-        total=total,
-        page=(skip // limit) + 1,
-        size=limit,
-        pages=pages
-    )
-
-
-@app.get(
-    "/configurations/{config_id}",
-    response_model=ConfigurationResponse,
-    summary="Get configuration by ID",
-    description="Retrieve a specific configuration by its ID."
-)
-async def get_configuration(
-    config_id: int = Path(..., gt=0, description="The ID of the configuration to retrieve")
-):
-    """Get a specific cluster configuration by ID."""
-    config = db.get_configuration(config_id)
-    if not config:
-        raise HTTPException(status_code=404, detail="Configuration not found")
-    return config
-
-
 @app.put(
     "/configurations/{config_id}",
     response_model=ConfigurationResponse,
@@ -182,10 +182,13 @@ async def get_configuration(
 )
 async def update_configuration(
     config_update: ConfigurationUpdate,
-    config_id: int = Path(..., gt=0, description="The ID of the configuration to update")
-):
+    config_id: int = Path(..., gt=0, description="The ID of the configuration to update")) -> ConfigurationResponse:
+
     """Update an existing cluster configuration."""
     try:
+        print("About to update configuration " + str(config_id))
+        print(config_update.model_dump_json(indent=2))
+
         # Check if configuration exists
         existing_config = db.get_configuration(config_id)
         if not existing_config:
@@ -201,14 +204,7 @@ async def update_configuration(
         try:
             # Configure through rule engine
             rule_config = re_client.configure(
-                input_dict={
-                    "the customer request": {
-                        "LGType_": "demo.config.CustomerRequest"
-                    },
-                    "the configuration": {
-                        "LGType_": "demo.config.Configuration"
-                    }
-                },
+                input_dict=config_update.configuration_data['payload'],
                 lang="en",
             )
             

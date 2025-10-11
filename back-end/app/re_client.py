@@ -63,7 +63,7 @@ class BooleanType(TypeInfo):
 class QuestionInfo(BaseModel):
     path: str                               # path indicating where to inject back the answer into the payload
     text: str                               # text to be presented to the user
-    type_info: Union[NumberType, BooleanType, EnumType, TextType, DateType, DateTimeType]   # field used to create the right type of widget in the UI
+    type_info: Union[EnumType, NumberType, BooleanType, TextType, DateType, DateTimeType]   # field used to create the right type of widget in the UI
     default_value: Optional[str] = None     # default value that can be used to populate the UI widget
     info: Optional[str] = None              # information to be used in a tooltip
 
@@ -131,19 +131,25 @@ class RuleEngineClient:
 
     # TODO: replace hard-coded question by mapping logic
     def map_question(self, missing_elt: dict) -> QuestionInfo:
-        print("mapping questions...")
+        print("mapping question...")
         print(json.dumps(missing_elt, indent=4))
 
-        type_info = BooleanType
-        if missing_elt['details']['restriction']:
+        type_info = BooleanType(type='Boolean')
+        #type_info = NumberType(type='Number', range=None)
+        if 'restriction' in missing_elt['details']:
             type_info = EnumType(possible_values=(LabelValuePair(v="AWS", l="Amazon Web Services"), 
                                                                     LabelValuePair(v="GCP", l="Google Cloud")))
 
-        return QuestionInfo(path = missing_elt['target'] + '.' + missing_elt['member'],
+        question_info = QuestionInfo(path = missing_elt['target'] + '.' + missing_elt['member'],
                             text = missing_elt['details']['question'],
                             info = missing_elt['details']['info'],
                             default_value = None,
                             type_info = type_info)
+        
+        print("output of question mapping")
+        print(question_info.model_dump_json(indent=4))
+
+        return question_info
 
     def configure(self, 
                  input_dict: str,
@@ -184,8 +190,13 @@ class RuleEngineClient:
         # Transform each missing element into a QuestionInfo
         questions = [self.map_question(missing_elt) for missing_elt in missing_elements]
         
-        return ConfigResponse(payload = inferred_payload, 
+        config_response = ConfigResponse(payload = inferred_payload, 
                               questions=questions)
+
+        print("Output of configure method in RuleEngineClient")
+        print(config_response.model_dump_json(indent=2))
+        
+        return config_response
     
 
     def get_rule_engine_config(self) -> Dict[str, Any]:

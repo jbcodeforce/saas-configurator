@@ -29,6 +29,7 @@ const ConfigurationForm: React.FC<ConfigurationFormProps> = ({
   onCancel
 }) => {
   const [formData, setFormData] = useState({
+    id: -1,
     name: 'cfg1',
     description: '',
     version: '1.0.0',
@@ -45,8 +46,9 @@ const ConfigurationForm: React.FC<ConfigurationFormProps> = ({
   const isEditing = !!configuration;
 
   useEffect(() => {
-      if (configuration) {
+    if (configuration) {
       setFormData({
+        id: configuration.id,
         name: configuration.name,
         description: configuration.description || '',
         version: configuration.version,
@@ -133,9 +135,11 @@ const ConfigurationForm: React.FC<ConfigurationFormProps> = ({
         const startMessage: ChatMessage = {
           id: chatMessages.length + 1,
           sender: 'bot',
-          message: 'Starting configuration process...',
+          message: 'Starting configuration process (config id = ' + response.configuration.id + ')',
           timestamp: new Date()
         };
+        // keeping config id
+        formData.id = response.configuration.id;
         setChatMessages(prev => [...prev, startMessage]);
 
         // Handle configuration response
@@ -150,6 +154,9 @@ const ConfigurationForm: React.FC<ConfigurationFormProps> = ({
           
           if (question.type_info?.type === 'Enum' && question.type_info.possible_values) {
             enumOptions = question.type_info.possible_values;
+          }
+          else if (question.type_info?.type === 'Boolean') {
+            enumOptions = [{ v: "true", l: "Yes" }, { v: "false", l: "No" }]
           }
           
           if (question.default_value) {
@@ -200,100 +207,6 @@ const ConfigurationForm: React.FC<ConfigurationFormProps> = ({
       setChatMessages(prev => [...prev, errorMessage]);
     } finally {
       setSaving(false);
-    }
-  };
-
-
-  const handleSendMessage = async (e: React.FormEvent) => {
-    console.log("handleSendMessage...")
-
-    e.preventDefault();
-    if (!userInput.trim()) return;
-
-    // Add user message
-    const userMessage: ChatMessage = {
-      id: chatMessages.length + 1,
-      sender: 'user',
-      message: userInput,
-      timestamp: new Date()
-    };
-
-    setChatMessages(prev => [...prev, userMessage]);
-    setUserInput('');
-
-    try {
-      // Get current configuration data
-      let configurationData = JSON.parse(formData.configuration_data || '{}');
-      
-      // Create configuration update with user's response
-      const updateData: ConfigurationCreate = {
-        ...formData,
-        configuration_data: configurationData,
-        tags: formData.tags.split(',').map(tag => tag.trim()).filter(tag => tag.length > 0)
-      };
-
-      console.log("------- updateData -------")
-      console.log(JSON.stringify(updateData, null, 2))
-      // Send update to backend
-      const response = await ConfigurationApi.createConfiguration(updateData);
-
-      // Update configuration data
-      if (response.output) {
-        setFormData(prev => ({
-          ...prev,
-          configuration_data: JSON.stringify(response.output, null, 2)
-        }));
-      }
-
-      // Handle configuration response
-      const configData = response.configuration.configuration_data;
-      if (configData?.questions?.length > 0) {
-        // Get the first question
-        const question = configData.questions[0];
-        
-        // Format question message based on type
-        let questionText = question.text;
-        if (question.type_info?.type === 'Enum' && question.type_info.possible_values) {
-          questionText += '\nOptions:';
-          question.type_info.possible_values.forEach((value: { v: string; l: string }) => {
-            questionText += `\n- ${value.l} (${value.v})`;
-          });
-        }
-        if (question.default_value) {
-          questionText += `\nDefault: ${question.default_value}`;
-        }
-        if (question.info) {
-          questionText += `\n(${question.info})`;
-        }
-
-        // Add bot message with the formatted question
-        const questionMessage: ChatMessage = {
-          id: chatMessages.length + 2,
-          sender: 'bot',
-          message: questionText,
-          timestamp: new Date()
-        };
-        setChatMessages(prev => [...prev, questionMessage]);
-      } else {
-        // Configuration complete
-        const completeMessage: ChatMessage = {
-          id: chatMessages.length + 2,
-          sender: 'bot',
-          message: 'Configuration complete! All questions have been answered.',
-          timestamp: new Date()
-        };
-        setChatMessages(prev => [...prev, completeMessage]);
-      }
-    } catch (err: any) {
-      // Add error message to chat
-      const errorMessage: ChatMessage = {
-        id: chatMessages.length + 2,
-        sender: 'bot',
-        message: 'Error: ' + (err.response?.data?.detail || err.message || 'Failed to process configuration'),
-        timestamp: new Date()
-      };
-      setChatMessages(prev => [...prev, errorMessage]);
-      setError(err.response?.data?.detail || err.message || 'Failed to process configuration');
     }
   };
 
@@ -409,7 +322,7 @@ const ConfigurationForm: React.FC<ConfigurationFormProps> = ({
                                   
                                   // Update configuration payload with the selected value
                                   const configData = JSON.parse(formData.configuration_data);
-                                  const path = msg.questionPath.split('.');
+                                  const path = msg.questionPath.split('.');  // TODO: we also need to handle indexes for arrays 
                                   let current = configData['payload'];
                                   for (let i = 0; i < path.length - 1; i++) {
                                     if (!current[path[i]]) {
@@ -417,10 +330,9 @@ const ConfigurationForm: React.FC<ConfigurationFormProps> = ({
                                     }
                                     current = current[path[i]];
                                   }
-                                  current[path[path.length - 1]] = option.v;
 
-                                  //console.log('%c ================ current', 'color: #8102f0ff');                                  
-                                  //console.log('%c ' + JSON.stringify(configData, null, 2), 'color: #8102f0ff'); 
+                                  // TODO: convert to boolean, number, ... if needed
+                                  current[path[path.length - 1]] = option.v;
                                   
                                   // Send update to backend
                                   const updateData: ConfigurationCreate = {
@@ -429,10 +341,17 @@ const ConfigurationForm: React.FC<ConfigurationFormProps> = ({
                                     tags: formData.tags.split(',').map(tag => tag.trim()).filter(tag => tag.length > 0)
                                   };
 
-                                  console.log('%c ================ Updated data', 'color: #f0c002');                                  
+                                  console.log('%c ================ Form data', 'color: #f09102ff');                                  
+                                  console.log('%c ' + JSON.stringify(formData, null, 2), 'color: #f09102ff');   
+                                  console.log('%c ================ Updated data for config id = ' + formData.id, 'color: #f0c002');                                  
                                   console.log('%c ' + JSON.stringify(updateData, null, 2), 'color: #f0c002')
-                                  ConfigurationApi.createConfiguration(updateData)
+                                  ConfigurationApi.updateConfiguration(formData.id, updateData)
+                                  //ConfigurationApi.createConfiguration(updateData)
                                     .then(response => {
+
+                                      console.log('%c ================ Response to updateConfig', 'color: #02ccf0ff');                                  
+                                      console.log('%c ' + JSON.stringify(response, null, 2), 'color: #02ccf0ff');       
+
                                       // Update form data
                                       setFormData(prev => ({
                                         ...prev,
@@ -448,7 +367,10 @@ const ConfigurationForm: React.FC<ConfigurationFormProps> = ({
                                         if (nextQuestion.type_info?.type === 'Enum' && nextQuestion.type_info.possible_values) {
                                           enumOptions = nextQuestion.type_info.possible_values;
                                         }
-                                        
+                                        else if (nextQuestion.type_info?.type === 'Boolean') {
+                                          enumOptions = [{ v: "true", l: "Yes" }, { v: "false", l: "No" }]
+                                        }                                
+
                                         if (nextQuestion.default_value) {
                                           questionText += `\nDefault: ${nextQuestion.default_value}`;
                                         }
@@ -503,24 +425,6 @@ const ConfigurationForm: React.FC<ConfigurationFormProps> = ({
                 </div>
               ))}
             </div>
-            {/* TODO: I comment this portion for now to understand whether is the input handler when answering a question
-            <form className="chat-input-form" onSubmit={handleSendMessage}>
-              <input
-                type="text"
-                value={userInput}
-                onChange={(e) => setUserInput(e.target.value)}
-                placeholder="Type your response here..."
-                className="chat-input"
-                disabled={!formData.configuration_data || formData.configuration_data === '{}'}
-              />
-              <button 
-                type="submit" 
-                className="btn-send"
-                disabled={!formData.configuration_data || formData.configuration_data === '{}'}
-              >
-                Send
-              </button>
-            </form> */}
           </div>
 
           {/* Right Column - JSON Config View - we only show a subset of the full JSON 
