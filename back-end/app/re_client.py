@@ -134,8 +134,13 @@ class RuleEngineClient:
         print("mapping question...")
         print(json.dumps(missing_elt, indent=4))
 
-        type_info = BooleanType(type='Boolean')
-        #type_info = NumberType(type='Number', range=None)
+        if missing_elt['memberType'] == 'Boolean':
+            type_info = BooleanType(type='Boolean')
+        elif missing_elt['memberType'] == 'Integer':
+            type_info = NumberType(type='Number', range=Range(step='1'))
+        elif missing_elt['memberType'] == 'Number':
+            type_info = NumberType(type='Number', range=Range(step='0.01'))
+
         if 'restriction' in missing_elt['details']:
             type_info = EnumType(possible_values=(LabelValuePair(v="AWS", l="Amazon Web Services"), 
                                                                     LabelValuePair(v="GCP", l="Google Cloud")))

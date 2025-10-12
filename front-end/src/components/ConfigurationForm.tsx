@@ -3,7 +3,7 @@ import { Configuration, ConfigurationCreate, ConfigurationUpdate, ConfigurationS
 import ConfigurationApi from '../services/api';
 import './ConfigurationForm.css';
 
-import { JsonView, allExpanded, collapseAllNested, darkStyles, defaultStyles } from 'react-json-view-lite';
+import { JsonView, allExpanded, defaultStyles } from 'react-json-view-lite';
 import "react-json-view-lite/dist/index.css";
 
 
@@ -18,12 +18,28 @@ interface EnumOption {
   l: string;
 }
 
+interface NumericInput {
+  min?: number;
+  max?: number;
+  step?: number;
+}
+
+interface TextInput {
+  minLength?: number;
+  maxLength?: number;
+  pattern?: number;   // a regex
+}
+
+// TODO: default value is missing
 interface ChatMessage {
   id: number;
   sender: 'user' | 'bot';
   message: string;
+  tooltip?: string;
   timestamp: Date;
   enumOptions?: EnumOption[];
+  numericInput?: NumericInput;
+  textInput?: TextInput;
   questionPath?: string;
 }
 
@@ -138,7 +154,7 @@ const ConfigurationForm: React.FC<ConfigurationFormProps> = ({
         const startMessage: ChatMessage = {
           id: chatMessages.length + 1,
           sender: 'bot',
-          message: 'Starting configuration process (config id = ' + response.configuration.id + ')',
+          message: 'Starting the configuration process (config id = ' + response.configuration.id + '). Please answer a few questions.',
           timestamp: new Date()
         };
         // keeping config id
@@ -152,30 +168,47 @@ const ConfigurationForm: React.FC<ConfigurationFormProps> = ({
           const question = configData.questions[0];
           
           // Format question message based on type
-          let questionText = question.text;
           let enumOptions: EnumOption[] | undefined;
+          let numericInput: NumericInput | undefined;
+          let textInput: TextInput | undefined;
           
           if (question.type_info?.type === 'Enum' && question.type_info.possible_values) {
+            console.log('Enum input has been initialized using enumOptions')
             enumOptions = question.type_info.possible_values;
           }
           else if (question.type_info?.type === 'Boolean') {
+            console.log('Boolean input has been initialized using enumOptions')
             enumOptions = [{ v: true, l: "Yes" }, { v: false, l: "No" }]
           }
+          else if (question.type_info?.type === 'Number') {
+            console.log('Numeric input has been initialized with step = ' + question.type_info.step)
+            numericInput = { 
+              step: question.type_info.step,
+              min: question.type_info.min,
+              max: question.type_info.max
+            }
+          }
+          else if (question.type_info?.type === 'Text') {
+            console.log('Text input has been initialized')
+            textInput = {
+              minLength: question.type_info.minLength,
+              maxLength: question.type_info.maxLength,
+              pattern: question.type_info.regex
+            }
+          }
           
-          if (question.default_value) {
-            questionText += `\nDefault: ${question.default_value}`;
-          }
-          if (question.info) {
-            questionText += `\n(${question.info})`;
-          }
+
 
           // Add bot message with the formatted question
           const questionMessage: ChatMessage = {
             id: chatMessages.length + 2,
             sender: 'bot',
-            message: questionText,
+            message: question.text,
+            tooltip: question.info,
             timestamp: new Date(),
             enumOptions,
+            numericInput,
+            textInput,
             questionPath: question.path
           };
           setChatMessages(prev => [...prev, questionMessage]);
@@ -306,6 +339,24 @@ const ConfigurationForm: React.FC<ConfigurationFormProps> = ({
                   <div className="message-content">
                     <div className="message-text">
                       {msg.message}
+                      {msg.tooltip && <small>{msg.tooltip}</small>}
+                      {msg.numericInput && (
+                        <div>
+                          <input type="number" onKeyDown={(e) => {
+                            if (e.key === "Enter")
+                                console.log('Number entered: ' + e.currentTarget.value);
+
+                                // TODO: use the captured value to call the backend with an updated payload
+                            }}>
+                          </input>
+                          {/* TODO: insert a error message with a condition */}
+                        </div>
+                      )}
+                      {msg.textInput && (
+                        <div>
+                          <input type="text"></input>
+                        </div>
+                      )}
                       {msg.enumOptions && (
                         <div className="enum-options">
                           {msg.enumOptions.map((option) => (
@@ -334,7 +385,6 @@ const ConfigurationForm: React.FC<ConfigurationFormProps> = ({
                                     current = current[path[i]];
                                   }
 
-                                  // TODO: convert to boolean, number, ... if needed
                                   current[path[path.length - 1]] = option.v;
                                   
                                   // Send update to backend
@@ -364,31 +414,47 @@ const ConfigurationForm: React.FC<ConfigurationFormProps> = ({
                                       // Handle next question if any
                                       const nextQuestion = response.configuration.configuration_data?.questions?.[0];
                                       if (nextQuestion) {
-                                        let questionText = nextQuestion.text;
                                         let enumOptions: EnumOption[] | undefined;
+                                        let numericInput: NumericInput | undefined;
+                                        let textInput: TextInput | undefined;
                                         
                                         if (nextQuestion.type_info?.type === 'Enum' && nextQuestion.type_info.possible_values) {
+                                          console.log('Enum input has been initialized using enumOptions')
                                           enumOptions = nextQuestion.type_info.possible_values;
                                         }
                                         else if (nextQuestion.type_info?.type === 'Boolean') {
+                                          console.log('Boolean input has been initialized using enumOptions')
                                           enumOptions = [{ v: true, l: "Yes" }, { v: false, l: "No" }]
-                                        }                                
-
-                                        if (nextQuestion.default_value) {
-                                          questionText += `\nDefault: ${nextQuestion.default_value}`;
                                         }
-                                        if (nextQuestion.info) {
-                                          questionText += `\n(${nextQuestion.info})`;
+                                        else if (nextQuestion.type_info?.type === 'Number') {
+                                          console.log('Numeric input has been initialized with step = ' + nextQuestion.type_info.step)
+                                          numericInput = { 
+                                            step: nextQuestion.type_info.step,
+                                            min: nextQuestion.type_info.min,
+                                            max: nextQuestion.type_info.max
+                                          }
                                         }
+                                        else if (nextQuestion.type_info?.type === 'Text') {
+                                          console.log('Text input has been initialized')
+                                          textInput = {
+                                            minLength: nextQuestion.type_info.minLength,
+                                            maxLength: nextQuestion.type_info.maxLength,
+                                            pattern: nextQuestion.type_info.regex
+                                          }
+                                        }                                        
                                         
                                         const nextQuestionMessage: ChatMessage = {
                                           id: chatMessages.length + 2,
                                           sender: 'bot',
-                                          message: questionText,
+                                          message: nextQuestion.text,
+                                          tooltip: nextQuestion.info,
                                           timestamp: new Date(),
                                           enumOptions,
+                                          numericInput,
+                                          textInput,
                                           questionPath: nextQuestion.path
                                         };
+                                
                                         setChatMessages(prev => [...prev, nextQuestionMessage]);
                                       } else {
                                         // Configuration complete
