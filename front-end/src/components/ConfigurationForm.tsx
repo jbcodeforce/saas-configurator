@@ -10,7 +10,7 @@ interface ConfigurationFormProps {
 }
 
 interface EnumOption {
-  v: string;
+  v: string | boolean;
   l: string;
 }
 
@@ -156,7 +156,7 @@ const ConfigurationForm: React.FC<ConfigurationFormProps> = ({
             enumOptions = question.type_info.possible_values;
           }
           else if (question.type_info?.type === 'Boolean') {
-            enumOptions = [{ v: "true", l: "Yes" }, { v: "false", l: "No" }]
+            enumOptions = [{ v: true, l: "Yes" }, { v: false, l: "No" }]
           }
           
           if (question.default_value) {
@@ -307,7 +307,7 @@ const ConfigurationForm: React.FC<ConfigurationFormProps> = ({
                         <div className="enum-options">
                           {msg.enumOptions.map((option) => (
                             <button
-                              key={option.v}
+                              key={option.v.toString()}
                               className="enum-option"
                               onClick={() => {
                                 if (msg.questionPath) {
@@ -368,7 +368,7 @@ const ConfigurationForm: React.FC<ConfigurationFormProps> = ({
                                           enumOptions = nextQuestion.type_info.possible_values;
                                         }
                                         else if (nextQuestion.type_info?.type === 'Boolean') {
-                                          enumOptions = [{ v: "true", l: "Yes" }, { v: "false", l: "No" }]
+                                          enumOptions = [{ v: true, l: "Yes" }, { v: false, l: "No" }]
                                         }                                
 
                                         if (nextQuestion.default_value) {
