@@ -412,7 +412,7 @@ const ConfigurationForm: React.FC<ConfigurationFormProps> = ({
                               }}
                             >
                               <span className="enum-option-label">{option.l}</span>
-                              <span className="enum-option-value">({option.v})</span>
+                              {/*<span className="enum-option-value">({option.v})</span>*/}
                             </button>
                           ))}
                         </div>
