@@ -17,10 +17,10 @@ const Home: React.FC<HomeProps> = ({
           <div className="card-icon">
             <span className="icon-large">📋</span>
           </div>
-          <h3>Start New Configuration</h3>
-          <p>Configure your cluster parameters and get resource recommendations for your setup</p>
+          <h3>New Configuration</h3>
+          <p>Configure your cluster and get resource recommendations for your setup</p>
           <button className="card-button" onClick={onStartNewConfiguration}>
-            BEGIN ANALYSIS →
+            START →
           </button>
         </div>
 
@@ -28,10 +28,10 @@ const Home: React.FC<HomeProps> = ({
           <div className="card-icon">
             <span className="icon-large">📁</span>
           </div>
-          <h3>View Saved Configurations</h3>
-          <p>Review and edit your previously saved cluster configurations</p>
+          <h3>Saved Configurations</h3>
+          <p>Review and edit your existing cluster configurations</p>
           <button className="card-button" onClick={onViewSavedConfigurations}>
-            BROWSE FILES →
+            BROWSE →
           </button>
         </div>
 
@@ -40,7 +40,7 @@ const Home: React.FC<HomeProps> = ({
             <span className="icon-large">📖</span>
           </div>
           <h3>Configuration Guide</h3>
-          <p>Learn about the principles, assumptions, and best practices behind resource configuration</p>
+          <p>Learn about the principles, assumptions and best practices behind resource configuration</p>
           <button className="card-button">
             READ MORE →
           </button>

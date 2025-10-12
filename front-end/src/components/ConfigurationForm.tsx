@@ -41,7 +41,6 @@ const ConfigurationForm: React.FC<ConfigurationFormProps> = ({
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
-  const [userInput, setUserInput] = useState('');
 
   const isEditing = !!configuration;
 
@@ -62,7 +61,7 @@ const ConfigurationForm: React.FC<ConfigurationFormProps> = ({
     setChatMessages([{
       id: 1,
       sender: 'bot',
-      message: 'Hello! Enter the name of the configuration and Start Configuration to I can help you configure your cluster.',
+      message: 'Hello! I am here to help you configure your cluster. Press \'Start Configuration\' when you are ready.',
       timestamp: new Date()
     }]);
   }, [configuration]);
@@ -436,7 +435,7 @@ const ConfigurationForm: React.FC<ConfigurationFormProps> = ({
           */}
           <div className="config-column">
             <div className="config-header">
-              <h3>Configuration Data (JSON)</h3>
+              <h3>Configuration Data</h3>
             </div>
             <textarea
               id="configuration_data"
