@@ -3,6 +3,9 @@ import { Configuration, ConfigurationCreate, ConfigurationUpdate, ConfigurationS
 import ConfigurationApi from '../services/api';
 import './ConfigurationForm.css';
 
+import { JsonView, allExpanded, collapseAllNested, darkStyles, defaultStyles } from 'react-json-view-lite';
+
+
 interface ConfigurationFormProps {
   configuration?: Configuration;
   onSave: () => void;
@@ -426,26 +429,30 @@ const ConfigurationForm: React.FC<ConfigurationFormProps> = ({
             </div>
           </div>
 
-          {/* Right Column - JSON Config View - we only show a subset of the full JSON 
-              value={formData.configuration_data}
-              or 
-              value={JSON.stringify(JSON.parse(formData.configuration_data).payload, null, 2)}
-              or 
-              value={JSON.stringify(JSON.parse(formData.configuration_data).payload['the configuration'], null, 2)}          
+          {/* JsonView is documented at https://github.com/AnyRoad/react-json-view-lite          
           */}
           <div className="config-column">
             <div className="config-header">
               <h3>Configuration Data</h3>
             </div>
-            <textarea
+            {(JSON.parse(formData.configuration_data).payload !== undefined) 
+              ? <JsonView 
+                    data={JSON.parse(formData.configuration_data).payload} 
+                    shouldExpandNode={allExpanded} 
+                    clickToExpandNode={true}
+                    style={darkStyles} 
+                />
+              :<small className="json-hint">Configuration data will be shown after starting the configuration</small>}
+            
+
+            {/* <textarea
               id="configuration_data"
               name="configuration_data"
               value={JSON.stringify(JSON.parse(formData.configuration_data).payload, null, 2)}
               readOnly
               className="json-textarea readonly"
               placeholder="Configuration data will be shown after starting the configuration"
-            />
-            <small className="json-hint">Generated configuration data (read-only)</small>
+            />*/}
           </div>
         </div>
 
