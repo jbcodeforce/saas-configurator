@@ -4,6 +4,7 @@ import ConfigurationApi from '../services/api';
 import './ConfigurationForm.css';
 
 import { JsonView, allExpanded, collapseAllNested, darkStyles, defaultStyles } from 'react-json-view-lite';
+import "react-json-view-lite/dist/index.css";
 
 
 interface ConfigurationFormProps {
@@ -440,7 +441,7 @@ const ConfigurationForm: React.FC<ConfigurationFormProps> = ({
                     data={JSON.parse(formData.configuration_data).payload} 
                     shouldExpandNode={allExpanded} 
                     clickToExpandNode={true}
-                    style={darkStyles} 
+                    style={defaultStyles} 
                 />
               :<small className="json-hint">Configuration data will be shown after starting the configuration</small>}
             
