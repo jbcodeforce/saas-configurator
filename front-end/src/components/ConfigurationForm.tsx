@@ -342,20 +342,27 @@ const ConfigurationForm: React.FC<ConfigurationFormProps> = ({
                       {msg.tooltip && <small>{msg.tooltip}</small>}
                       {msg.numericInput && (
                         <div>
-                          <input type="number" onKeyDown={(e) => {
+                          <input type="number" step="msg.numericInput.step" onKeyDown={(e) => { // TODO: use min, max and step if defined
+                            if (e.key === "Enter")
+                                console.log('Number entered: ' + e.currentTarget.value);
+
+                                // TODO: use the captured value to call the backend with an updated payload
+                            }}>
+                          </input><br></br>
+                          <small style={{ color: 'red' }}>Wrong number. Please enter a value between 1 and 100</small>
+                          {/* TODO: insert a error message with a condition */}
+                        </div>
+                      )}
+                      {msg.textInput && (
+                        <div>
+                          <input type="text" onKeyDown={(e) => { // TODO: use minLength, maxLength and pattern if defined
                             if (e.key === "Enter")
                                 console.log('Number entered: ' + e.currentTarget.value);
 
                                 // TODO: use the captured value to call the backend with an updated payload
                             }}>
                           </input>
-                          {/* TODO: insert a error message with a condition */}
-                        </div>
-                      )}
-                      {msg.textInput && (
-                        <div>
-                          <input type="text"></input>
-                        </div>
+                          {/* TODO: insert a error message with a condition */}                        </div>
                       )}
                       {msg.enumOptions && (
                         <div className="enum-options">
