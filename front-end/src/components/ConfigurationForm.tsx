@@ -797,7 +797,7 @@ const ConfigurationForm: React.FC<ConfigurationFormProps> = ({
                       )}
                     </div>
                     <span className="message-time">
-                      {msg.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                      {msg.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
                     </span>
                   </div>
                 </div>
