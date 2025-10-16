@@ -43,6 +43,26 @@ interface ChatMessage {
   questionPath?: string;
 }
 
+
+function injectCapturedData(existing_config_data: string, 
+                            element_path: string,
+                            entered_value: any): object {
+
+  // Update configuration payload with the selected value
+  const configData = JSON.parse(existing_config_data);
+  const path_leg = element_path.split('.');  // TODO: we also need to handle indexes for arrays 
+  let current = configData['payload'];
+  for (let i = 0; i < path_leg.length - 1; i++) {
+    if (!current[path_leg[i]]) {
+      current[path_leg[i]] = {};  // note that we should never enter here
+    }
+    current = current[path_leg[i]];
+  }
+
+  current[path_leg[path_leg.length - 1]] = entered_value;  
+  return configData
+}  
+/*
 interface FormData {
     id: number,
     name: string,
@@ -53,7 +73,6 @@ interface FormData {
     tags: string
   }
 
-/*
 interface HandlerResponse {
   messages: ChatMessage[],
   error?: string,
@@ -513,17 +532,9 @@ const ConfigurationForm: React.FC<ConfigurationFormProps> = ({
                                   setChatMessages(prev => [...prev, userMessage]);
                                   
                                   // Update configuration payload with the selected value
-                                  const configData = JSON.parse(formData.configuration_data);
-                                  const path = msg.questionPath.split('.');  // TODO: we also need to handle indexes for arrays 
-                                  let current = configData['payload'];
-                                  for (let i = 0; i < path.length - 1; i++) {
-                                    if (!current[path[i]]) {
-                                      current[path[i]] = {};
-                                    }
-                                    current = current[path[i]];
-                                  }
-
-                                  current[path[path.length - 1]] = entered_value;
+                                  let configData = injectCapturedData(formData.configuration_data, 
+                                                                      msg.questionPath,
+                                                                      entered_value)
                                   
                                   // Send update to backend
                                   const updateData: ConfigurationCreate = {
@@ -684,17 +695,9 @@ const ConfigurationForm: React.FC<ConfigurationFormProps> = ({
                                   setChatMessages(prev => [...prev, userMessage]);
                                   
                                   // Update configuration payload with the selected value
-                                  const configData = JSON.parse(formData.configuration_data);
-                                  const path = msg.questionPath.split('.');  // TODO: we also need to handle indexes for arrays 
-                                  let current = configData['payload'];
-                                  for (let i = 0; i < path.length - 1; i++) {
-                                    if (!current[path[i]]) {
-                                      current[path[i]] = {};
-                                    }
-                                    current = current[path[i]];
-                                  }
-
-                                  current[path[path.length - 1]] = entered_value;
+                                  let configData = injectCapturedData(formData.configuration_data, 
+                                                                      msg.questionPath,
+                                                                      entered_value)
                                   
                                   // Send update to backend
                                   const updateData: ConfigurationCreate = {
