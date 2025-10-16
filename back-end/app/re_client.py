@@ -71,6 +71,7 @@ class QuestionInfo(BaseModel):
 class ConfigResponse(BaseModel):
     payload: Dict[str, Any]         # contains 'the customer request' and 'the configuration'
     questions: List[QuestionInfo]   # we provide a list even if the frontend might present only one question before calling again the server
+    appVersion: str
 
 class RuleEngineClient:
     _instance = None
@@ -196,7 +197,8 @@ class RuleEngineClient:
         questions = [self.map_question(missing_elt) for missing_elt in missing_elements]
         
         config_response = ConfigResponse(payload = inferred_payload, 
-                              questions=questions)
+                              questions=questions, 
+                              appVersion=resp_json.get("computationDetails")["appVersion"])
 
         print("Output of configure method in RuleEngineClient")
         print(config_response.model_dump_json(indent=2))
