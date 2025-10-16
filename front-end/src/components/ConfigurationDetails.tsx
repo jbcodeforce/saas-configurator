@@ -15,7 +15,7 @@ const ConfigurationDetails: React.FC<ConfigurationDetailsProps> = ({
   onBack,
   onDelete
 }) => {
-  const [showRawData, setShowRawData] = useState(false);
+  const [showRawData, setShowRawData] = useState(true);
 
   const getStatusBadgeClass = (status: ConfigurationStatus) => {
     switch (status) {
@@ -49,9 +49,15 @@ const ConfigurationDetails: React.FC<ConfigurationDetailsProps> = ({
 
     if (showRawData) {
       return (
-        <pre className="json-display">
-          {JSON.stringify(configuration.configuration_data, null, 2)}
-        </pre>
+        <div>
+          <pre className="json-display">
+            {JSON.stringify(configuration.configuration_data['payload'], null, 2)}
+          </pre>
+          <h3>Questions</h3>
+          <pre className="json-display">
+            {JSON.stringify(configuration.configuration_data['questions'], null, 2)}
+          </pre>
+        </div>
       );
     }
 
