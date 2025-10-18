@@ -107,10 +107,6 @@ const ConfigurationDetails: React.FC<ConfigurationDetailsProps> = ({
               <span>{configuration.id}</span>
             </div>
             <div className="meta-item">
-              <label>Cluster Type</label>
-              <span>{configuration.cluster_type}</span>
-            </div>
-            <div className="meta-item">
               <label>Version</label>
               <span>v{configuration.version}</span>
             </div>
@@ -122,6 +118,16 @@ const ConfigurationDetails: React.FC<ConfigurationDetailsProps> = ({
               <label>Updated</label>
               <span>{formatDateTime(configuration.updated_at)}</span>
             </div>
+
+            <div className="meta-item">
+              <label>Provingly application</label>
+              <span>{configuration.configuration_data.appName}/{configuration.configuration_data.appVersion}</span>
+            </div>
+            <div className="meta-item">
+              <label>operation</label>
+              <span>{configuration.configuration_data.operation}</span>
+            </div>
+
           </div>
         </div>
 
