@@ -60,10 +60,23 @@ class EnumType(TypeInfo):
 class BooleanType(TypeInfo):
     type: Literal['Boolean'] = 'Boolean'
 
+class ObjectCollectionType(TypeInfo): 
+    type: Literal['ObjectCollection'] = 'ObjectCollection'
+    minSize: int = 0                # minimum collection size
+    maxSize: Optional[int] = None   # maximum collection size
+    possibleTypes: List[LabelValuePair] = list()
+
+class SimpleCollectionType(TypeInfo): 
+    type: Literal['SimpleCollection'] = 'SimpleCollection'
+    minSize: int = 0                # minimum collection size
+    maxSize: Optional[int] = None   # maximum collection size
+    elementType: str = ''
+
+
 class QuestionInfo(BaseModel):
     path: str                               # path indicating where to inject back the answer into the payload
     text: str                               # text to be presented to the user
-    type_info: Union[EnumType, NumberType, BooleanType, TextType, DateType, DateTimeType]   # field used to create the right type of widget in the UI
+    type_info: Union[EnumType, NumberType, BooleanType, TextType, DateType, DateTimeType, ObjectCollectionType, SimpleCollectionType]   # field used to create the right type of widget in the UI
     default_value: Optional[str] = None     # default value that can be used to populate the UI widget
     info: Optional[str] = None              # information to be used in a tooltip
 
@@ -74,6 +87,12 @@ class ConfigResponse(BaseModel):
     appName: str
     appVersion: str
     operation: str
+
+def simple_type_name(type_name: str) -> str:
+    if not '.' in type_name:
+        return type_name
+    else:
+        return type_name[type_name.rindex('.')+1:]
 
 class RuleEngineClient:
     _instance = None
@@ -125,28 +144,52 @@ class RuleEngineClient:
 
         if member_type == "Boolean":
             dictionary_target[member] = input_value.lower() in ['true', 't', 'y', 'yes']
+
         elif member_type == "Integer":
             dictionary_target[member] = int(input_value)
+
+        elif member_type == "ObjectCollection":
+            list_element_type = "list_element_type"  #TODO: compute this properly
+            dictionary_target[member] = [{ "LGType_": list_element_type } for x in range(1..int(input_value))]
+
+            #if input_value.lower in ['no']:
+            #    dictionary_target[member] = []
+            #else:
+            #    dictionary_target[member] = [{ "LGType_": input_value}]
+
         else:  # String
             dictionary_target[member] = input_value
+
         return dictionary
 
 
+
+        
     # TODO: replace hard-coded question by mapping logic
     def map_question(self, missing_elt: dict) -> QuestionInfo:
         print("mapping question...")
         print(json.dumps(missing_elt, indent=4))
 
-        if missing_elt['memberType'] == 'Boolean':
+        memberType = missing_elt['memberType']
+        if memberType == 'Boolean':
             type_info = BooleanType(type='Boolean')
-        elif missing_elt['memberType'] == 'Integer':
+        elif memberType == 'Integer':
             type_info = NumberType(type='Number', range=Range(step='1'))
-        elif missing_elt['memberType'] == 'Number':
+        elif memberType == 'Text':
+            type_info = TextType(type='Text')
+        elif memberType == 'Number':
             type_info = NumberType(type='Number', range=Range(step='0.01'))
+        elif "List[" in memberType or "NEList[" in memberType or "Option[" in memberType:
+            possible_types = missing_elt['details']['collection']['possibleElementTypes']
+            min_number_elements = missing_elt['details']['collection']['min']
+            max_number_elements = missing_elt['details']['collection']['max']
+            type_info = ObjectCollectionType(type='ObjectCollection', 
+                                             minSize = min_number_elements,
+                                             maxSize=max_number_elements, 
+                                             possibleTypes=[LabelValuePair(v=pt, l=simple_type_name(pt)) for pt in possible_types])
 
         if 'restriction' in missing_elt['details']:
-            type_info = EnumType(possible_values=(LabelValuePair(v="AWS", l="Amazon Web Services"), 
-                                                                    LabelValuePair(v="GCP", l="Google Cloud")))
+            type_info = EnumType(type='Enum', possible_values=[LabelValuePair(v=pv['v'], l=pv['label']) for pv in missing_elt['details']['restriction']['possibleValues']])
 
         question_info = QuestionInfo(path = missing_elt['target'] + '.' + missing_elt['member'],
                             text = missing_elt['details']['question'],
