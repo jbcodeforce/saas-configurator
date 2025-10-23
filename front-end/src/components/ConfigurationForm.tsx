@@ -521,10 +521,13 @@ const ConfigurationForm: React.FC<ConfigurationFormProps> = ({
                                       }
                                     })
                                     .catch(err => {
+                                      console.log(">> ERROR: " + err.response?.status);
+                                      //const message_txt = 'Error: ' + (err.response?.status === 400 ? ('wrong input ' + JSON.stringify(msg.numericInput)) : (err.response?.data?.detail || err.message || 'Failed to process configuration'));
+                                      const message_txt = 'Error: ' + (err.response?.status === 400 ? ('wrong input ') : (err.response?.data?.detail || err.message || 'Failed to process configuration'));
                                       const errorMessage: ChatMessage = {
                                         id: chatMessages.length + 2,
                                         sender: 'bot',
-                                        message: 'Error: ' + (err.response?.data?.detail || err.message || 'Failed to process configuration'),
+                                        message: message_txt,
                                         timestamp: new Date()
                                       };
                                       setChatMessages(prev => [...prev, errorMessage]);
@@ -657,10 +660,11 @@ const ConfigurationForm: React.FC<ConfigurationFormProps> = ({
                                       }
                                     })
                                     .catch(err => {
+                                      console.log(">> ERROR: " + err.response?.status);
                                       const errorMessage: ChatMessage = {
                                         id: chatMessages.length + 2,
                                         sender: 'bot',
-                                        message: 'Error: ' + (err.response?.data?.detail || err.message || 'Failed to process configuration'),
+                                        message: 'Error: ' + (err.response?.status === 400 ? 'wrong input' : (err.response?.data?.detail || err.message || 'Failed to process configuration')),
                                         timestamp: new Date()
                                       };
                                       setChatMessages(prev => [...prev, errorMessage]);
@@ -824,10 +828,11 @@ const ConfigurationForm: React.FC<ConfigurationFormProps> = ({
                                       }
                                     })
                                     .catch(err => {
+                                      console.log(">> ERROR: " + err.response?.status);
                                       const errorMessage: ChatMessage = {
                                         id: chatMessages.length + 2,
                                         sender: 'bot',
-                                        message: 'Error: ' + (err.response?.data?.detail || err.message || 'Failed to process configuration'),
+                                        message: 'Error: ' + (err.response?.status === 400 ? 'wrong input' : (err.response?.data?.detail || err.message || 'Failed to process configuration')),
                                         timestamp: new Date()
                                       };
                                       setChatMessages(prev => [...prev, errorMessage]);
@@ -957,10 +962,11 @@ const ConfigurationForm: React.FC<ConfigurationFormProps> = ({
                                       }
                                     })
                                     .catch(err => {
+                                      console.log(">> ERROR: " + err.response?.status);
                                       const errorMessage: ChatMessage = {
                                         id: chatMessages.length + 2,
                                         sender: 'bot',
-                                        message: 'Error: ' + (err.response?.data?.detail || err.message || 'Failed to process configuration'),
+                                        message: 'Error: ' + (err.response?.status === 400 ? 'wrong input' : (err.response?.data?.detail || err.message || 'Failed to process configuration')),
                                         timestamp: new Date()
                                       };
                                       setChatMessages(prev => [...prev, errorMessage]);
@@ -1091,10 +1097,11 @@ const ConfigurationForm: React.FC<ConfigurationFormProps> = ({
                                       }
                                     })
                                     .catch(err => {
+                                      console.log(">> ERROR: " + err.response?.status);
                                       const errorMessage: ChatMessage = {
                                         id: chatMessages.length + 2,
                                         sender: 'bot',
-                                        message: 'Error: ' + (err.response?.data?.detail || err.message || 'Failed to process configuration'),
+                                        message: 'Error: ' + (err.response?.status === 400 ? 'wrong input' : (err.response?.data?.detail || err.message || 'Failed to process configuration')),
                                         timestamp: new Date()
                                       };
                                       setChatMessages(prev => [...prev, errorMessage]);

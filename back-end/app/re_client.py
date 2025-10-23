@@ -193,11 +193,21 @@ class RuleEngineClient:
         if 'restriction' in missing_elt['details']:
             if missing_elt['details']['restriction']['type'] == 'enum':
                 type_info = EnumType(type='Enum', possible_values=[LabelValuePair(v=pv['v'], l=pv['label']) for pv in missing_elt['details']['restriction']['possibleValues']])
-            if missing_elt['details']['restriction']['type'] == 'numeric':
+            elif missing_elt['details']['restriction']['type'] == 'text':
+                regex: Optional[str] = None if not missing_elt['details']['restriction']['regex'] else missing_elt['details']['restriction']['regex']
+                minLength: Optional[int] = None if not missing_elt['details']['restriction']['minLength'] else missing_elt['details']['restriction']['minLength']
+                maxLength: Optional[int] = None if not missing_elt['details']['restriction']['maxLength'] else missing_elt['details']['restriction']['maxLength']
+                type_info = TextType(type='Text', regex=regex, minLength=minLength, maxLength=maxLength)
+            elif missing_elt['details']['restriction']['type'] == 'numeric':
+                lower_bound = None if  not missing_elt['details']['restriction']['min'] else str(missing_elt['details']['restriction']['min']['bound'])
+                upper_bound = None if  not missing_elt['details']['restriction']['max'] else str(missing_elt['details']['restriction']['max']['bound'])
+
                 if missing_elt['details']['restriction']['underlying'] == 'Integer':
-                    type_info = NumberType(type='Number', range=Range(step='1'))
+                    step = '1' if not missing_elt['details']['restriction']['step'] else missing_elt['details']['restriction']['step']
+                    type_info = NumberType(type='Number', range=Range(min=lower_bound, max=upper_bound, step=step))
                 elif missing_elt['details']['restriction']['underlying'] == 'Number':
-                    type_info = NumberType(type='Number', range=Range(step='0.01'))
+                    step = '0.01' if not missing_elt['details']['restriction']['step'] else missing_elt['details']['restriction']['step']
+                    type_info = NumberType(type='Number', range=Range(min=lower_bound, max=upper_bound, step=step))
 
         question_info = QuestionInfo(path = missing_elt['target'] + '.' + missing_elt['member'],
                             text = missing_elt['details']['question'],
