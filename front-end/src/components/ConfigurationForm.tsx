@@ -49,6 +49,7 @@ interface ChatMessage {
   textInput?: TextInput;
   objectCollInput?: ObjectCollectionInput;
   questionPath?: string;
+  common_type_name?: string;
 }
 
 interface ErrorInfo {
@@ -58,6 +59,11 @@ interface ErrorInfo {
 
 function prepend(opt: EnumOption, list: EnumOption[]): EnumOption[] {
   return [opt, ...list];
+}
+
+function simpleName(qualifiedName: string): string {
+  const parts = qualifiedName.split('.');
+  return parts.at(-1) || qualifiedName;
 }
 
 function injectCapturedData(existing_config_data: string, 
@@ -278,7 +284,8 @@ const ConfigurationForm: React.FC<ConfigurationFormProps> = ({
             numericInput: numericInput,
             textInput: textInput,
             objectCollInput: objectCollectionInput,
-            questionPath: question.path
+            questionPath: question.path,
+            common_type_name: question.common_type_name
           };
           console.log('%c initial QuestionMessage = ' + JSON.stringify(questionMessage, null, 2), 'color: #d5af18ff')
 
@@ -516,7 +523,8 @@ const ConfigurationForm: React.FC<ConfigurationFormProps> = ({
                                           numericInput: numericInput,
                                           textInput: textInput,
                                           objectCollInput: objectCollectionInput,
-                                          questionPath: nextQuestion.path
+                                          questionPath: nextQuestion.path,
+                                          common_type_name: nextQuestion.common_type_name
                                         };
                                         console.log('%c nextQuestionMessage = ' + JSON.stringify(nextQuestionMessage, null, 2), 'color: #d5af18ff')
                                 
@@ -550,7 +558,7 @@ const ConfigurationForm: React.FC<ConfigurationFormProps> = ({
                                       else {
                                         setWidgetError( { 
                                           key: msg.questionPath,
-                                          error: 'Please enter a numeric value in interval' 
+                                          error: 'Please enter a numeric value for ' + (msg.common_type_name ? simpleName(msg.common_type_name) : '')
                                         });
                                       }
                                     });
@@ -667,7 +675,8 @@ const ConfigurationForm: React.FC<ConfigurationFormProps> = ({
                                           numericInput: numericInput,
                                           textInput: textInput,
                                           objectCollInput: objectCollectionInput,
-                                          questionPath: nextQuestion.path
+                                          questionPath: nextQuestion.path,
+                                          common_type_name: nextQuestion.common_type_name
                                         };
                                         console.log('%c nextQuestionMessage = ' + JSON.stringify(nextQuestionMessage, null, 2), 'color: #d5af18ff')
                                 
@@ -850,7 +859,8 @@ const ConfigurationForm: React.FC<ConfigurationFormProps> = ({
                                           numericInput: numericInput,
                                           textInput: textInput,
                                           objectCollInput: objectCollectionInput,
-                                          questionPath: nextQuestion.path
+                                          questionPath: nextQuestion.path,
+                                          common_type_name: nextQuestion.common_type_name
                                         };
                                         console.log('%c nextQuestionMessage = ' + JSON.stringify(nextQuestionMessage, null, 2), 'color: #d5af18ff')
                                 
@@ -1000,7 +1010,8 @@ const ConfigurationForm: React.FC<ConfigurationFormProps> = ({
                                           numericInput: numericInput,
                                           textInput: textInput,
                                           objectCollInput: objectCollectionInput,
-                                          questionPath: nextQuestion.path
+                                          questionPath: nextQuestion.path,
+                                          common_type_name: nextQuestion.common_type_name
                                         };
                                         console.log('%c nextQuestionMessage = ' + JSON.stringify(nextQuestionMessage, null, 2), 'color: #d5af18ff')
                                 
@@ -1034,7 +1045,7 @@ const ConfigurationForm: React.FC<ConfigurationFormProps> = ({
                                       else {
                                         setWidgetError( { 
                                           key: msg.questionPath,
-                                          error: 'Please enter a valid text' 
+                                          error: 'Please enter a valid ' + (msg.common_type_name ? simpleName(msg.common_type_name) : '') 
                                         });
                                       }
                                     });
@@ -1150,7 +1161,8 @@ const ConfigurationForm: React.FC<ConfigurationFormProps> = ({
                                           numericInput: numericInput,
                                           textInput: textInput,
                                           objectCollInput: objectCollectionInput,
-                                          questionPath: nextQuestion.path
+                                          questionPath: nextQuestion.path,
+                                          common_type_name: nextQuestion.common_type_name
                                         };
                                         console.log('%c nextQuestionMessage = ' + JSON.stringify(nextQuestionMessage, null, 2), 'color: #d5af18ff')
                                 

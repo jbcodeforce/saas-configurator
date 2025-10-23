@@ -79,6 +79,7 @@ class QuestionInfo(BaseModel):
     type_info: Union[EnumType, NumberType, BooleanType, TextType, DateType, DateTimeType, ObjectCollectionType, SimpleCollectionType]   # field used to create the right type of widget in the UI
     default_value: Optional[str] = None     # default value that can be used to populate the UI widget
     info: Optional[str] = None              # information to be used in a tooltip
+    common_type_name: Optional[str] = None
 
 
 class ConfigResponse(BaseModel):
@@ -213,7 +214,8 @@ class RuleEngineClient:
                             text = missing_elt['details']['question'],
                             info = missing_elt['details']['info'],
                             default_value = None,
-                            type_info = type_info)
+                            type_info = type_info,
+                            common_type_name=missing_elt['memberType'])
         
         print("output of question mapping")
         print(question_info.model_dump_json(indent=4))
