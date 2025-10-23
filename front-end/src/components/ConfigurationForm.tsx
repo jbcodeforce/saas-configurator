@@ -40,6 +40,7 @@ interface TextInput {
 interface ChatMessage {
   id: number;
   sender: 'user' | 'bot';
+  infoPath?: string;
   message: string;
   tooltip?: string;
   timestamp: Date;
@@ -259,6 +260,7 @@ const ConfigurationForm: React.FC<ConfigurationFormProps> = ({
           const questionMessage: ChatMessage = {
             id: chatMessages.length + 2,
             sender: 'bot',
+            infoPath: question.path,
             message: question.text,
             tooltip: question.info,
             timestamp: new Date(),
@@ -397,6 +399,7 @@ const ConfigurationForm: React.FC<ConfigurationFormProps> = ({
                 <div key={msg.id} className={`chat-message ${msg.sender}`}>
                   <div className="message-content">
                     <div className="message-text">
+                      {msg.infoPath?.split('.') && msg.infoPath?.split('.').length > 2 && (<small>{msg.infoPath}</small>)}
                       {msg.message}
                       {msg.tooltip && <small>{msg.tooltip}</small>}
                       {msg.numericInput && (
@@ -491,6 +494,7 @@ const ConfigurationForm: React.FC<ConfigurationFormProps> = ({
                                         const nextQuestionMessage: ChatMessage = {
                                           id: chatMessages.length + 2,
                                           sender: 'bot',
+                                          infoPath: nextQuestion.path,
                                           message: nextQuestion.text,
                                           tooltip: nextQuestion.info,
                                           timestamp: new Date(),
@@ -535,10 +539,7 @@ const ConfigurationForm: React.FC<ConfigurationFormProps> = ({
                         </div>
                       )}
                       {msg.objectCollInput && msg.objectCollInput.min === 0 && msg.objectCollInput.max === 1 && (
-                        <div className="enum-options">
-                          <p>OPTION INPUT - pick option</p>
-
-                          
+                        <div className="enum-options">                          
                           {prepend({ "l": "None", "v": "__none__"}, msg.objectCollInput.possible_types).map((option) => (
                             <button
                               key={option.v.toString()}
@@ -629,6 +630,7 @@ const ConfigurationForm: React.FC<ConfigurationFormProps> = ({
                                         const nextQuestionMessage: ChatMessage = {
                                           id: chatMessages.length + 2,
                                           sender: 'bot',
+                                          infoPath: nextQuestion.path,
                                           message: nextQuestion.text,
                                           tooltip: nextQuestion.info,
                                           timestamp: new Date(),
@@ -696,7 +698,6 @@ const ConfigurationForm: React.FC<ConfigurationFormProps> = ({
 
                       {msg.objectCollInput && msg.objectCollInput.max > 1 && (
                         <div>
-                          <p>LIST INPUT - enter number of elements</p>
                           <input type="number" step="1" min="msg.objectCollInput.min" max="msg.objectCollInput.max" onKeyDown={(e) => { // TODO: use min, max and step if defined
                                 if (e.defaultPrevented) {
                                   return; // Do nothing if the event was already processed
@@ -713,17 +714,124 @@ const ConfigurationForm: React.FC<ConfigurationFormProps> = ({
                                     timestamp: new Date()
                                   };
                                   setChatMessages(prev => [...prev, userMessage]);
+
+                                  console.log(JSON.stringify(msg.objectCollInput));
+                                  console.log("Creating a list of " + entered_value + " objects of type " + msg.objectCollInput?.possible_types[0].v);
                                   
-                                  let entered_collection = Array(entered_value).map((x) => {
-                                    return { 
-                                      LGType_: msg.objectCollInput?.possible_types[0]  // TODO: we only support list of concrete types
-                                    }
-                                  })
+                                  const obj = { 
+                                    "LGType_": msg.objectCollInput?.possible_types[0].v  // TODO: we only support list of concrete types
+                                  };
+                                  console.log("===================");
+                                  console.log(JSON.stringify(obj));
+                                  let entered_collection = Array(entered_value).fill(obj);
 
                                   // Update configuration payload with the selected value
                                   let configData = injectCapturedData(formData.configuration_data, 
                                                                       msg.questionPath,
-                                                                      entered_collection)                                  
+                                                                      entered_collection);
+                                                                      
+                                  // Send update to backend
+                                  const updateData: ConfigurationCreate = {
+                                    ...formData,
+                                    configuration_data: configData,
+                                    tags: formData.tags.split(',').map(tag => tag.trim()).filter(tag => tag.length > 0)
+                                  };
+
+                                  console.log('%c ================ Form data', 'color: #f09102ff');                                  
+                                  console.log('%c ' + JSON.stringify(formData, null, 2), 'color: #f09102ff');   
+                                  console.log('%c ================ Updated data for config id = ' + formData.id, 'color: #f0c002');                                  
+                                  console.log('%c ' + JSON.stringify(updateData, null, 2), 'color: #f0c002')
+                                  ConfigurationApi.updateConfiguration(formData.id, updateData)
+                                    .then(response => {
+
+                                      console.log('%c ================ Response to updateConfig', 'color: #02ccf0ff');                                  
+                                      console.log('%c ' + JSON.stringify(response, null, 2), 'color: #02ccf0ff');       
+
+                                      // Update form data
+                                      setFormData(prev => ({
+                                        ...prev,
+                                        configuration_data: JSON.stringify(response.configuration.configuration_data, null, 2)
+                                      }));
+                                      
+                                      // Handle next question if any
+                                      const nextQuestion = response.configuration.configuration_data?.questions?.[0];
+                                      if (nextQuestion) {
+                                        let enumOptions: EnumOption[] | undefined;
+                                        let numericInput: NumericInput | undefined;
+                                        let textInput: TextInput | undefined;
+                                        let objectCollectionInput: ObjectCollectionInput | undefined;
+                                        
+                                        if (nextQuestion.type_info?.type === 'Enum' && nextQuestion.type_info.possible_values) {
+                                          console.log('Enum input has been initialized using enumOptions')
+                                          enumOptions = nextQuestion.type_info.possible_values;
+                                        }
+                                        else if (nextQuestion.type_info?.type === 'Boolean') {
+                                          console.log('Boolean input has been initialized using enumOptions')
+                                          enumOptions = [{ v: true, l: "Yes" }, { v: false, l: "No" }]
+                                        }
+                                        else if (nextQuestion.type_info?.type === 'Number') {
+                                          console.log('Numeric input has been initialized with step = ' + nextQuestion.type_info.step)
+                                          numericInput = { 
+                                            step: nextQuestion.type_info.step,
+                                            min: nextQuestion.type_info.min,
+                                            max: nextQuestion.type_info.max
+                                          }
+                                        }
+                                        else if (nextQuestion.type_info?.type === 'Text') {
+                                          console.log('Text input has been initialized')
+                                          textInput = {
+                                            minLength: nextQuestion.type_info.minLength,
+                                            maxLength: nextQuestion.type_info.maxLength,
+                                            pattern: nextQuestion.type_info.regex
+                                          }
+                                        }    
+                                        else if (nextQuestion.type_info?.type === 'ObjectCollection') {
+                                          console.log('ObjectCollection input has been initialized using XYZ')
+                                          objectCollectionInput = {
+                                            min: nextQuestion.type_info.minSize,
+                                            max: nextQuestion.type_info.maxSize,
+                                            possible_types: nextQuestion.type_info.possibleTypes
+                                          }
+                                        }                                    
+                                        
+                                        const nextQuestionMessage: ChatMessage = {
+                                          id: chatMessages.length + 2,
+                                          sender: 'bot',
+                                          infoPath: nextQuestion.path,
+                                          message: nextQuestion.text,
+                                          tooltip: nextQuestion.info,
+                                          timestamp: new Date(),
+                                          enumOptions: enumOptions,
+                                          numericInput: numericInput,
+                                          textInput: textInput,
+                                          objectCollInput: objectCollectionInput,
+                                          questionPath: nextQuestion.path
+                                        };
+                                        console.log('%c nextQuestionMessage = ' + JSON.stringify(nextQuestionMessage, null, 2), 'color: #d5af18ff')
+                                
+                                        setChatMessages(prev => [...prev, nextQuestionMessage]);
+                                      } 
+                                      else {
+                                        // Configuration complete
+                                        const completeMessage: ChatMessage = {
+                                          id: chatMessages.length + 2,
+                                          sender: 'bot',
+                                          message: 'Configuration complete! All questions have been answered.',
+                                          timestamp: new Date()
+                                        };
+                                        setChatMessages(prev => [...prev, completeMessage]);
+                                      }
+                                    })
+                                    .catch(err => {
+                                      const errorMessage: ChatMessage = {
+                                        id: chatMessages.length + 2,
+                                        sender: 'bot',
+                                        message: 'Error: ' + (err.response?.data?.detail || err.message || 'Failed to process configuration'),
+                                        timestamp: new Date()
+                                      };
+                                      setChatMessages(prev => [...prev, errorMessage]);
+                                      setError(err.response?.data?.detail || err.message || 'Failed to process configuration');
+                                    });                                    
 
                                 }
                               }
@@ -737,11 +845,128 @@ const ConfigurationForm: React.FC<ConfigurationFormProps> = ({
                                 if (e.defaultPrevented) {
                                   return; // Do nothing if the event was already processed
                                 }                          
-                                if (e.key === "Enter" && msg.questionPath) {        
-                                console.log('Text entered: ' + e.currentTarget.value);
+                                if (e.key === "Enter" && msg.questionPath) {
+                                  console.log('Number entered: ' + e.currentTarget.value);
+                                  let entered_value = e.currentTarget.value;
 
-                                // TODO: use the captured value to call the backend with an updated payload
+                                  // Submit the selected option
+                                  const userMessage: ChatMessage = {
+                                    id: chatMessages.length + 1,
+                                    sender: 'user',
+                                    message: `Entered: ${entered_value}`,
+                                    timestamp: new Date()
+                                  };
+                                  setChatMessages(prev => [...prev, userMessage]);
+                                  
+                                  // Update configuration payload with the selected value
+                                  let configData = injectCapturedData(formData.configuration_data, 
+                                                                      msg.questionPath,
+                                                                      entered_value)
+                                  
+                                  // Send update to backend
+                                  const updateData: ConfigurationCreate = {
+                                    ...formData,
+                                    configuration_data: configData,
+                                    tags: formData.tags.split(',').map(tag => tag.trim()).filter(tag => tag.length > 0)
+                                  };
+
+                                  console.log('%c ================ Form data', 'color: #f09102ff');                                  
+                                  console.log('%c ' + JSON.stringify(formData, null, 2), 'color: #f09102ff');   
+                                  console.log('%c ================ Updated data for config id = ' + formData.id, 'color: #f0c002');                                  
+                                  console.log('%c ' + JSON.stringify(updateData, null, 2), 'color: #f0c002')
+                                  ConfigurationApi.updateConfiguration(formData.id, updateData)
+                                    .then(response => {
+
+                                      console.log('%c ================ Response to updateConfig', 'color: #02ccf0ff');                                  
+                                      console.log('%c ' + JSON.stringify(response, null, 2), 'color: #02ccf0ff');       
+
+                                      // Update form data
+                                      setFormData(prev => ({
+                                        ...prev,
+                                        configuration_data: JSON.stringify(response.configuration.configuration_data, null, 2)
+                                      }));
+                                      
+                                      // Handle next question if any
+                                      const nextQuestion = response.configuration.configuration_data?.questions?.[0];
+                                      if (nextQuestion) {
+                                        let enumOptions: EnumOption[] | undefined;
+                                        let numericInput: NumericInput | undefined;
+                                        let textInput: TextInput | undefined;
+                                        let objectCollectionInput: ObjectCollectionInput | undefined;
+                                        
+                                        if (nextQuestion.type_info?.type === 'Enum' && nextQuestion.type_info.possible_values) {
+                                          console.log('Enum input has been initialized using enumOptions')
+                                          enumOptions = nextQuestion.type_info.possible_values;
+                                        }
+                                        else if (nextQuestion.type_info?.type === 'Boolean') {
+                                          console.log('Boolean input has been initialized using enumOptions')
+                                          enumOptions = [{ v: true, l: "Yes" }, { v: false, l: "No" }]
+                                        }
+                                        else if (nextQuestion.type_info?.type === 'Number') {
+                                          console.log('Numeric input has been initialized with step = ' + nextQuestion.type_info.step)
+                                          numericInput = { 
+                                            step: nextQuestion.type_info.step,
+                                            min: nextQuestion.type_info.min,
+                                            max: nextQuestion.type_info.max
+                                          }
+                                        }
+                                        else if (nextQuestion.type_info?.type === 'Text') {
+                                          console.log('Text input has been initialized')
+                                          textInput = {
+                                            minLength: nextQuestion.type_info.minLength,
+                                            maxLength: nextQuestion.type_info.maxLength,
+                                            pattern: nextQuestion.type_info.regex
+                                          }
+                                        }    
+                                        else if (nextQuestion.type_info?.type === 'ObjectCollection') {
+                                          console.log('ObjectCollection input has been initialized using XYZ')
+                                          objectCollectionInput = {
+                                            min: nextQuestion.type_info.minSize,
+                                            max: nextQuestion.type_info.maxSize,
+                                            possible_types: nextQuestion.type_info.possibleTypes
+                                          }
+                                        }                                    
+                                        
+                                        const nextQuestionMessage: ChatMessage = {
+                                          id: chatMessages.length + 2,
+                                          sender: 'bot',
+                                          infoPath: nextQuestion.path,
+                                          message: nextQuestion.text,
+                                          tooltip: nextQuestion.info,
+                                          timestamp: new Date(),
+                                          enumOptions: enumOptions,
+                                          numericInput: numericInput,
+                                          textInput: textInput,
+                                          objectCollInput: objectCollectionInput,
+                                          questionPath: nextQuestion.path
+                                        };
+                                        console.log('%c nextQuestionMessage = ' + JSON.stringify(nextQuestionMessage, null, 2), 'color: #d5af18ff')
+                                
+                                        setChatMessages(prev => [...prev, nextQuestionMessage]);
+                                      } 
+                                      else {
+                                        // Configuration complete
+                                        const completeMessage: ChatMessage = {
+                                          id: chatMessages.length + 2,
+                                          sender: 'bot',
+                                          message: 'Configuration complete! All questions have been answered.',
+                                          timestamp: new Date()
+                                        };
+                                        setChatMessages(prev => [...prev, completeMessage]);
+                                      }
+                                    })
+                                    .catch(err => {
+                                      const errorMessage: ChatMessage = {
+                                        id: chatMessages.length + 2,
+                                        sender: 'bot',
+                                        message: 'Error: ' + (err.response?.data?.detail || err.message || 'Failed to process configuration'),
+                                        timestamp: new Date()
+                                      };
+                                      setChatMessages(prev => [...prev, errorMessage]);
+                                      setError(err.response?.data?.detail || err.message || 'Failed to process configuration');
+                                    });
                                 }
+                                
                             }}>
                           </input>
                           {/* TODO: insert a error message with a condition */}                        
@@ -839,6 +1064,7 @@ const ConfigurationForm: React.FC<ConfigurationFormProps> = ({
                                         const nextQuestionMessage: ChatMessage = {
                                           id: chatMessages.length + 2,
                                           sender: 'bot',
+                                          infoPath: nextQuestion.path,
                                           message: nextQuestion.text,
                                           tooltip: nextQuestion.info,
                                           timestamp: new Date(),
