@@ -169,14 +169,16 @@ class RuleEngineClient:
     def map_question(self, missing_elt: dict) -> QuestionInfo:
         print("mapping question...")
         print(json.dumps(missing_elt, indent=4))
-
         memberType = missing_elt['memberType']
+
+        type_info = TextType(type='Text')  # we provide a default...
+
         if memberType == 'Boolean':
             type_info = BooleanType(type='Boolean')
-        elif memberType == 'Integer':
-            type_info = NumberType(type='Number', range=Range(step='1'))
         elif memberType == 'Text':
             type_info = TextType(type='Text')
+        elif memberType == 'Integer':
+            type_info = NumberType(type='Number', range=Range(step='1'))
         elif memberType == 'Number':
             type_info = NumberType(type='Number', range=Range(step='0.01'))
         elif "List[" in memberType or "NEList[" in memberType or "Option[" in memberType:
@@ -189,7 +191,13 @@ class RuleEngineClient:
                                              possibleTypes=[LabelValuePair(v=pt, l=simple_type_name(pt)) for pt in possible_types])
 
         if 'restriction' in missing_elt['details']:
-            type_info = EnumType(type='Enum', possible_values=[LabelValuePair(v=pv['v'], l=pv['label']) for pv in missing_elt['details']['restriction']['possibleValues']])
+            if missing_elt['details']['restriction']['type'] == 'enum':
+                type_info = EnumType(type='Enum', possible_values=[LabelValuePair(v=pv['v'], l=pv['label']) for pv in missing_elt['details']['restriction']['possibleValues']])
+            if missing_elt['details']['restriction']['type'] == 'numeric':
+                if missing_elt['details']['restriction']['underlying'] == 'Integer':
+                    type_info = NumberType(type='Number', range=Range(step='1'))
+                elif missing_elt['details']['restriction']['underlying'] == 'Number':
+                    type_info = NumberType(type='Number', range=Range(step='0.01'))
 
         question_info = QuestionInfo(path = missing_elt['target'] + '.' + missing_elt['member'],
                             text = missing_elt['details']['question'],

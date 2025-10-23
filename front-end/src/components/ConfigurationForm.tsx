@@ -199,15 +199,16 @@ const ConfigurationForm: React.FC<ConfigurationFormProps> = ({
         const response = await ConfigurationApi.createConfiguration(createData);
         
         // Add bot message for configuration start
-        const startMessage: ChatMessage = {
+        /*const startMessage: ChatMessage = {
           id: chatMessages.length + 1,
           sender: 'bot',
           message: 'Starting the configuration process (config id = ' + response.configuration.id + '). Please answer a few questions.',
           timestamp: new Date()
         };
+        setChatMessages(prev => [...prev, startMessage]);
+        */
         // keeping config id
         formData.id = response.configuration.id;
-        setChatMessages(prev => [...prev, startMessage]);
 
         // Handle configuration response
         const configData = response.configuration.configuration_data;
