@@ -51,6 +51,11 @@ interface ChatMessage {
   questionPath?: string;
 }
 
+interface ErrorInfo {
+  key?: string;
+  error?: string;
+}
+
 function prepend(opt: EnumOption, list: EnumOption[]): EnumOption[] {
   return [opt, ...list];
 }
@@ -107,7 +112,10 @@ const ConfigurationForm: React.FC<ConfigurationFormProps> = ({
   });
   
   const [saving, setSaving] = useState(false);
-  const [widgetError, setWidgetError] = useState('');
+  const [widgetError, setWidgetError] = useState<ErrorInfo>({
+    key: '',
+    error: ''
+  });
   const [error, setError] = useState('');
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
 
@@ -445,7 +453,10 @@ const ConfigurationForm: React.FC<ConfigurationFormProps> = ({
 
                                       console.log('%c ================ Response to updateConfig', 'color: #02ccf0ff');                                  
                                       console.log('%c ' + JSON.stringify(response, null, 2), 'color: #02ccf0ff');       
-                                      setWidgetError('');
+                                      setWidgetError({
+                                        key: '',
+                                        error: ''
+                                      });
 
                                       // Update form data
                                       setFormData(prev => ({
@@ -536,16 +547,19 @@ const ConfigurationForm: React.FC<ConfigurationFormProps> = ({
                                         setChatMessages(prev => [...prev, errorMessage]);
                                         setError(err.response?.data?.detail || err.message || 'Failed to process configuration');
                                       }
-                                      else
-                                        setWidgetError('Please enter a numeric value in interval');
+                                      else {
+                                        setWidgetError( { 
+                                          key: msg.questionPath,
+                                          error: 'Please enter a numeric value in interval' 
+                                        });
+                                      }
                                     });
                                 }
                                 //e.preventDefault();
 
                             }}>
                           </input><br></br>
-                          {widgetError && <small style={{ color: 'red' }}>{widgetError}</small>}
-                          {/* TODO: insert a error message with a condition */}
+                          {widgetError.key === msg.infoPath && <small style={{ color: 'red' }}>{widgetError.error}</small>}
                         </div>
                       )}
                       {msg.objectCollInput && msg.objectCollInput.min === 0 && msg.objectCollInput.max === 1 && (
@@ -590,6 +604,11 @@ const ConfigurationForm: React.FC<ConfigurationFormProps> = ({
                                       console.log('%c ================ Response to updateConfig', 'color: #02ccf0ff');                                  
                                       console.log('%c ' + JSON.stringify(response, null, 2), 'color: #02ccf0ff');       
 
+                                      setWidgetError({
+                                        key: '',
+                                        error: ''
+                                      });
+                                      
                                       // Update form data
                                       setFormData(prev => ({
                                         ...prev,
@@ -667,14 +686,24 @@ const ConfigurationForm: React.FC<ConfigurationFormProps> = ({
                                     })
                                     .catch(err => {
                                       console.log(">> ERROR: " + err.response?.status);
-                                      const errorMessage: ChatMessage = {
-                                        id: chatMessages.length + 2,
-                                        sender: 'bot',
-                                        message: 'Error: ' + (err.response?.status === 400 ? 'wrong input' : (err.response?.data?.detail || err.message || 'Failed to process configuration')),
-                                        timestamp: new Date()
-                                      };
-                                      setChatMessages(prev => [...prev, errorMessage]);
-                                      setError(err.response?.data?.detail || err.message || 'Failed to process configuration');
+                                      if (err.response?.status !== 400) {
+                                        //const message_txt = 'Error: ' + (err.response?.status === 400 ? ('wrong input ' + JSON.stringify(msg.numericInput)) : (err.response?.data?.detail || err.message || 'Failed to process configuration'));
+                                        const message_txt = 'Error: ' + (err.response?.status === 400 ? ('wrong value ') : (err.response?.data?.detail || err.message || 'Failed to process configuration'));
+                                        const errorMessage: ChatMessage = {
+                                          id: chatMessages.length + 2,
+                                          sender: 'bot',
+                                          message: message_txt,
+                                          timestamp: new Date()
+                                        };
+                                        setChatMessages(prev => [...prev, errorMessage]);
+                                        setError(err.response?.data?.detail || err.message || 'Failed to process configuration');
+                                      }
+                                      else {
+                                        setWidgetError( { 
+                                          key: msg.questionPath,
+                                          error: 'Please enter a valid value XYZ' 
+                                        });
+                                      }
                                     });
                                 }                                
                               }}
@@ -756,7 +785,12 @@ const ConfigurationForm: React.FC<ConfigurationFormProps> = ({
                                     .then(response => {
 
                                       console.log('%c ================ Response to updateConfig', 'color: #02ccf0ff');                                  
-                                      console.log('%c ' + JSON.stringify(response, null, 2), 'color: #02ccf0ff');       
+                                      console.log('%c ' + JSON.stringify(response, null, 2), 'color: #02ccf0ff');      
+                                      
+                                      setWidgetError({
+                                        key: '',
+                                        error: ''
+                                      });                                      
 
                                       // Update form data
                                       setFormData(prev => ({
@@ -848,14 +882,18 @@ const ConfigurationForm: React.FC<ConfigurationFormProps> = ({
                                         setError(err.response?.data?.detail || err.message || 'Failed to process configuration');
                                       }
                                       else
-                                        setWidgetError('Please enter a valid value BB');
+                                        setWidgetError( { 
+                                          key: msg.questionPath,
+                                          error: 'Please enter a value BB' 
+                                        });
+
                                     });                                    
 
                                 }
                               }
                             }>
                             </input><br></br>
-                          {widgetError && <small style={{ color: 'red' }}>{widgetError}</small>}
+                          {widgetError.key === msg.infoPath && <small style={{ color: 'red' }}>{widgetError.error}</small>}
                         </div>
                       )}
                       {msg.textInput && (
@@ -898,6 +936,11 @@ const ConfigurationForm: React.FC<ConfigurationFormProps> = ({
 
                                       console.log('%c ================ Response to updateConfig', 'color: #02ccf0ff');                                  
                                       console.log('%c ' + JSON.stringify(response, null, 2), 'color: #02ccf0ff');       
+
+                                      setWidgetError({
+                                        key: '',
+                                        error: ''
+                                      });
 
                                       // Update form data
                                       setFormData(prev => ({
@@ -976,22 +1019,30 @@ const ConfigurationForm: React.FC<ConfigurationFormProps> = ({
                                     })
                                     .catch(err => {
                                       console.log(">> ERROR: " + err.response?.status);
-                                      const message_txt = 'Error: ' + (err.response?.status === 400 ? ('wrong value ') : (err.response?.data?.detail || err.message || 'Failed to process configuration'));
-                                      const errorMessage: ChatMessage = {
-                                        id: chatMessages.length + 2,
-                                        sender: 'bot',
-                                        message: message_txt,
-                                        timestamp: new Date()
-                                      };
-                                      setChatMessages(prev => [...prev, errorMessage]);
-                                      if (err.response?.status !== 400)
+                                      if (err.response?.status !== 400) {
+                                        //const message_txt = 'Error: ' + (err.response?.status === 400 ? ('wrong input ' + JSON.stringify(msg.numericInput)) : (err.response?.data?.detail || err.message || 'Failed to process configuration'));
+                                        const message_txt = 'Error: ' + (err.response?.status === 400 ? ('wrong value ') : (err.response?.data?.detail || err.message || 'Failed to process configuration'));
+                                        const errorMessage: ChatMessage = {
+                                          id: chatMessages.length + 2,
+                                          sender: 'bot',
+                                          message: message_txt,
+                                          timestamp: new Date()
+                                        };
+                                        setChatMessages(prev => [...prev, errorMessage]);
                                         setError(err.response?.data?.detail || err.message || 'Failed to process configuration');
+                                      }
+                                      else {
+                                        setWidgetError( { 
+                                          key: msg.questionPath,
+                                          error: 'Please enter a valid text' 
+                                        });
+                                      }
                                     });
                                 }
                                 
                             }}>
                           </input><br></br>
-                          {widgetError && <small style={{ color: 'red' }}>{widgetError}</small>}
+                          {widgetError.key === msg.infoPath && <small style={{ color: 'red' }}>{widgetError.error}</small>}
                         </div>
                       )}
                       {msg.enumOptions && (
@@ -1035,6 +1086,11 @@ const ConfigurationForm: React.FC<ConfigurationFormProps> = ({
 
                                       console.log('%c ================ Response to updateConfig', 'color: #02ccf0ff');                                  
                                       console.log('%c ' + JSON.stringify(response, null, 2), 'color: #02ccf0ff');       
+
+                                      setWidgetError({
+                                        key: '',
+                                        error: ''
+                                      });
 
                                       // Update form data
                                       setFormData(prev => ({
@@ -1126,7 +1182,11 @@ const ConfigurationForm: React.FC<ConfigurationFormProps> = ({
                                         setError(err.response?.data?.detail || err.message || 'Failed to process configuration');
                                       }
                                       else
-                                        setWidgetError('Please enter a valid value CC');
+                                        setWidgetError( { 
+                                          key: msg.questionPath,
+                                          error: 'Please enter a value CC' 
+                                        });
+
                                     });
                                 }
                               }}
