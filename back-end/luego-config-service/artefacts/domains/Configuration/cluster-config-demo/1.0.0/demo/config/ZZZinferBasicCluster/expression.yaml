@@ -1,7 +1,0 @@
-$type: Obj
-ot: demo.config.BasicCluster
-mappings:
-- - minNumberOfNodes
-  - $type: ILit
-    v: 2
-id: []

@@ -23,10 +23,6 @@
             "txt": "is a production use case",
             "q": "is this a production use case?"
         },
-        "includeOptionalComponent": {
-            "txt": "include optional component",
-            "q": "include optional component?"
-        },
         "ingress": { "txt": "ingress in MBps" },
         "egress": { "txt": "egress in MBps" },
         "throughput":  { "txt": "throughput in MBps" },
@@ -34,5 +30,21 @@
     },
     "Cluster": {
         "minNumberOfNodes": { "txt": "minimum number of nodes" }
+    },
+    "OptionA": {
+        "capacity": { "q": "what is the capacity for OptionA?" }
+    },
+    "EmailNotification": {
+        "email": { "q": "what is the notification email?" }
+    },
+    "OptionB2": {
+        "quantity": { "q": "what is the quantity for OptionB2?" }
+    },
+    "SubComponent": {
+        "code": {
+            "q": "what is the code of the component?",
+            "info": "Please enter a component code. A code is made of a letter between 'A' and 'C' followed by a digit between '1' and '3'."
+        },
+        "capacity": { "q": "what is the capacity of the component?" }
     }
 }

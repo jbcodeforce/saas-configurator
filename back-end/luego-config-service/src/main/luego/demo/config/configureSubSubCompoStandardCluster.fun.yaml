@@ -1,0 +1,30 @@
+---
+imports:
+  - luego.text.*
+  - luego.math.*
+  - demo.config.*
+
+output: Unit
+inputs:
+  - name: the customer request
+    type: demo.config.CustomerRequest
+    mutable: true
+  - name: the standard cluster
+    type: demo.config.StandardCluster
+    mutable: true
+
+definition: >
+  {
+    for compo in the subComponents of `the standard cluster` 
+                                  where startsWith(the code of compo, 'C'), 
+        ssc in the subSubComponents of compo
+    do {
+      NEED(ssc.description);
+    };
+    println('configure standard cluster based on subcomponents');
+  }
+
+###
+exposable: true
+description: configure subsubcomponents of a standard Kafka cluster
+usedDecisions: []

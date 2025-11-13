@@ -15,7 +15,7 @@ inputs:
 definition: >
   {
     set the minNumberOfNodes of `the freight cluster` = 5;
-    println('configure freight cluster')
+    println('configure freight cluster');
   }    
 
 ###

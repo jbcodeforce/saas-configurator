@@ -1,5 +1,44 @@
 $type: Block
 stmts:
+- $type: Let
+  name: subCapacities
+  e:
+    collBType: NEList[demo.config.ZeroTo2400]
+    functor:
+      $type: Nav
+      obj:
+        $type: Ref
+        id: compo
+      elems:
+      - - capacity
+        - demo.config.ZeroTo2400
+    $type: Map
+    param: compo
+    coll:
+      actualTypeOpt: []
+      param: compo
+      $type: Filter
+      coll:
+        $type: Nav
+        obj:
+          $type: Ref
+          id: the standard cluster
+        elems:
+        - - subComponents
+          - NEList[demo.config.SubComponent]
+      filter:
+        $type: NativeFunApp
+        funDef: luego.text.startsWith
+        args:
+        - $type: Nav
+          obj:
+            $type: Ref
+            id: compo
+          elems:
+          - - code
+            - demo.config.SubComponentCode
+        - $type: SLit
+          s: A
 - $type: PModif
   left:
     $type: Nav
@@ -10,8 +49,23 @@ stmts:
     - - minNumberOfNodes
       - Integer
   right:
-    $type: ILit
-    v: 3
+    $type: NativeFunApp
+    funDef: luego.math.floorInt
+    args:
+    - $type: BinAr
+      l:
+        $type: Sum
+        type: Number
+        coll:
+          $type: Nav
+          obj:
+            $type: Ref
+            id: subCapacities
+          elems: []
+      op: Div
+      r:
+        $type: DLit
+        v: 10
 e:
   $type: NativeFunApp
   funDef: luego.text.println

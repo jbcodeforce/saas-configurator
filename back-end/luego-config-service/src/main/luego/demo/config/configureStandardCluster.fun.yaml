@@ -15,9 +15,14 @@ inputs:
 
 definition: >
   {
-    set the minNumberOfNodes of `the standard cluster` = 3;
-    println('configure standard cluster')
-  }    
+    let subCapacities = for compo in the subComponents of `the standard cluster` 
+                              where startsWith(the code of compo, 'A') 
+                              yield the capacity of compo;
+  
+    set the minNumberOfNodes of `the standard cluster` = floorInt(the sum of subCapacities / 10.0);
+  
+    println('configure standard cluster');
+  }
 
 ###
 exposable: true

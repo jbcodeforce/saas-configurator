@@ -28,6 +28,11 @@ async def lifespan(app):
     print("Database initialized and ready!")
 
     # Initialize Rule Engine Client
+    #APP_PATH1= "/Configuration/apps/cluster-config-demo/1.0.0"
+    #OPERATION1 = "demo.config.configureKafkaCluster"
+
+    #APP_PATH2= "/Insurance/apps/accident-claim-declaration/1.0.0"
+    #OPERATION2 = "smartinsure.claimdeclaration.refreshQuestionnaire"
     try:
         RuleEngineClient.initialize()
         re_client = RuleEngineClient.get_instance()

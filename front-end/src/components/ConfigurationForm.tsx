@@ -558,7 +558,7 @@ const ConfigurationForm: React.FC<ConfigurationFormProps> = ({
                                       else {
                                         setWidgetError( { 
                                           key: msg.questionPath,
-                                          error: 'Please enter a numeric value for ' + (msg.common_type_name ? simpleName(msg.common_type_name) : '')
+                                          error: 'Please enter a numeric value of type ' + (msg.common_type_name ? simpleName(msg.common_type_name) : '')
                                         });
                                       }
                                     });

@@ -13,19 +13,22 @@ inputs:
     mutable: true
 
 definition: >
-  if the cluster of `the configuration` is absent
-  then
   {
-    set `the configuration`.cloudProvider = the cloudProvider of `the customer request`;
-    set `the configuration`.cluster = inferKafkaClusterType(`the customer request`);
-    println('The cluster type has been chosen.')  
-  }
-  else depending on the cluster of `the configuration` {
-    case bc: BasicCluster => configureBasicCluster(`the customer request`, bc)
-    case dc: DedicatedCluster => configureDedicatedCluster(`the customer request`, dc)
-    case ec: EnterpriseCluster => configureEnterpriseCluster(`the customer request`, ec)
-    case fc: FreightCluster => configureFreightCluster(`the customer request`, fc)
-    case sc: StandardCluster => configureStandardCluster(`the customer request`, sc)
+    NEED(`the customer request`.cloudProvider);
+
+    if the cluster of `the configuration` is absent
+    then
+    {
+      set `the configuration`.cluster = inferKafkaClusterType(`the customer request`);
+      println('The cluster type has been chosen.');
+    }
+    else depending on the cluster of `the configuration` {
+      case bc: BasicCluster => configureBasicCluster(`the customer request`, bc)
+      case dc: DedicatedCluster => configureDedicatedCluster(`the customer request`, dc)
+      case ec: EnterpriseCluster => configureEnterpriseCluster(`the customer request`, ec)
+      case fc: FreightCluster => configureFreightCluster(`the customer request`, fc)
+      case sc: StandardCluster => configureStandardCluster(`the customer request`, sc)
+    };
   }
 
 ###

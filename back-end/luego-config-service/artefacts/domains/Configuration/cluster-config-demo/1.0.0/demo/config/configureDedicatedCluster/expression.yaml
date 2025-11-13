@@ -5,30 +5,20 @@ stmts:
     $type: Nav
     obj:
       $type: Ref
-      id: the customer request
+      id: the dedicated cluster
     elems:
-    - - includeOptionalComponent
-      - Boolean
+    - - optionalComponent
+      - Option[demo.config.OptionalComponent]
   cases:
-  - $type: LitCaseDo
-    lit:
-      $type: BLit
-      b: true
+  - type: demo.config.OptionalComponent
     stmts:
     - $type: PatternMatchDo
       dependsOn:
-        $type: Nav
-        obj:
-          $type: Ref
-          id: the customer request
-        elems:
-        - - optionalComponent
-          - demo.config.OptionalComponent
+        $type: Ref
+        id: option
       cases:
       - type: demo.config.OptionA
         name: optionA
-        where: []
-        $type: CaseTypeDo
         stmts:
         - $type: PModif
           left:
@@ -42,27 +32,18 @@ stmts:
           right:
             $type: ILit
             v: 7
-        - $type: PModif
-          left:
-            $type: Nav
-            obj:
-              $type: Ref
-              id: the dedicated cluster
-            elems:
-            - - capacity_of_a
-              - demo.config.ZeroTo2400
-          right:
-            $type: Nav
+        - $type: Need
+          exps:
+          - $type: Nav
             obj:
               $type: Ref
               id: optionA
             elems:
-            - - capacity
-              - demo.config.ZeroTo2400
-      - where: []
+            - - quantity
+              - demo.config.ZeroTo1200
+        where: []
         $type: CaseTypeDo
-        name: notification
-        stmts:
+      - stmts:
         - $type: PModif
           left:
             $type: Nav
@@ -75,17 +56,9 @@ stmts:
           right:
             $type: ILit
             v: 6
-        - $type: PModif
-          left:
-            $type: Nav
-            obj:
-              $type: Ref
-              id: the dedicated cluster
-            elems:
-            - - notificationEmail
-              - Text
-          right:
-            $type: Nav
+        - $type: Need
+          exps:
+          - $type: Nav
             obj:
               $type: Ref
               id: notification
@@ -93,6 +66,9 @@ stmts:
             - - email
               - demo.config.Email
         type: demo.config.EmailNotification
+        $type: CaseTypeDo
+        where: []
+        name: notification
       - name: optionB2
         type: demo.config.OptionB2
         $type: CaseTypeDo
@@ -109,38 +85,34 @@ stmts:
           right:
             $type: ILit
             v: 5
-        - $type: PModif
-          left:
-            $type: Nav
-            obj:
-              $type: Ref
-              id: the dedicated cluster
-            elems:
-            - - quantity_of_b2
-              - Integer
-          right:
-            $type: Nav
+        - $type: Need
+          exps:
+          - $type: Nav
             obj:
               $type: Ref
               id: optionB2
             elems:
             - - quantity
-              - Integer
+              - demo.config.ZeroTo2400
         where: []
+    name: option
+    where: []
+    $type: CaseSomeTypeDo
   - $type: LitCaseDo
-    lit:
-      $type: BLit
-      b: false
+    lit: None
     stmts:
-    - $type: Need
-      exps:
-      - $type: Nav
+    - $type: PModif
+      left:
+        $type: Nav
         obj:
           $type: Ref
           id: the dedicated cluster
         elems:
         - - minNumberOfNodes
           - Integer
+      right:
+        $type: ILit
+        v: 4
 e:
   $type: NativeFunApp
   funDef: luego.text.println

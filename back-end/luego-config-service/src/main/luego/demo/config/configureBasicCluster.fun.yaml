@@ -15,7 +15,7 @@ inputs:
 definition: >
   {
     set the minNumberOfNodes of `the basic cluster` = 2;
-    println('configure basic cluster')
+    println('configure basic cluster');
   }
 
 ###

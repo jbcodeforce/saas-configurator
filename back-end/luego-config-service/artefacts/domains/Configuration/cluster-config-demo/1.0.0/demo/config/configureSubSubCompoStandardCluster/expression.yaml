@@ -1,0 +1,72 @@
+$type: Block
+stmts:
+- $type: ForStmt
+  tupleGen:
+    param: compo
+    bind:
+      functor:
+        $type: Coll
+        type: Any
+        elems:
+        - $type: Tup
+          elems:
+          - $type: SLit
+            s: compo
+          - $type: Ref
+            id: compo
+        - $type: Tup
+          elems:
+          - $type: SLit
+            s: ssc
+          - $type: Ref
+            id: ssc
+      $type: Map
+      collBType: List[NEList[Any]]
+      param: ssc
+      coll:
+        $type: Nav
+        obj:
+          $type: Ref
+          id: compo
+        elems:
+        - - subSubComponents
+          - List[demo.config.SubSubComponent]
+    coll:
+      $type: Nav
+      obj:
+        $type: Ref
+        id: the standard cluster
+      elems:
+      - - subComponents
+        - NEList[demo.config.SubComponent]
+    collBType: List[NEList[Any]]
+    filter:
+    - $type: NativeFunApp
+      funDef: luego.text.startsWith
+      args:
+      - $type: Nav
+        obj:
+          $type: Ref
+          id: compo
+        elems:
+        - - code
+          - demo.config.SubComponentCode
+      - $type: SLit
+        s: C
+    $type: FlMap
+  stmts:
+  - $type: Need
+    exps:
+    - $type: Nav
+      obj:
+        $type: Ref
+        id: ssc
+      elems:
+      - - description
+        - Text
+e:
+  $type: NativeFunApp
+  funDef: luego.text.println
+  args:
+  - $type: SLit
+    s: configure standard cluster based on subcomponents

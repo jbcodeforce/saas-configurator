@@ -1,37 +1,5 @@
 package demo.config
 
-//------------------
-// BASIC TYPES
-//------------------
-CloudProvider is an enumeration with domain:
-    'AWS', 'Azure', 'GCP', 'CP4', 'CP5'
-
-ZeroTo2400 is a Number in [0.0, 2400.0]
-Email is a Text
-    with length between 8 and 36,
-    that matches '^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$'
-
-//---------------------
-// OPTIONAL COMPONENT
-//---------------------
-OptionalComponent is a record
-OptionA is an OptionalComponent
-    - with one capacity: ZeroTo2400
-OptionB is an OptionalComponent
-EmailNotification is an OptionB
-    - with one email: Email
-OptionB2 is an OptionB
-    - with one quantity: Integer
-
-//---------------------
-// SUBCOMPONENTS
-//---------------------
-SubComponentCode is a Text that matches '[AB][123]'
-
-SubComponent is a record
-    - with one code: SubComponentCode
-    - with one capacity: ZeroTo2400
-
 //---------------------
 // REQUEST
 //---------------------
@@ -47,62 +15,72 @@ CustomerRequest is a record
     - with one throughput: Number   // in MBps
     - with one numberOfConnections: Integer
 
-    - with zero or more subComponents (subComponent): SubComponent
 
-    - with one includeOptionalComponent: Boolean
-    - with one optionalComponent: OptionalComponent
 
 //---------------------
-// RESPONSE
+// CONFIGURATION
 //---------------------
-ScalingType is an enumeration with domain:
-    'Elastic', 'Manual'
+
+// Used both as input and output
+Configuration is a record
+    - with one cluster: Cluster
 
 Cluster is a record
     - with one scaling: ScalingType
     - with one minNumberOfNodes: Integer
 
-BasicCluster is a Cluster
-
 StandardCluster is a Cluster
-
-EnterpriseCluster is a Cluster
-    - with one capacity_of_a: ZeroTo2400
-    - with one quantity_of_b2: Integer
-    - with one notificationEmail: Text
+    - with one or more subComponents (subComponent): SubComponent
 
 DedicatedCluster is a Cluster
-    - with one capacity_of_a: ZeroTo2400
-    - with one quantity_of_b2: Integer
-    - with one notificationEmail: Text
+    - with zero or one optionalComponent: OptionalComponent
+
+EnterpriseCluster is a Cluster
+    - with zero or one optionalComponent: OptionalComponent
+
+BasicCluster is a Cluster
 
 FreightCluster is a Cluster
 
+ScalingType is an enumeration with domain:
+    'Elastic', 'Manual'
 
-// We be used both as input and output
-Configuration is a record
-    - with one cloudProvider: CloudProvider
-    - with one cluster: Cluster
+//---------------------
+// OPTIONAL COMPONENT
+//---------------------
+OptionalComponent is a record
+OptionA is an OptionalComponent
+    - with one quantity: ZeroTo1200
+OptionB is an OptionalComponent
+EmailNotification is an OptionB
+    - with one email: Email
+OptionB2 is an OptionB
+    - with one quantity: ZeroTo2400
 
-/*
-{
-    "the customer request": {
-      "LGType_": "demo.config.CustomerRequest",
-      "cloudProvider": "AWS",
-      "mustHaveDedicatedEnv": true,
-      "includeOptionalComponent": true,
-      "optionalComponent": {
-        "LGType_": "demo.config.EmailNotification",
-        "email": "dfsvldjmail.com"
-      }
-    },
-    "the configuration": {
-      "LGType_": "demo.config.Configuration",
-      "cloudProvider": "AWS",
-      "cluster": {
-        "LGType_": "demo.config.DedicatedCluster",
-        "scaling": "Manual"
-      }
-    }
-  }
-*/
+SubSubComponent is a record
+    - with one description: Text
+
+//---------------------
+// SUBCOMPONENTS
+//---------------------
+SubComponentCode is a Text that matches '[ABC][123]'
+
+SubComponent is a record
+    - with one code: SubComponentCode
+    - with one capacity: ZeroTo2400
+    - with zero or more subSubComponents (subSubComponent): SubSubComponent    
+
+
+//---------------------------
+// BASIC TYPES USED AS INPUT
+//---------------------------
+CloudProvider is an enumeration with domain:
+    'AWS', 'Azure', 'GCP', 'CP4', 'CP5'
+
+ZeroTo1200 is a Number in [0.0, 1200.0]
+ZeroTo2400 is a Number in [0.0, 2400.0]
+
+Email is a Text
+    with length between 8 and 36,
+    that matches '^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$'
+

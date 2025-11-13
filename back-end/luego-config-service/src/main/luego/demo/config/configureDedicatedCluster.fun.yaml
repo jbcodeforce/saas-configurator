@@ -14,26 +14,26 @@ inputs:
 
 definition: >
   {
-    depending on `the customer request` includeOptionalComponent do {
-      case true => depending on the optionalComponent of `the customer request` do {
+    depending on the optionalComponent of `the dedicated cluster` do {
+      case Some(option: OptionalComponent) => depending on option do {
         case optionA: OptionA => 
           set the minNumberOfNodes of `the dedicated cluster` = 7;
-          set the capacity_of_a of `the dedicated cluster` = the capacity of optionA
-
+          NEED(optionA.quantity);
+  
         case notification: EmailNotification =>
-          set the minNumberOfNodes of `the dedicated cluster` = 6; 
-          set the notificationEmail of `the dedicated cluster` = the email of notification
-
+          set the minNumberOfNodes of `the dedicated cluster` = 6;
+          NEED(notification.email);
+  
         case optionB2: OptionB2 =>
           set the minNumberOfNodes of `the dedicated cluster` = 5;
-          set the quantity_of_b2 of `the dedicated cluster` = the quantity of optionB2
-      }
-      case false => 
-        // the missing info element
-        NEED(`the dedicated cluster`.minNumberOfNodes)
+          NEED(optionB2.quantity);
+      };
+      
+      case None => 
+          set the minNumberOfNodes of `the dedicated cluster` = 4;
     };
 
-    println('configure dedicated cluster')
+    println('configure dedicated cluster');
   }  
 
 ###

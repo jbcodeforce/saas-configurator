@@ -13,9 +13,9 @@ inputs:
 
 definition: >
   {
-    set the cloudProvider of `the configuration` = the cloudProvider of `the customer request`;
+    //set the cloudProvider of `the configuration` = the cloudProvider of `the customer request`;
     set the minNumberOfNodes of the cluster of `the configuration` = 7;
-    println('Hello, playing with some update')
+    println('Hello, playing with some update');
   } 
 
 ###

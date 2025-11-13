@@ -47,10 +47,18 @@ paths:
               schema:
                 type: object
                 properties:
-                  times:
+                  computationDetails:
                     type: object
                     properties:
-                      total:
+                      totalTime:
+                        type: number
+                      appName:
+                        type: string
+                      appVersion:
+                        type: string
+                      operation:
+                        type: string
+                      cycles:
                         type: number
                   missingData:
                     type: object
@@ -109,10 +117,18 @@ paths:
               schema:
                 type: object
                 properties:
-                  times:
+                  computationDetails:
                     type: object
                     properties:
-                      total:
+                      totalTime:
+                        type: number
+                      appName:
+                        type: string
+                      appVersion:
+                        type: string
+                      operation:
+                        type: string
+                      cycles:
                         type: number
                   missingData:
                     type: object
@@ -171,10 +187,18 @@ paths:
               schema:
                 type: object
                 properties:
-                  times:
+                  computationDetails:
                     type: object
                     properties:
-                      total:
+                      totalTime:
+                        type: number
+                      appName:
+                        type: string
+                      appVersion:
+                        type: string
+                      operation:
+                        type: string
+                      cycles:
                         type: number
                   missingData:
                     type: object
@@ -233,10 +257,18 @@ paths:
               schema:
                 type: object
                 properties:
-                  times:
+                  computationDetails:
                     type: object
                     properties:
-                      total:
+                      totalTime:
+                        type: number
+                      appName:
+                        type: string
+                      appVersion:
+                        type: string
+                      operation:
+                        type: string
+                      cycles:
                         type: number
                   missingData:
                     type: object
@@ -297,10 +329,18 @@ paths:
               schema:
                 type: object
                 properties:
-                  times:
+                  computationDetails:
                     type: object
                     properties:
-                      total:
+                      totalTime:
+                        type: number
+                      appName:
+                        type: string
+                      appVersion:
+                        type: string
+                      operation:
+                        type: string
+                      cycles:
                         type: number
                   missingData:
                     type: object
@@ -359,10 +399,88 @@ paths:
               schema:
                 type: object
                 properties:
-                  times:
+                  computationDetails:
                     type: object
                     properties:
-                      total:
+                      totalTime:
+                        type: number
+                      appName:
+                        type: string
+                      appVersion:
+                        type: string
+                      operation:
+                        type: string
+                      cycles:
+                        type: number
+                  missingData:
+                    type: object
+                  result:
+                    type: object
+                    properties:
+                      the customer request:
+                        $ref: '#/components/schemas/demo.config.CustomerRequest'
+                      the standard cluster:
+                        $ref: '#/components/schemas/demo.config.StandardCluster'
+                    additionalProperties: false
+                additionalProperties: false
+        '400':
+          description: Something went wrong
+  /v1/domains/Configuration/apps/cluster-config-demo/1.0.0/models/demo.config.configureSubSubCompoStandardCluster/configure:
+    post:
+      tags:
+      - demo.config - Configuration
+      summary: configure subsubcomponents of a standard Kafka cluster
+      description: configure subsubcomponents of a standard Kafka cluster
+      operationId: decision:demo.config.configureSubSubCompoStandardCluster
+      parameters:
+      - name: lang
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - en
+          - fr
+      - name: richResults
+        in: query
+        required: false
+        schema:
+          type: boolean
+          enum:
+          - true
+          - false
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                the customer request:
+                  $ref: '#/components/schemas/demo.config.CustomerRequest'
+                the standard cluster:
+                  $ref: '#/components/schemas/demo.config.StandardCluster'
+              additionalProperties: false
+        required: true
+      responses:
+        '200':
+          description: Ok, response generated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  computationDetails:
+                    type: object
+                    properties:
+                      totalTime:
+                        type: number
+                      appName:
+                        type: string
+                      appVersion:
+                        type: string
+                      operation:
+                        type: string
+                      cycles:
                         type: number
                   missingData:
                     type: object
@@ -649,6 +767,51 @@ paths:
                 $ref: '#/components/schemas/luego.results.UnitResponse'
         '400':
           description: Something went wrong
+  /v1/domains/Configuration/apps/cluster-config-demo/1.0.0/models/demo.config.configureSubSubCompoStandardCluster/infer:
+    post:
+      tags:
+      - demo.config - Inference (for test purposes)
+      summary: configure subsubcomponents of a standard Kafka cluster
+      description: configure subsubcomponents of a standard Kafka cluster
+      operationId: decision:demo.config.configureSubSubCompoStandardCluster
+      parameters:
+      - name: lang
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - en
+          - fr
+      - name: richResults
+        in: query
+        required: false
+        schema:
+          type: boolean
+          enum:
+          - true
+          - false
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                the customer request:
+                  $ref: '#/components/schemas/demo.config.CustomerRequest'
+                the standard cluster:
+                  $ref: '#/components/schemas/demo.config.StandardCluster'
+              additionalProperties: false
+        required: true
+      responses:
+        '200':
+          description: Ok, response generated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/luego.results.UnitResponse'
+        '400':
+          description: Something went wrong
   /v1/domains/Configuration/apps/cluster-config-demo/1.0.0/models/demo.config.inferKafkaClusterType/infer:
     post:
       tags:
@@ -694,6 +857,14 @@ paths:
           description: Something went wrong
 components:
   schemas:
+    demo.config.ScalingType:
+      type: string
+      enum:
+      - Elastic
+      - Manual
+    demo.config.SubComponentCode:
+      type: string
+      pattern: '[ABC][123]'
     demo.config.CloudProvider:
       type: string
       enum:
@@ -702,6 +873,10 @@ components:
       - GCP
       - CP4
       - CP5
+    demo.config.ZeroTo1200:
+      type: number
+      minimum: 0.0
+      maximum: 1200.0
     demo.config.ZeroTo2400:
       type: number
       minimum: 0.0
@@ -711,14 +886,210 @@ components:
       maxLength: 36
       minLength: 8
       pattern: ^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$
-    demo.config.SubComponentCode:
-      type: string
-      pattern: '[AB][123]'
-    demo.config.ScalingType:
-      type: string
-      enum:
-      - Elastic
-      - Manual
+    demo.config.CustomerRequest:
+      type: object
+      required:
+      - LGType_
+      properties:
+        LGType_:
+          type: string
+          enum:
+          - demo.config.CustomerRequest
+        cloudProvider:
+          $ref: '#/components/schemas/demo.config.CloudProvider'
+        mustHaveDedicatedEnv:
+          type: boolean
+        mustHavePrivateEndpoints:
+          type: boolean
+        mustHaveSubSecondLatency:
+          type: boolean
+        isProductionUseCase:
+          type: boolean
+        ingress:
+          type: number
+          format: double
+        egress:
+          type: number
+          format: double
+        throughput:
+          type: number
+          format: double
+        numberOfConnections:
+          type: integer
+          format: int32
+      additionalProperties: false
+    demo.config.Configuration:
+      type: object
+      required:
+      - LGType_
+      properties:
+        LGType_:
+          type: string
+          enum:
+          - demo.config.Configuration
+        cluster:
+          $ref: '#/components/schemas/demo.config.Cluster'
+      additionalProperties: false
+    demo.config.Cluster:
+      type: object
+      oneOf:
+      - $ref: '#/components/schemas/demo.config.StandardCluster'
+      - $ref: '#/components/schemas/demo.config.DedicatedCluster'
+      - $ref: '#/components/schemas/demo.config.EnterpriseCluster'
+      - $ref: '#/components/schemas/demo.config.BasicCluster'
+      - $ref: '#/components/schemas/demo.config.FreightCluster'
+      required:
+      - LGType_
+      discriminator:
+        propertyName: LGType_
+      properties:
+        LGType_:
+          type: string
+          enum:
+          - demo.config.StandardCluster
+          - demo.config.DedicatedCluster
+          - demo.config.EnterpriseCluster
+          - demo.config.BasicCluster
+          - demo.config.FreightCluster
+        scaling:
+          $ref: '#/components/schemas/demo.config.ScalingType'
+        minNumberOfNodes:
+          type: integer
+          format: int32
+      additionalProperties: false
+    demo.config.StandardCluster:
+      type: object
+      required:
+      - LGType_
+      discriminator:
+        propertyName: LGType_
+      properties:
+        LGType_:
+          type: string
+          enum:
+          - demo.config.StandardCluster
+        subComponents:
+          type: array
+          minItems: 1
+          items:
+            type: object
+            required:
+            - LGType_
+            properties:
+              LGType_:
+                type: string
+                enum:
+                - demo.config.SubComponent
+              code:
+                $ref: '#/components/schemas/demo.config.SubComponentCode'
+              capacity:
+                $ref: '#/components/schemas/demo.config.ZeroTo2400'
+              subSubComponents:
+                type: array
+                items:
+                  type: object
+                  required:
+                  - LGType_
+                  properties:
+                    LGType_:
+                      type: string
+                      enum:
+                      - demo.config.SubSubComponent
+                    description:
+                      type: string
+                  additionalProperties: false
+            additionalProperties: false
+      additionalProperties: false
+    demo.config.DedicatedCluster:
+      type: object
+      required:
+      - LGType_
+      discriminator:
+        propertyName: LGType_
+      properties:
+        LGType_:
+          type: string
+          enum:
+          - demo.config.DedicatedCluster
+        optionalComponent:
+          type: array
+          maxItems: 1
+          minItems: 0
+          items:
+            type: object
+            oneOf:
+            - $ref: '#/components/schemas/demo.config.OptionA'
+            - $ref: '#/components/schemas/demo.config.OptionB'
+            required:
+            - LGType_
+            discriminator:
+              propertyName: LGType_
+            properties:
+              LGType_:
+                type: string
+                enum:
+                - demo.config.OptionA
+                - demo.config.EmailNotification
+                - demo.config.OptionB2
+            additionalProperties: false
+      additionalProperties: false
+    demo.config.EnterpriseCluster:
+      type: object
+      required:
+      - LGType_
+      discriminator:
+        propertyName: LGType_
+      properties:
+        LGType_:
+          type: string
+          enum:
+          - demo.config.EnterpriseCluster
+        optionalComponent:
+          type: array
+          maxItems: 1
+          minItems: 0
+          items:
+            type: object
+            oneOf:
+            - $ref: '#/components/schemas/demo.config.OptionA'
+            - $ref: '#/components/schemas/demo.config.OptionB'
+            required:
+            - LGType_
+            discriminator:
+              propertyName: LGType_
+            properties:
+              LGType_:
+                type: string
+                enum:
+                - demo.config.OptionA
+                - demo.config.EmailNotification
+                - demo.config.OptionB2
+            additionalProperties: false
+      additionalProperties: false
+    demo.config.BasicCluster:
+      type: object
+      required:
+      - LGType_
+      discriminator:
+        propertyName: LGType_
+      properties:
+        LGType_:
+          type: string
+          enum:
+          - demo.config.BasicCluster
+      additionalProperties: false
+    demo.config.FreightCluster:
+      type: object
+      required:
+      - LGType_
+      discriminator:
+        propertyName: LGType_
+      properties:
+        LGType_:
+          type: string
+          enum:
+          - demo.config.FreightCluster
+      additionalProperties: false
     demo.config.OptionalComponent:
       type: object
       oneOf:
@@ -747,8 +1118,8 @@ components:
           type: string
           enum:
           - demo.config.OptionA
-        capacity:
-          $ref: '#/components/schemas/demo.config.ZeroTo2400'
+        quantity:
+          $ref: '#/components/schemas/demo.config.ZeroTo1200'
       additionalProperties: false
     demo.config.OptionB:
       type: object
@@ -792,8 +1163,19 @@ components:
           enum:
           - demo.config.OptionB2
         quantity:
-          type: integer
-          format: int32
+          $ref: '#/components/schemas/demo.config.ZeroTo2400'
+      additionalProperties: false
+    demo.config.SubSubComponent:
+      type: object
+      required:
+      - LGType_
+      properties:
+        LGType_:
+          type: string
+          enum:
+          - demo.config.SubSubComponent
+        description:
+          type: string
       additionalProperties: false
     demo.config.SubComponent:
       type: object
@@ -808,39 +1190,7 @@ components:
           $ref: '#/components/schemas/demo.config.SubComponentCode'
         capacity:
           $ref: '#/components/schemas/demo.config.ZeroTo2400'
-      additionalProperties: false
-    demo.config.CustomerRequest:
-      type: object
-      required:
-      - LGType_
-      properties:
-        LGType_:
-          type: string
-          enum:
-          - demo.config.CustomerRequest
-        cloudProvider:
-          $ref: '#/components/schemas/demo.config.CloudProvider'
-        mustHaveDedicatedEnv:
-          type: boolean
-        mustHavePrivateEndpoints:
-          type: boolean
-        mustHaveSubSecondLatency:
-          type: boolean
-        isProductionUseCase:
-          type: boolean
-        ingress:
-          type: number
-          format: double
-        egress:
-          type: number
-          format: double
-        throughput:
-          type: number
-          format: double
-        numberOfConnections:
-          type: integer
-          format: int32
-        subComponents:
+        subSubComponents:
           type: array
           items:
             type: object
@@ -850,222 +1200,35 @@ components:
               LGType_:
                 type: string
                 enum:
-                - demo.config.SubComponent
-              code:
-                $ref: '#/components/schemas/demo.config.SubComponentCode'
-              capacity:
-                $ref: '#/components/schemas/demo.config.ZeroTo2400'
+                - demo.config.SubSubComponent
+              description:
+                type: string
             additionalProperties: false
-        includeOptionalComponent:
-          type: boolean
-        optionalComponent:
-          $ref: '#/components/schemas/demo.config.OptionalComponent'
-      additionalProperties: false
-    demo.config.Cluster:
-      type: object
-      oneOf:
-      - $ref: '#/components/schemas/demo.config.BasicCluster'
-      - $ref: '#/components/schemas/demo.config.StandardCluster'
-      - $ref: '#/components/schemas/demo.config.EnterpriseCluster'
-      - $ref: '#/components/schemas/demo.config.DedicatedCluster'
-      - $ref: '#/components/schemas/demo.config.FreightCluster'
-      required:
-      - LGType_
-      discriminator:
-        propertyName: LGType_
-      properties:
-        LGType_:
-          type: string
-          enum:
-          - demo.config.BasicCluster
-          - demo.config.StandardCluster
-          - demo.config.EnterpriseCluster
-          - demo.config.DedicatedCluster
-          - demo.config.FreightCluster
-        scaling:
-          $ref: '#/components/schemas/demo.config.ScalingType'
-        minNumberOfNodes:
-          type: integer
-          format: int32
-      additionalProperties: false
-    demo.config.BasicCluster:
-      type: object
-      required:
-      - LGType_
-      discriminator:
-        propertyName: LGType_
-      properties:
-        LGType_:
-          type: string
-          enum:
-          - demo.config.BasicCluster
-      additionalProperties: false
-    demo.config.StandardCluster:
-      type: object
-      required:
-      - LGType_
-      discriminator:
-        propertyName: LGType_
-      properties:
-        LGType_:
-          type: string
-          enum:
-          - demo.config.StandardCluster
-      additionalProperties: false
-    demo.config.EnterpriseCluster:
-      type: object
-      required:
-      - LGType_
-      discriminator:
-        propertyName: LGType_
-      properties:
-        LGType_:
-          type: string
-          enum:
-          - demo.config.EnterpriseCluster
-        capacity_of_a:
-          $ref: '#/components/schemas/demo.config.ZeroTo2400'
-        quantity_of_b2:
-          type: integer
-          format: int32
-        notificationEmail:
-          type: string
-      additionalProperties: false
-    demo.config.DedicatedCluster:
-      type: object
-      required:
-      - LGType_
-      discriminator:
-        propertyName: LGType_
-      properties:
-        LGType_:
-          type: string
-          enum:
-          - demo.config.DedicatedCluster
-        capacity_of_a:
-          $ref: '#/components/schemas/demo.config.ZeroTo2400'
-        quantity_of_b2:
-          type: integer
-          format: int32
-        notificationEmail:
-          type: string
-      additionalProperties: false
-    demo.config.FreightCluster:
-      type: object
-      required:
-      - LGType_
-      discriminator:
-        propertyName: LGType_
-      properties:
-        LGType_:
-          type: string
-          enum:
-          - demo.config.FreightCluster
-      additionalProperties: false
-    demo.config.Configuration:
-      type: object
-      required:
-      - LGType_
-      properties:
-        LGType_:
-          type: string
-          enum:
-          - demo.config.Configuration
-        cloudProvider:
-          $ref: '#/components/schemas/demo.config.CloudProvider'
-        cluster:
-          $ref: '#/components/schemas/demo.config.Cluster'
       additionalProperties: false
     demo.config.results.demo.config.ClusterResponse:
       type: object
       properties:
-        times:
+        computationDetails:
           type: object
           properties:
-            total:
+            totalTime:
               type: number
+            appVersion:
+              type: string
         result:
           $ref: '#/components/schemas/demo.config.Cluster'
-    demo.config.results.demo.config.StandardClusterResponse:
-      type: object
-      properties:
-        times:
-          type: object
-          properties:
-            total:
-              type: number
-        result:
-          $ref: '#/components/schemas/demo.config.StandardCluster'
     luego.results.UnitResponse:
       type: object
       properties:
-        times:
+        computationDetails:
           type: object
           properties:
-            total:
+            totalTime:
               type: number
+            appVersion:
+              type: string
         result:
           type: object
-    demo.config.results.demo.config.BasicClusterResponse:
-      type: object
-      properties:
-        times:
-          type: object
-          properties:
-            total:
-              type: number
-        result:
-          $ref: '#/components/schemas/demo.config.BasicCluster'
-    demo.config.results.demo.config.FreightClusterResponse:
-      type: object
-      properties:
-        times:
-          type: object
-          properties:
-            total:
-              type: number
-        result:
-          $ref: '#/components/schemas/demo.config.FreightCluster'
-    luego.results.BooleanResponse:
-      type: object
-      properties:
-        times:
-          type: object
-          properties:
-            total:
-              type: number
-        result:
-          type: boolean
-    demo.config.results.demo.config.EnterpriseClusterResponse:
-      type: object
-      properties:
-        times:
-          type: object
-          properties:
-            total:
-              type: number
-        result:
-          $ref: '#/components/schemas/demo.config.EnterpriseCluster'
-    demo.config.results.demo.config.DedicatedClusterResponse:
-      type: object
-      properties:
-        times:
-          type: object
-          properties:
-            total:
-              type: number
-        result:
-          $ref: '#/components/schemas/demo.config.DedicatedCluster'
-    demo.config.results.demo.config.ConfigurationResponse:
-      type: object
-      properties:
-        times:
-          type: object
-          properties:
-            total:
-              type: number
-        result:
-          $ref: '#/components/schemas/demo.config.Configuration'
     luego.results.EvalException:
       type: object
       properties:

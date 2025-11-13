@@ -15,10 +15,16 @@ from enum import Enum
 BASE_RULE_ENGINE_URL = "http://localhost:9000"  # This should come from environment variables in production
 SERVER_STATUS_URL = BASE_RULE_ENGINE_URL + "/v1/serverStatus"
 SERVER_API_URL = BASE_RULE_ENGINE_URL + "/v1/domains"
-APP_PATH= "/Configuration/apps/cluster-config-demo/1.0.0"
-OPERATION = "demo.config.configureKafkaCluster"
 
-OPERATIONS_API_URL = SERVER_API_URL + APP_PATH + "/models/" + OPERATION + "/configure?richResults=true&lang="
+APP_PATH1= "/Configuration/apps/cluster-config-demo/1.0.0"
+OPERATION1 = "demo.config.configureKafkaCluster"
+
+APP_PATH2= "/Insurance/apps/accident-claim-declaration/1.0.0"
+OPERATION2 = "smartinsure.claimdeclaration.refreshQuestionnaire"
+
+
+OPERATIONS_API_URL = SERVER_API_URL + APP_PATH1 + "/models/" + OPERATION1 + "/configure?richResults=true&lang="
+#OPERATIONS_API_URL = SERVER_API_URL + APP_PATH2 + "/models/" + OPERATION2 + "/configure?richResults=true&lang="
 
 
 class LabelValuePair(BaseModel):

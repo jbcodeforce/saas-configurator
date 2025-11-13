@@ -7,23 +7,6 @@ stmts:
       $type: Ref
       id: the configuration
     elems:
-    - - cloudProvider
-      - demo.config.CloudProvider
-  right:
-    $type: Nav
-    obj:
-      $type: Ref
-      id: the customer request
-    elems:
-    - - cloudProvider
-      - demo.config.CloudProvider
-- $type: PModif
-  left:
-    $type: Nav
-    obj:
-      $type: Ref
-      id: the configuration
-    elems:
     - - cluster
       - demo.config.Cluster
     - - minNumberOfNodes
