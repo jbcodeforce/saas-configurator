@@ -10,15 +10,14 @@ stmts:
     - - optionalComponent
       - Option[demo.config.OptionalComponent]
   cases:
-  - type: demo.config.OptionalComponent
-    stmts:
+  - stmts:
     - $type: PatternMatchDo
       dependsOn:
         $type: Ref
         id: option
       cases:
       - type: demo.config.OptionA
-        name: optionA
+        $type: CaseTypeDo
         stmts:
         - $type: PModif
           left:
@@ -42,8 +41,10 @@ stmts:
             - - quantity
               - demo.config.ZeroTo1200
         where: []
+        name: optionA
+      - type: demo.config.EmailNotification
         $type: CaseTypeDo
-      - stmts:
+        stmts:
         - $type: PModif
           left:
             $type: Nav
@@ -65,12 +66,9 @@ stmts:
             elems:
             - - email
               - demo.config.Email
-        type: demo.config.EmailNotification
-        $type: CaseTypeDo
         where: []
         name: notification
       - name: optionB2
-        type: demo.config.OptionB2
         $type: CaseTypeDo
         stmts:
         - $type: PModif
@@ -94,10 +92,12 @@ stmts:
             elems:
             - - quantity
               - demo.config.ZeroTo2400
+        type: demo.config.OptionB2
         where: []
-    name: option
-    where: []
     $type: CaseSomeTypeDo
+    name: option
+    type: demo.config.OptionalComponent
+    where: []
   - $type: LitCaseDo
     lit: None
     stmts:

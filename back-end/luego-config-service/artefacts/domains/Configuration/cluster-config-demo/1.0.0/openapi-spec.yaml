@@ -855,6 +855,238 @@ paths:
                 $ref: '#/components/schemas/demo.config.results.demo.config.ClusterResponse'
         '400':
           description: Something went wrong
+  /v1/domains/Configuration/apps/cluster-config-demo/1.0.0/models/demo.config.configureBasicCluster/initial_payload:
+    get:
+      tags:
+      - demo.config - Payloads
+      operationId: decision:demo.config.configureBasicCluster
+      parameters:
+      - name: lang
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - en
+          - fr
+      - name: richResults
+        in: query
+        required: false
+        schema:
+          type: boolean
+          enum:
+          - true
+          - false
+      responses:
+        '200':
+          description: Ok, response generated
+          content:
+            application/json: {}
+        '400':
+          description: Something went wrong
+  /v1/domains/Configuration/apps/cluster-config-demo/1.0.0/models/demo.config.configureDedicatedCluster/initial_payload:
+    get:
+      tags:
+      - demo.config - Payloads
+      operationId: decision:demo.config.configureDedicatedCluster
+      parameters:
+      - name: lang
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - en
+          - fr
+      - name: richResults
+        in: query
+        required: false
+        schema:
+          type: boolean
+          enum:
+          - true
+          - false
+      responses:
+        '200':
+          description: Ok, response generated
+          content:
+            application/json: {}
+        '400':
+          description: Something went wrong
+  /v1/domains/Configuration/apps/cluster-config-demo/1.0.0/models/demo.config.configureEnterpriseCluster/initial_payload:
+    get:
+      tags:
+      - demo.config - Payloads
+      operationId: decision:demo.config.configureEnterpriseCluster
+      parameters:
+      - name: lang
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - en
+          - fr
+      - name: richResults
+        in: query
+        required: false
+        schema:
+          type: boolean
+          enum:
+          - true
+          - false
+      responses:
+        '200':
+          description: Ok, response generated
+          content:
+            application/json: {}
+        '400':
+          description: Something went wrong
+  /v1/domains/Configuration/apps/cluster-config-demo/1.0.0/models/demo.config.configureFreightCluster/initial_payload:
+    get:
+      tags:
+      - demo.config - Payloads
+      operationId: decision:demo.config.configureFreightCluster
+      parameters:
+      - name: lang
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - en
+          - fr
+      - name: richResults
+        in: query
+        required: false
+        schema:
+          type: boolean
+          enum:
+          - true
+          - false
+      responses:
+        '200':
+          description: Ok, response generated
+          content:
+            application/json: {}
+        '400':
+          description: Something went wrong
+  /v1/domains/Configuration/apps/cluster-config-demo/1.0.0/models/demo.config.configureKafkaCluster/initial_payload:
+    get:
+      tags:
+      - demo.config - Payloads
+      operationId: decision:demo.config.configureKafkaCluster
+      parameters:
+      - name: lang
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - en
+          - fr
+      - name: richResults
+        in: query
+        required: false
+        schema:
+          type: boolean
+          enum:
+          - true
+          - false
+      responses:
+        '200':
+          description: Ok, response generated
+          content:
+            application/json: {}
+        '400':
+          description: Something went wrong
+  /v1/domains/Configuration/apps/cluster-config-demo/1.0.0/models/demo.config.configureStandardCluster/initial_payload:
+    get:
+      tags:
+      - demo.config - Payloads
+      operationId: decision:demo.config.configureStandardCluster
+      parameters:
+      - name: lang
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - en
+          - fr
+      - name: richResults
+        in: query
+        required: false
+        schema:
+          type: boolean
+          enum:
+          - true
+          - false
+      responses:
+        '200':
+          description: Ok, response generated
+          content:
+            application/json: {}
+        '400':
+          description: Something went wrong
+  ? /v1/domains/Configuration/apps/cluster-config-demo/1.0.0/models/demo.config.configureSubSubCompoStandardCluster/initial_payload
+  : get:
+      tags:
+      - demo.config - Payloads
+      operationId: decision:demo.config.configureSubSubCompoStandardCluster
+      parameters:
+      - name: lang
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - en
+          - fr
+      - name: richResults
+        in: query
+        required: false
+        schema:
+          type: boolean
+          enum:
+          - true
+          - false
+      responses:
+        '200':
+          description: Ok, response generated
+          content:
+            application/json: {}
+        '400':
+          description: Something went wrong
+  /v1/domains/Configuration/apps/cluster-config-demo/1.0.0/models/demo.config.inferKafkaClusterType/initial_payload:
+    get:
+      tags:
+      - demo.config - Payloads
+      operationId: decision:demo.config.inferKafkaClusterType
+      parameters:
+      - name: lang
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - en
+          - fr
+      - name: richResults
+        in: query
+        required: false
+        schema:
+          type: boolean
+          enum:
+          - true
+          - false
+      responses:
+        '200':
+          description: Ok, response generated
+          content:
+            application/json: {}
+        '400':
+          description: Something went wrong
 components:
   schemas:
     demo.config.ScalingType:

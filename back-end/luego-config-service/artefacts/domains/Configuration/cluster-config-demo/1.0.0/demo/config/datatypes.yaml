@@ -8,10 +8,10 @@ definedTypes:
   - Elastic
   - Manual
 - minLength: null
-  name: SubComponentCode
-  maxLength: null
-  kind: ConstrainedText
   regex: '[ABC][123]'
+  kind: ConstrainedText
+  maxLength: null
+  name: SubComponentCode
 - name: CloudProvider
   kind: Enum
   ordered: false
@@ -21,258 +21,258 @@ definedTypes:
   - GCP
   - CP4
   - CP5
-- kind: ConstrainedNum
+- min:
+    v: '0.0'
+    exclusive: false
+  step: null
+  name: ZeroTo1200
+  kind: ConstrainedNum
   max:
     v: '1200.0'
     exclusive: false
   underlying: Number
-  step: null
-  name: ZeroTo1200
-  min:
-    v: '0.0'
-    exclusive: false
-- step: null
-  name: ZeroTo2400
-  kind: ConstrainedNum
+- name: ZeroTo2400
   underlying: Number
   max:
     v: '2400.0'
     exclusive: false
+  step: null
   min:
     v: '0.0'
     exclusive: false
-- maxLength: 36
-  kind: ConstrainedText
-  regex: ^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$
+  kind: ConstrainedNum
+- kind: ConstrainedText
+  maxLength: 36
   minLength: 8
+  regex: ^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$
   name: Email
 - name: CustomerRequest
   kind: Struct
   members:
-  - multiplicity: '1'
-    gender: null
-    isAbstract: false
-    singular: null
-    type: demo.config.CloudProvider
-    name: cloudProvider
-    kind: Attribute
-    required: false
   - isAbstract: false
+    required: false
     singular: null
+    name: cloudProvider
+    type: demo.config.CloudProvider
     multiplicity: '1'
-    type: Boolean
-    required: false
-    name: mustHaveDedicatedEnv
-    kind: Attribute
-    gender: null
-  - singular: null
-    name: mustHavePrivateEndpoints
     gender: null
     kind: Attribute
-    multiplicity: '1'
-    required: false
-    type: Boolean
+  - name: mustHaveDedicatedEnv
+    singular: null
     isAbstract: false
-  - gender: null
-    required: false
     multiplicity: '1'
+    required: false
+    kind: Attribute
+    gender: null
+    type: Boolean
+  - gender: null
     kind: Attribute
     singular: null
+    required: false
+    isAbstract: false
+    type: Boolean
+    multiplicity: '1'
+    name: mustHavePrivateEndpoints
+  - singular: null
     type: Boolean
     name: mustHaveSubSecondLatency
+    required: false
+    gender: null
+    multiplicity: '1'
+    kind: Attribute
     isAbstract: false
   - type: Boolean
+    singular: null
     required: false
     gender: null
+    isAbstract: false
     name: isProductionUseCase
-    singular: null
+    kind: Attribute
+    multiplicity: '1'
+  - gender: null
+    type: Number
     multiplicity: '1'
     isAbstract: false
-    kind: Attribute
-  - type: Number
-    isAbstract: false
-    gender: null
     singular: null
-    required: false
-    kind: Attribute
     name: ingress
-    multiplicity: '1'
-  - kind: Attribute
-    gender: null
-    multiplicity: '1'
+    required: false
+    kind: Attribute
+  - multiplicity: '1'
     name: egress
-    type: Number
-    isAbstract: false
-    singular: null
-    required: false
-  - kind: Attribute
     isAbstract: false
     gender: null
+    required: false
+    kind: Attribute
+    singular: null
+    type: Number
+  - isAbstract: false
+    gender: null
+    kind: Attribute
     type: Number
     multiplicity: '1'
-    singular: null
-    required: false
     name: throughput
-  - kind: Attribute
+    required: false
+    singular: null
+  - gender: null
+    multiplicity: '1'
+    isAbstract: false
+    name: numberOfConnections
+    kind: Attribute
+    singular: null
     required: false
     type: Integer
-    isAbstract: false
-    multiplicity: '1'
-    gender: null
-    name: numberOfConnections
-    singular: null
 - name: Configuration
   parent: null
   kind: Entity
   members:
-  - required: false
+  - type: demo.config.Cluster
     multiplicity: '1'
-    kind: Has
-    type: demo.config.Cluster
+    required: false
     name: cluster
-    singular: null
+    kind: Has
     gender: null
+    singular: null
 - name: Cluster
   parent: null
   kind: Entity
   members:
-  - gender: null
-    kind: Attribute
-    required: false
+  - kind: Attribute
     type: demo.config.ScalingType
-    multiplicity: '1'
-    singular: null
-    isAbstract: false
-    name: scaling
-  - isAbstract: false
     required: false
-    kind: Attribute
-    name: minNumberOfNodes
     multiplicity: '1'
     gender: null
-    type: Integer
+    name: scaling
+    isAbstract: false
     singular: null
+  - multiplicity: '1'
+    singular: null
+    type: Integer
+    kind: Attribute
+    name: minNumberOfNodes
+    required: false
+    isAbstract: false
+    gender: null
 - name: StandardCluster
   parent: demo.config.Cluster
   kind: Entity
   members:
-  - kind: Has
-    singular: subComponent
+  - name: subComponents
+    gender: null
+    kind: Has
     required: false
     multiplicity: 1+
-    name: subComponents
-    gender: null
     type: demo.config.SubComponent
-  - multiplicity: '1'
-    isAbstract: false
-    required: false
-    singular: null
-    name: scaling
-    gender: null
-    type: demo.config.ScalingType
+    singular: subComponent
+  - name: scaling
     kind: Attribute
-  - singular: null
-    type: Integer
-    isAbstract: false
+    required: false
+    gender: null
     multiplicity: '1'
-    name: minNumberOfNodes
+    type: demo.config.ScalingType
+    singular: null
+    isAbstract: false
+  - kind: Attribute
+    isAbstract: false
     required: false
-    kind: Attribute
     gender: null
+    name: minNumberOfNodes
+    singular: null
+    multiplicity: '1'
+    type: Integer
 - name: DedicatedCluster
   parent: demo.config.Cluster
   kind: Entity
   members:
-  - name: optionalComponent
+  - type: demo.config.OptionalComponent
+    gender: null
+    singular: null
     multiplicity: 0..1
-    type: demo.config.OptionalComponent
-    gender: null
     required: false
-    singular: null
     kind: Has
-  - isAbstract: false
-    required: false
+    name: optionalComponent
+  - multiplicity: '1'
+    gender: null
     name: scaling
-    multiplicity: '1'
     type: demo.config.ScalingType
-    gender: null
-    singular: null
-    kind: Attribute
-  - name: minNumberOfNodes
-    gender: null
-    kind: Attribute
-    type: Integer
     isAbstract: false
     required: false
-    multiplicity: '1'
+    kind: Attribute
     singular: null
+  - singular: null
+    isAbstract: false
+    name: minNumberOfNodes
+    type: Integer
+    required: false
+    multiplicity: '1'
+    kind: Attribute
+    gender: null
 - name: EnterpriseCluster
   parent: demo.config.Cluster
   kind: Entity
   members:
-  - gender: null
-    kind: Has
-    name: optionalComponent
-    multiplicity: 0..1
-    required: false
-    type: demo.config.OptionalComponent
-    singular: null
-  - multiplicity: '1'
-    required: false
-    name: scaling
-    kind: Attribute
-    type: demo.config.ScalingType
-    isAbstract: false
+  - name: optionalComponent
     singular: null
     gender: null
-  - gender: null
+    kind: Has
+    type: demo.config.OptionalComponent
     required: false
-    multiplicity: '1'
+    multiplicity: 0..1
+  - multiplicity: '1'
     kind: Attribute
-    name: minNumberOfNodes
     isAbstract: false
+    gender: null
+    required: false
+    name: scaling
+    type: demo.config.ScalingType
     singular: null
+  - singular: null
+    name: minNumberOfNodes
+    required: false
+    kind: Attribute
+    isAbstract: false
     type: Integer
+    gender: null
+    multiplicity: '1'
 - name: BasicCluster
   parent: demo.config.Cluster
   kind: Entity
   members:
   - gender: null
-    singular: null
-    required: false
-    name: scaling
     isAbstract: false
     type: demo.config.ScalingType
+    required: false
+    name: scaling
+    singular: null
     multiplicity: '1'
     kind: Attribute
-  - gender: null
+  - kind: Attribute
+    isAbstract: false
+    singular: null
+    required: false
+    gender: null
     name: minNumberOfNodes
     type: Integer
-    isAbstract: false
-    required: false
     multiplicity: '1'
-    kind: Attribute
-    singular: null
 - name: FreightCluster
   parent: demo.config.Cluster
   kind: Entity
   members:
-  - multiplicity: '1'
-    required: false
+  - type: demo.config.ScalingType
     name: scaling
-    gender: null
-    isAbstract: false
-    singular: null
     kind: Attribute
-    type: demo.config.ScalingType
-  - name: minNumberOfNodes
     singular: null
-    kind: Attribute
     required: false
-    isAbstract: false
     gender: null
     multiplicity: '1'
+    isAbstract: false
+  - isAbstract: false
+    name: minNumberOfNodes
+    gender: null
+    singular: null
+    required: false
+    multiplicity: '1'
     type: Integer
+    kind: Attribute
 - name: OptionalComponent
   parent: null
   kind: Entity
@@ -281,14 +281,14 @@ definedTypes:
   parent: demo.config.OptionalComponent
   kind: Entity
   members:
-  - name: quantity
-    singular: null
-    multiplicity: '1'
-    kind: Attribute
-    required: false
-    type: demo.config.ZeroTo1200
-    isAbstract: false
+  - singular: null
+    name: quantity
     gender: null
+    kind: Attribute
+    multiplicity: '1'
+    required: false
+    isAbstract: false
+    type: demo.config.ZeroTo1200
 - name: OptionB
   parent: demo.config.OptionalComponent
   kind: Entity
@@ -297,61 +297,61 @@ definedTypes:
   parent: demo.config.OptionB
   kind: Entity
   members:
-  - required: false
-    isAbstract: false
+  - multiplicity: '1'
+    type: demo.config.Email
+    required: false
     kind: Attribute
     name: email
     singular: null
-    type: demo.config.Email
-    multiplicity: '1'
     gender: null
+    isAbstract: false
 - name: OptionB2
   parent: demo.config.OptionB
   kind: Entity
   members:
-  - isAbstract: false
+  - name: quantity
+    type: demo.config.ZeroTo2400
+    kind: Attribute
     required: false
     multiplicity: '1'
     singular: null
+    isAbstract: false
     gender: null
-    type: demo.config.ZeroTo2400
-    kind: Attribute
-    name: quantity
 - name: SubSubComponent
   kind: Struct
   members:
-  - isAbstract: false
+  - type: Text
     required: false
+    isAbstract: false
     singular: null
-    gender: null
-    type: Text
-    multiplicity: '1'
     kind: Attribute
+    multiplicity: '1'
     name: description
+    gender: null
 - name: SubComponent
   parent: null
   kind: Entity
   members:
-  - required: false
-    singular: null
-    kind: Attribute
-    type: demo.config.SubComponentCode
-    isAbstract: false
+  - isAbstract: false
     name: code
-    multiplicity: '1'
     gender: null
-  - name: capacity
-    gender: null
-    type: demo.config.ZeroTo2400
-    multiplicity: '1'
+    kind: Attribute
     required: false
     singular: null
+    multiplicity: '1'
+    type: demo.config.SubComponentCode
+  - singular: null
     kind: Attribute
+    multiplicity: '1'
     isAbstract: false
-  - gender: null
-    type: demo.config.SubSubComponent
-    kind: Has
-    singular: subSubComponent
+    type: demo.config.ZeroTo2400
     required: false
+    name: capacity
+    gender: null
+  - required: false
+    singular: subSubComponent
+    kind: Has
     name: subSubComponents
+    type: demo.config.SubSubComponent
+    gender: null
     multiplicity: 0+

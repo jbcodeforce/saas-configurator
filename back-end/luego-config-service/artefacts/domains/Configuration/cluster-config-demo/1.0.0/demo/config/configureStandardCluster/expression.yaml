@@ -3,21 +3,10 @@ stmts:
 - $type: Let
   name: subCapacities
   e:
-    collBType: NEList[demo.config.ZeroTo2400]
-    functor:
-      $type: Nav
-      obj:
-        $type: Ref
-        id: compo
-      elems:
-      - - capacity
-        - demo.config.ZeroTo2400
-    $type: Map
     param: compo
+    collBType: NEList[demo.config.ZeroTo2400]
     coll:
       actualTypeOpt: []
-      param: compo
-      $type: Filter
       coll:
         $type: Nav
         obj:
@@ -39,6 +28,17 @@ stmts:
             - demo.config.SubComponentCode
         - $type: SLit
           s: A
+      param: compo
+      $type: Filter
+    $type: Map
+    functor:
+      $type: Nav
+      obj:
+        $type: Ref
+        id: compo
+      elems:
+      - - capacity
+        - demo.config.ZeroTo2400
 - $type: PModif
   left:
     $type: Nav

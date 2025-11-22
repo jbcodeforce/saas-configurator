@@ -14,17 +14,22 @@ from enum import Enum
 # Rule Engine Configuration
 BASE_RULE_ENGINE_URL = "http://localhost:9000"  # This should come from environment variables in production
 SERVER_STATUS_URL = BASE_RULE_ENGINE_URL + "/v1/serverStatus"
-SERVER_API_URL = BASE_RULE_ENGINE_URL + "/v1/domains"
+SERVER_API_URL = BASE_RULE_ENGINE_URL + "/v1/domains/"
 
-APP_PATH1= "/Configuration/apps/cluster-config-demo/1.0.0"
+APP_PATH1= "Configuration/apps/cluster-config-demo/1.0.0"
 OPERATION1 = "demo.config.configureKafkaCluster"
 
-APP_PATH2= "/Insurance/apps/accident-claim-declaration/1.0.0"
+APP_PATH2= "Insurance/apps/accident-claim-declaration/1.0.0"
 OPERATION2 = "smartinsure.claimdeclaration.refreshQuestionnaire"
 
+OPERATION1_PATH = APP_PATH1 + "/models/" + OPERATION1
+OPERATION2_PATH = APP_PATH2 + "/models/" + OPERATION2
 
-OPERATIONS_API_URL = SERVER_API_URL + APP_PATH1 + "/models/" + OPERATION1 + "/configure?richResults=true&lang="
-#OPERATIONS_API_URL = SERVER_API_URL + APP_PATH2 + "/models/" + OPERATION2 + "/configure?richResults=true&lang="
+OPERATION_PATH = OPERATION1_PATH
+#OPERATION_PATH = OPERATION2_PATH
+
+OPERATION_CONFIG_API_URL = SERVER_API_URL + OPERATION_PATH + "/configure?richResults=true"
+OPERATION_PAYLOAD_API_URL = SERVER_API_URL + OPERATION_PATH + "/initial_payload"
 
 
 class LabelValuePair(BaseModel):
@@ -245,7 +250,7 @@ class RuleEngineClient:
         Returns:
             ConfigResponse containing the payload and the questions
         """
-        api_url = OPERATIONS_API_URL + lang
+        api_url = OPERATION_CONFIG_API_URL + "&lang=" + lang
          
         # Make request to inference engine
         response = requests.post(api_url, 

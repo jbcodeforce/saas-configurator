@@ -5,6 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from typing import Optional, List
 import math
 from contextlib import asynccontextmanager
+import requests
 
 from app.models import (
     Configuration, 
@@ -15,7 +16,7 @@ from app.models import (
     ConfigurationStatus
 )
 from app.database import db, seed_test_data
-from app.re_client import RuleEngineClient
+from app.re_client import RuleEngineClient, OPERATION_PAYLOAD_API_URL
 
 
 @asynccontextmanager
@@ -144,14 +145,28 @@ async def create_configuration(config: ConfigurationCreate) -> ConfigurationResp
 
         # Get rule engine instance
         re_client = RuleEngineClient.get_instance()
-        input_dict = {
-            "the customer request": {
-                "LGType_": "demo.config.CustomerRequest"
-            },
-            "the configuration": {
-                "LGType_": "demo.config.Configuration"
-            }
-        }
+
+        
+        payload_url = OPERATION_PAYLOAD_API_URL
+         
+        # Make request to inference engine
+        response = requests.get(payload_url) #, headers=self.headers)
+        if not response.ok:
+            raise Exception(f"get initial_payload request failed: {response.status_code}")
+            
+        resp_json = response.json()        
+        input_dict = resp_json.get('payload')
+        print("input_dict: ", input_dict)
+        #print("input_dict: ", input_dict.model_dump_json(indent=2))
+
+        # input_dict = {
+        #     "the customer request": {
+        #         "LGType_": "demo.config.CustomerRequest"
+        #     },
+        #     "the configuration": {
+        #         "LGType_": "demo.config.Configuration"
+        #     }
+        # }
             
         try:
             # Configure through rule engine

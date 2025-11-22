@@ -200,10 +200,7 @@ e:
       - - cluster
         - demo.config.Cluster
     cases:
-    - $type: CaseType
-      whereOpt: []
-      varName: bc
-      value:
+    - value:
         $type: DecisionApp
         funDef: demo.config.configureBasicCluster
         args:
@@ -234,8 +231,13 @@ e:
             args:
             - $type: SLit
               s: configure basic cluster
+      $type: CaseType
+      whereOpt: []
       type: demo.config.BasicCluster
-    - type: demo.config.DedicatedCluster
+      varName: bc
+    - varName: dc
+      $type: CaseType
+      whereOpt: []
       value:
         $type: DecisionApp
         funDef: demo.config.configureDedicatedCluster
@@ -259,15 +261,15 @@ e:
               - - optionalComponent
                 - Option[demo.config.OptionalComponent]
             cases:
-            - stmts:
+            - $type: CaseSomeTypeDo
+              stmts:
               - $type: PatternMatchDo
                 dependsOn:
                   $type: Ref
                   id: option
                 cases:
                 - type: demo.config.OptionA
-                  where: []
-                  $type: CaseTypeDo
+                  name: optionA
                   stmts:
                   - $type: PModif
                     left:
@@ -290,7 +292,8 @@ e:
                       elems:
                       - - quantity
                         - demo.config.ZeroTo1200
-                  name: optionA
+                  where: []
+                  $type: CaseTypeDo
                 - stmts:
                   - $type: PModif
                     left:
@@ -313,12 +316,11 @@ e:
                       elems:
                       - - email
                         - demo.config.Email
-                  $type: CaseTypeDo
                   type: demo.config.EmailNotification
-                  where: []
                   name: notification
-                - where: []
-                  type: demo.config.OptionB2
+                  where: []
+                  $type: CaseTypeDo
+                - $type: CaseTypeDo
                   name: optionB2
                   stmts:
                   - $type: PModif
@@ -342,10 +344,10 @@ e:
                       elems:
                       - - quantity
                         - demo.config.ZeroTo2400
-                  $type: CaseTypeDo
-              name: option
+                  type: demo.config.OptionB2
+                  where: []
               type: demo.config.OptionalComponent
-              $type: CaseSomeTypeDo
+              name: option
               where: []
             - $type: LitCaseDo
               lit: None
@@ -368,12 +370,8 @@ e:
             args:
             - $type: SLit
               s: configure dedicated cluster
-      whereOpt: []
-      $type: CaseType
-      varName: dc
-    - $type: CaseType
-      varName: ec
-      whereOpt: []
+      type: demo.config.DedicatedCluster
+    - type: demo.config.EnterpriseCluster
       value:
         $type: DecisionApp
         funDef: demo.config.configureEnterpriseCluster
@@ -405,11 +403,10 @@ e:
             args:
             - $type: SLit
               s: configure enterprise cluster
-      type: demo.config.EnterpriseCluster
-    - whereOpt: []
+      varName: ec
       $type: CaseType
-      type: demo.config.FreightCluster
-      value:
+      whereOpt: []
+    - value:
         $type: DecisionApp
         funDef: demo.config.configureFreightCluster
         args:
@@ -440,11 +437,11 @@ e:
             args:
             - $type: SLit
               s: configure freight cluster
-      varName: fc
-    - type: demo.config.StandardCluster
-      whereOpt: []
       $type: CaseType
-      value:
+      varName: fc
+      whereOpt: []
+      type: demo.config.FreightCluster
+    - value:
         $type: DecisionApp
         funDef: demo.config.configureStandardCluster
         args:
@@ -461,6 +458,7 @@ e:
             name: subCapacities
             e:
               $type: Map
+              param: compo
               coll:
                 coll:
                   $type: Nav
@@ -470,6 +468,8 @@ e:
                   elems:
                   - - subComponents
                     - NEList[demo.config.SubComponent]
+                $type: Filter
+                param: compo
                 filter:
                   $type: NativeFunApp
                   funDef: luego.text.startsWith
@@ -484,9 +484,6 @@ e:
                   - $type: SLit
                     s: A
                 actualTypeOpt: []
-                $type: Filter
-                param: compo
-              collBType: NEList[demo.config.ZeroTo2400]
               functor:
                 $type: Nav
                 obj:
@@ -495,7 +492,7 @@ e:
                 elems:
                 - - capacity
                   - demo.config.ZeroTo2400
-              param: compo
+              collBType: NEList[demo.config.ZeroTo2400]
           - $type: PModif
             left:
               $type: Nav
@@ -529,4 +526,7 @@ e:
             args:
             - $type: SLit
               s: configure standard cluster
+      type: demo.config.StandardCluster
+      whereOpt: []
       varName: sc
+      $type: CaseType

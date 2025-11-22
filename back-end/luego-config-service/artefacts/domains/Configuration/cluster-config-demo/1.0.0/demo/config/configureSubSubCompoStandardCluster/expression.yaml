@@ -2,8 +2,17 @@ $type: Block
 stmts:
 - $type: ForStmt
   tupleGen:
-    param: compo
     bind:
+      param: ssc
+      collBType: List[NEList[Any]]
+      coll:
+        $type: Nav
+        obj:
+          $type: Ref
+          id: compo
+        elems:
+        - - subSubComponents
+          - List[demo.config.SubSubComponent]
       functor:
         $type: Coll
         type: Any
@@ -21,25 +30,6 @@ stmts:
           - $type: Ref
             id: ssc
       $type: Map
-      collBType: List[NEList[Any]]
-      param: ssc
-      coll:
-        $type: Nav
-        obj:
-          $type: Ref
-          id: compo
-        elems:
-        - - subSubComponents
-          - List[demo.config.SubSubComponent]
-    coll:
-      $type: Nav
-      obj:
-        $type: Ref
-        id: the standard cluster
-      elems:
-      - - subComponents
-        - NEList[demo.config.SubComponent]
-    collBType: List[NEList[Any]]
     filter:
     - $type: NativeFunApp
       funDef: luego.text.startsWith
@@ -53,6 +43,16 @@ stmts:
           - demo.config.SubComponentCode
       - $type: SLit
         s: C
+    param: compo
+    coll:
+      $type: Nav
+      obj:
+        $type: Ref
+        id: the standard cluster
+      elems:
+      - - subComponents
+        - NEList[demo.config.SubComponent]
+    collBType: List[NEList[Any]]
     $type: FlMap
   stmts:
   - $type: Need
